@@ -1,0 +1,97 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.2.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+
+String BURP_REST_EXTENSION_JAR_NAME = 'burp-rest-api'
+String BURP_REST_EXTENSION_JAR_VERSION = '1.0.0'
+
+jar {
+    baseName = BURP_REST_EXTENSION_JAR_NAME
+    version =  BURP_REST_EXTENSION_JAR_VERSION
+    manifest {
+        attributes 'Implementation-Title': 'Burp REST API',
+                'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+File schemaTargetDir = new File('build/generated-schema')
+
+configurations {
+  jaxb
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile fileTree(dir: 'lib', include: '**/*.jar')
+    compile "io.springfox:springfox-swagger2:2.5+"
+    compile "io.springfox:springfox-swagger-ui:2.+"
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.apache.httpcomponents:httpclient:4.5.2')
+
+    jaxb 'org.glassfish.jaxb:jaxb-jxc:2.+'
+	jaxb 'org.glassfish.jaxb:jaxb-xjc:2.+'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
+}
+
+task createschemaTargetDir () {
+	schemaTargetDir.mkdirs()
+}
+
+bootRun {
+    // support passing -Dsystem.property=value to bootRun task
+    systemProperties = System.properties
+
+    if (System.getProperty('DEBUG', 'false') == 'true') {
+        jvmArgs '-Xdebug',
+                '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005'
+    }
+}
+
+task extractApi(type: Copy) {
+	from(zipTree('build/libs/' + BURP_REST_EXTENSION_JAR_NAME + '-' + BURP_REST_EXTENSION_JAR_VERSION + '.jar'))
+	into 'build/libs'
+}
+
+task schemagen () {
+	doLast {
+		ant.taskdef(name: 'schemagen', classname: 'com.sun.tools.jxc.SchemaGenTask', classpath: configurations.jaxb.asPath)
+
+		ant.schemagen(
+			srcdir:'src/main/java/com/vmware/burp/extension/domain',
+			destdir:schemaTargetDir,
+			includeAntRuntime:'false'
+		){
+			classpath {
+				fileset(dir: 'build/libs', includes: '**/*.jar')
+			}
+		}
+	}
+}
+
+compileJava.dependsOn createschemaTargetDir
+schemagen.dependsOn extractApi

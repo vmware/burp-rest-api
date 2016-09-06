@@ -1,0 +1,5 @@
+server:
+  port: ${port:8090}
+
+headless:
+  mode: ${java.awt.headless}
