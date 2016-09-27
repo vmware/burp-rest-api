@@ -328,6 +328,13 @@ public class BurpController {
       burp.sendToSpider(baseUrl);
    }
 
+   @ApiOperation(value = "Stop Burp Suite", notes = "This will exit Burp Suite.")
+   @RequestMapping(method = GET, value = "/stop")
+   public void exitBurp(){
+         burp.exitSuite(false);
+         log.info("Burp is stopped");
+      }
+
    @ExceptionHandler()
    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
       response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
