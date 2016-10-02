@@ -242,4 +242,9 @@ public class BurpService {
       BurpExtender.getInstance().getCallbacks().exitSuite(promptUser);
    }
 
+   public void restoreState(File state) {
+      log.info("Restoring state by replacing state with empty state");
+      BurpExtender.getInstance().getCallbacks().restoreState(state);
+   }
+
 }

@@ -343,4 +343,12 @@ public class BurpController {
          throws IOException {
       response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
    }
+
+   @ApiOperation(value = "Clean Burp state", notes = "This will restore Burp's state with an empty one.")
+   @RequestMapping(method = GET, value = "/restore")
+   public void restoreState(){
+      File state = new File("../../src/main/resources/cleanstate");
+      burp.restoreState(state);
+      log.info("Burp state is restored");
+   }
 }
