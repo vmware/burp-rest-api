@@ -328,7 +328,7 @@ public class BurpController {
       burp.sendToSpider(baseUrl);
    }
 
-   @ApiOperation(value = "Stop Burp Suite", notes = "This will exit Burp Suite.")
+   @ApiOperation(value = "Stop Burp Suite", notes = "This will exit Burp Suite. Use with caution: the API will not work after this endpoint has been called. You have to restart Burp from command-line to re-enable te API.")
    @ApiResponses(value = {
          @ApiResponse(code = 200, message = "Success"),
          @ApiResponse(code = 500, message = "Failure")
