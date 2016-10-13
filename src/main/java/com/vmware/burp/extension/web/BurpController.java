@@ -329,6 +329,10 @@ public class BurpController {
    }
 
    @ApiOperation(value = "Stop Burp Suite", notes = "This will exit Burp Suite.")
+   @ApiResponses(value = {
+         @ApiResponse(code = 200, message = "Success"),
+         @ApiResponse(code = 500, message = "Failure")
+   })
    @RequestMapping(method = GET, value = "/stop")
    public void exitBurp(){
          burp.exitSuite(false);
