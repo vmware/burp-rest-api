@@ -3,3 +3,6 @@ server:
 
 headless:
   mode: ${java.awt.headless}
+
+burp:
+  edition: pro

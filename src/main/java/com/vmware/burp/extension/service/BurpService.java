@@ -51,14 +51,14 @@ public class BurpService {
    private boolean awtHeadLessMode;
 
    @Autowired
-   public BurpService(ApplicationArguments args, @Value("${headless.mode}") boolean headlessMode)
+   public BurpService(ApplicationArguments args, @Value("${headless.mode}") boolean headlessMode, @Value("${burp.edition}") String burpEdition)
          throws IOException {
       if (!headlessMode) {
          log.info("Setting java.awt.headless to false...");
          System.setProperty("java.awt.headless", Boolean.toString(false));
       }
       log.info("# of command line arguments received to Burp suite: {}", args.getSourceArgs().length);
-      log.info("Launching the Burp suite in {} mode...", headlessMode ? "headless" : "UI");
+      log.info("Launching the Burp suite ({} edition) in {} mode...", burpEdition, headlessMode ? "headless" : "UI");
 
       if (args.getSourceArgs().length == 0 || !args.containsOption(PROJECT_FILE)) {
          Resource defaultProjectOptionsFile = new ClassPathResource(
@@ -82,8 +82,14 @@ public class BurpService {
          String configFileArgumentWithUserOptions =
                CONFIG_FILE_ARGUMENT + userOptionsTempFile.toAbsolutePath();
 
-         String[] burpOptions = new String[] { projectFileArgument,
-               configFileArgumentWithProjectOptions, configFileArgumentWithUserOptions };
+         // Free edition does not allow PROJECT_FILE_ARGUMENT
+         String[] burpOptions;
+         if (burpEdition.equalsIgnoreCase("free")) {
+            burpOptions = new String[] { configFileArgumentWithProjectOptions, configFileArgumentWithUserOptions };
+         } else {
+            burpOptions = new String[] { projectFileArgument,
+                  configFileArgumentWithProjectOptions, configFileArgumentWithUserOptions };
+         }
 
          log.info("Launching the Burp suite with options: {}", Arrays.toString(burpOptions));
          burp.StartBurp.main(burpOptions);

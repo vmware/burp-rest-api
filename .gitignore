@@ -13,6 +13,7 @@
 # Burp
 # =============================
 lib/burpsuite_pro_*.jar
+lib/burpsuite_free_*.jar
 
 build/
 **/.DS_Store
