@@ -239,6 +239,11 @@ public class BurpService {
       BurpExtender.getInstance().getCallbacks().sendToSpider(url);
    }
 
+   public void restoreState(File state) {
+      log.info("Restoring state by replacing state with a new state");
+      BurpExtender.getInstance().getCallbacks().restoreState(state);
+   }
+
    public void exitSuite(boolean promptUser) {
       log.info("Shutting down the Burp Suite...");
       if (awtHeadLessMode && promptUser) {
