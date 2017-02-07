@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.File;
 import java.net.MalformedURLException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -326,6 +327,14 @@ public class BurpController {
       }
 
       burp.sendToSpider(baseUrl);
+   }
+
+   @ApiOperation(value = "Clean Burp state", notes = "This will restore Burp's state with an empty one.")
+   @RequestMapping(method = GET, value = "/reset")
+   public void resetState(){
+      File emptyState = new File("../../src/main/resources/cleanstate");
+      burp.restoreState(emptyState);
+      log.info("Burp state is reset to clean");
    }
 
    @ApiOperation(value = "Stop Burp Suite", notes = "This will exit Burp Suite. Use with caution: the API will not work after this endpoint has been called. You have to restart Burp from command-line to re-enable te API.")

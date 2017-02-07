@@ -19,29 +19,26 @@ Upon successfully building the project, an executable JAR file is created with t
 
 ### Build & Run
 
-1. [Download](https://portswigger.net/burp/download.html) the Professional edition of Burp Suite.
-2. Create a _lib_ folder under the project directory and place the Burp Suite JAR file into it.
-3. To build, run the following command from the project directory:
-
-```
-    gradlew clean build
-```
-
-4. The project can be run either by running the Gradle Spring `bootRun` command or by directly launching the JAR
+1. [Download](https://portswigger.net/burp/download.html) the Professional edition of Burp Suite. You _may_ use Free edition but capabilities are limited.
+2. Create a `lib` folder under the project directory and place the Burp Suite JAR file into it.
+3. The project can be run either by running the Gradle Spring `bootRun` command or by directly launching the JAR
  created from building the project:
 
 ```
-    gradlew bootRun
+    gradlew bootRun # for pro edition, or
+    gradlew bootRun "-Dburp.edition=free" # for free edition
 ```
 
 or
 
 ```
+    # build the jar (note that testing phase will fail if you provide free edition jar in ./lib)
     gradlew clean build
-    cd build/libs
-    java -jar burp-rest-api-1.0.0.jar
+    # and run it
+    java -jar build/libs/burp-rest-api-1.0.0.jar # for pro edition, or
+    java -jar build/libs/burp-rest-api-1.0.0.jar --burp.edition=free # for free edition
 ```
-The version number of the JAR should match the version number from _build.gradle_ while generating the JAR.
+The version number of the JAR should match the version number from `build.gradle` while generating the JAR.
 
 ## Documentation
 
