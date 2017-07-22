@@ -106,7 +106,7 @@ Command line arguments passed to the executable burp-rest-api JAR are forwarded 
  exist already.
 
 `--config-file=<filename>` : Opens the project using the options contained in the selected Burp configuration file. To
- load multiple configurations, this arugment can be passed more than once with different values.
+ load multiple configurations, this argument can be passed more than once with different values.
 
 For more information on Projects, refer to the Burp Suite documentation
  [here](https://portswigger.net/burp/help/suite_burp_projects.html).
