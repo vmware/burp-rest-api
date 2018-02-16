@@ -9,16 +9,16 @@ package com.vmware.burp.extension.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.burp.extension.BurpApplication;
-import com.vmware.burp.extension.domain.Config;
-import com.vmware.burp.extension.domain.ConfigItem;
 import com.vmware.burp.extension.domain.HttpMessageList;
 import com.vmware.burp.extension.domain.ReportType;
-import com.vmware.burp.extension.utils.Utils;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,11 +30,12 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 import static org.junit.Assert.*;
 
@@ -43,162 +44,142 @@ import static org.junit.Assert.*;
 @WebAppConfiguration
 @IntegrationTest
 public class BurpClientIT {
-   private static final Logger log = LoggerFactory.getLogger(BurpClientIT.class);
-   private static final String PROXY_HOST = "localhost";
-   private static final int PROXY_PORT = 8080;
-   private static final String PROXY_SCHEME = "http";
-   private static final String TARGET_HOST = "www.vmware.com";
+    private static final Logger log = LoggerFactory.getLogger(BurpClientIT.class);
+    private static final String PROXY_HOST = "localhost";
+    private static final int PROXY_PORT = 8080;
+    private static final String PROXY_SCHEME = "http";
+    private static final String TARGET_HOST = "www.vmware.com";
 
-   private BurpClient burpClient;
+    private BurpClient burpClient;
 
-   @Value("${local.server.port}")
-   private int port;
+    @Value("${local.server.port}")
+    private int port;
 
-   @Before
-   public void setUp() {
-      burpClient = new BurpClient("http://localhost:" + port);
-   }
+    @Before
+    public void setUp() {
+        burpClient = new BurpClient("http://localhost:" + port);
+    }
 
-   @Test
-   public void testConfigurationMethods() {
-      JsonNode configJson = burpClient.getConfiguration();
-      assertNotNull(configJson);
-      assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
-      assertFalse(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
+    @Test
+    public void testConfigurationMethods() {
+        JsonNode configJson = burpClient.getConfiguration();
+        assertNotNull(configJson);
+        assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
+        assertFalse(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
 
-      ((ObjectNode) configJson.path("proxy").path("intercept_client_requests")).put("do_intercept", true);
-      burpClient.updateConfiguration(configJson);
+        ((ObjectNode) configJson.path("proxy").path("intercept_client_requests")).put("do_intercept", true);
+        burpClient.updateConfiguration(configJson);
 
-      configJson = burpClient.getConfiguration();
-      assertNotNull(configJson);
-      assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
-      assertTrue(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
+        configJson = burpClient.getConfiguration();
+        assertNotNull(configJson);
+        assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
+        assertTrue(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
 
-      ((ObjectNode) configJson.path("proxy").path("intercept_client_requests")).put("do_intercept", false);
-      burpClient.updateConfiguration(configJson);
+        ((ObjectNode) configJson.path("proxy").path("intercept_client_requests")).put("do_intercept", false);
+        burpClient.updateConfiguration(configJson);
 
-      configJson = burpClient.getConfiguration();
-      assertNotNull(configJson);
-      assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
-      assertFalse(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
-   }
+        configJson = burpClient.getConfiguration();
+        assertNotNull(configJson);
+        assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
+        assertFalse(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
+    }
 
-   @Test
-   public void testConfigMethods() {
-      Config config = burpClient.getConfig();
-      assertNotEquals(0, config.getConfiguration().size());
+    @Test
+    public void testGetProxyHistoryAndSiteMap() throws IOException {
+        HttpMessageList proxyHistory = burpClient.getProxyHistory();
+        assertEquals(0, proxyHistory.getHttpMessages().size());
 
-      Map<String, String> configMap = Utils.convertConfigurationListToMap(config);
-      assert configMap.containsKey("proxy.interceptresquests");
-      assertFalse(
-            Boolean
-                  .parseBoolean(configMap.get("proxy.interceptresquests")));
+        String urlString = "http://www.vmware.com";
 
-      List<ConfigItem> configItems = new ArrayList<>();
-      configItems.add(new ConfigItem("proxy.interceptresquests", String.valueOf(true)));
-      burpClient.updateConfig(new Config(configItems));
+        HttpMessageList siteMap = burpClient.getSiteMap(urlString);
+        assertEquals(0, siteMap.getHttpMessages().size());
 
-      config = burpClient.getConfig();
-      configMap.clear();
-      configMap = Utils.convertConfigurationListToMap(config);
+        sendRequestThruProxy();
 
-      assert configMap.containsKey("proxy.interceptresquests");
-      assertTrue(
-            Boolean
-                  .parseBoolean(configMap.get("proxy.interceptresquests")));
+        proxyHistory = burpClient.getProxyHistory();
+        assertEquals(2, proxyHistory.getHttpMessages().size());
 
-      configItems.clear();
-      configItems.add(new ConfigItem("proxy.interceptresquests", String.valueOf(false)));
-      burpClient.setConfig(new Config(configItems));
+        siteMap = burpClient.getSiteMap(urlString);
+        assertNotEquals(0, siteMap.getHttpMessages().size());
+    }
 
-      config = burpClient.getConfig();
-      configMap.clear();
-      configMap = Utils.convertConfigurationListToMap(config);
+    @Test
+    public void testScopeMethods() throws UnsupportedEncodingException {
+        String httpBaseUrl = "http://source.vmware.com";
+        String httpsBaseUrl = "https://source.vmware.com";
 
-      assert configMap.containsKey("proxy.interceptresquests");
-      assertFalse(
-            Boolean
-                  .parseBoolean(configMap.get("proxy.interceptresquests")));
-   }
+        assertFalse(burpClient.isInScope(httpBaseUrl));
+        assertFalse(burpClient.isInScope(httpsBaseUrl));
 
-   @Test
-   public void testGetProxyHistoryAndSiteMap() throws IOException {
-      HttpMessageList proxyHistory = burpClient.getProxyHistory();
-      assertEquals(0, proxyHistory.getHttpMessages().size());
+        burpClient.includeInScope(httpBaseUrl);
+        assertTrue(burpClient.isInScope(httpBaseUrl));
+        assertFalse(burpClient.isInScope(httpsBaseUrl));
 
-      String urlString = "http://www.vmware.com";
+        burpClient.includeInScope(httpsBaseUrl);
+        assertTrue(burpClient.isInScope(httpsBaseUrl));
 
-      HttpMessageList siteMap = burpClient.getSiteMap(urlString);
-      assertEquals(0, siteMap.getHttpMessages().size());
+        burpClient.excludeFromScope(httpBaseUrl);
+        burpClient.excludeFromScope(httpsBaseUrl);
+        assertFalse(burpClient.isInScope(httpBaseUrl));
+        assertFalse(burpClient.isInScope(httpsBaseUrl));
+    }
 
-      sendRequestThruProxy();
+    @Test
+    public void testScannerSpiderAndReportMethods() throws IOException, InterruptedException {
+        assertEquals(100, burpClient.getScannerStatus());
 
-      proxyHistory = burpClient.getProxyHistory();
-      assertEquals(1, proxyHistory.getHttpMessages().size());
+        String urlPrefix = "https://www.vmware.com";
+        //      assertEquals(0, burpClient.getScanIssues().getScanIssues().size());
+        //      assertEquals(0, burpClient.getScanIssues(urlPrefix).getScanIssues().size());
 
-      siteMap = burpClient.getSiteMap(urlString);
-      assertNotEquals(0, siteMap.getHttpMessages().size());
-   }
+        sendRequestThruProxy();
 
-   @Test
-   public void testScopeMethods() throws UnsupportedEncodingException {
-      String httpBaseUrl = "http://source.vmware.com";
-      String httpsBaseUrl = "https://source.vmware.com";
+        assertNotNull(burpClient.getReportData(ReportType.HTML));
+        assertNotNull(burpClient.getReportData(ReportType.XML));
 
-      assertFalse(burpClient.isInScope(httpBaseUrl));
-      assertFalse(burpClient.isInScope(httpsBaseUrl));
+        burpClient.includeInScope(urlPrefix);
+        burpClient.spider(urlPrefix);
+        burpClient.scan(urlPrefix);
+        assertNotEquals(100, burpClient.getScannerStatus());
+        Thread.sleep(4000);
+        assertNotEquals(0, burpClient.getScanIssues().getScanIssues().size());
+        assertNotEquals(0, burpClient.getScanIssues(urlPrefix).getScanIssues().size());
+        burpClient.excludeFromScope(urlPrefix);
+    }
 
-      burpClient.includeInScope(httpBaseUrl);
-      assertTrue(burpClient.isInScope(httpBaseUrl));
-      assertFalse(burpClient.isInScope(httpsBaseUrl));
+    private void sendRequestThruProxy() throws IOException {
 
-      burpClient.includeInScope(httpsBaseUrl);
-      assertTrue(burpClient.isInScope(httpsBaseUrl));
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContexts.custom().loadTrustMaterial((chain, authType) -> true).build();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
 
-      burpClient.excludeFromScope(httpBaseUrl);
-      burpClient.excludeFromScope(httpsBaseUrl);
-      assertFalse(burpClient.isInScope(httpBaseUrl));
-      assertFalse(burpClient.isInScope(httpsBaseUrl));
-   }
+        SSLConnectionSocketFactory sslConnectionSocketFactory =
+                new SSLConnectionSocketFactory(sslContext, new String[]
+                        {"SSLv2Hello", "SSLv3", "TLSv1","TLSv1.1", "TLSv1.2" }, null,
+                        NoopHostnameVerifier.INSTANCE);
 
-   @Test
-   public void testScannerSpiderAndReportMethods() throws IOException {
-      assertEquals(100, burpClient.getScannerStatus());
+        try (CloseableHttpClient httpClient = HttpClients.custom()
+                .setSSLSocketFactory(sslConnectionSocketFactory)
+                .build();) {
+            HttpHost target = new HttpHost(BurpClientIT.TARGET_HOST);
+            HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT, PROXY_SCHEME);
 
-      String urlPrefix = "http://www.vmware.com";
-      //      assertEquals(0, burpClient.getScanIssues().getScanIssues().size());
-      //      assertEquals(0, burpClient.getScanIssues(urlPrefix).getScanIssues().size());
+            RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+            HttpGet request = new HttpGet("/");
+            request.setConfig(config);
 
-      sendRequestThruProxy();
+            log.info("Executing request {} to {} via {} proxy", request.getRequestLine(),
+                    target.toString(), proxy.toString());
 
-      assertNotNull(burpClient.getReportData(ReportType.HTML));
-      assertNotNull(burpClient.getReportData(ReportType.XML));
+            httpClient.execute(target, request);
 
-      burpClient.includeInScope(urlPrefix);
-      burpClient.spider(urlPrefix);
-      burpClient.scan(urlPrefix);
-      assertNotEquals(100, burpClient.getScannerStatus());
-      assertNotEquals(0, burpClient.getScanIssues().getScanIssues().size());
-      assertNotEquals(0, burpClient.getScanIssues(urlPrefix).getScanIssues().size());
-      burpClient.excludeFromScope(urlPrefix);
-   }
-
-   private void sendRequestThruProxy() throws IOException {
-
-      try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-         HttpHost target = new HttpHost(BurpClientIT.TARGET_HOST);
-         HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT, PROXY_SCHEME);
-
-         RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-         HttpGet request = new HttpGet("/");
-         request.setConfig(config);
-
-         log.info("Executing request {} to {} via {} proxy", request.getRequestLine(),
-               target.toString(), proxy.toString());
-
-         httpClient.execute(target, request);
-
-      }
-   }
-
+        }
+    }
 }
