@@ -8,7 +8,6 @@ package com.vmware.burp.extension.web;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vmware.burp.extension.domain.Config;
 import com.vmware.burp.extension.domain.HttpMessageList;
 import com.vmware.burp.extension.domain.ReportType;
 import com.vmware.burp.extension.domain.ScanIssueList;
@@ -76,58 +75,6 @@ public class BurpController {
          throw new IllegalArgumentException("Required: Configuration in request body.");
       }
       burp.updateConfigFromJson(configAsJson);
-   }
-
-   // TODO: Remove this once Burp suite removes the saveConfig() API from interface files.
-   @Deprecated
-   @ApiOperation(value = "Get all the current Burp suite configuration", notes = "Complete current Burp suite configuration is returned.")
-   @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = Config.class),
-         @ApiResponse(code = 500, message = "Failure")
-   })
-   @RequestMapping(method = GET, value = "/config")
-   public Config getConfig() {
-      return burp.getConfig();
-   }
-
-   // TODO: Remove this once Burp suite removes the loadConfig() API from interface files.
-   @Deprecated
-   @ApiOperation(value = "Set new configuration in Burp suite", notes = "Current Burp suite configuration is overwritten with given configuration.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "config", value = "New configuration to set.", required = true, dataType = "Config", paramType = "body")
-   })
-   @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 500, message = "Failure")
-   })
-   @RequestMapping(method = POST, value = "/config")
-   public void setConfig(@RequestBody Config config) {
-      if (config == null) {
-         throw new IllegalArgumentException("Required: Configuration in request body.");
-      }
-
-      burp.setConfig(config);
-   }
-
-   // TODO: Remove this once Burp suite removes the loadConfig() API from interface files.
-   @Deprecated
-   @ApiOperation(value = "Update current configuration in Burp suite", notes = "Current Burp suite configuration is updated with given configuration.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "config", value = "Configuration to modify.", required = true, dataType = "Config", paramType = "body")
-   })
-   @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 500, message = "Failure")
-   })
-   @RequestMapping(method = PUT, value = "/config")
-   public void updateConfig(@RequestBody Config config) {
-      if (config == null) {
-         throw new IllegalArgumentException("Required: Configuration in request body.");
-      }
-
-      burp.updateConfig(config);
    }
 
    @ApiOperation(value = "Get Burp suite Proxy History", notes = "Returns details of items in Burp Suite Proxy history.")
@@ -327,14 +274,6 @@ public class BurpController {
       }
 
       burp.sendToSpider(baseUrl);
-   }
-
-   @ApiOperation(value = "Clean Burp state", notes = "This will restore Burp's state with an empty one.")
-   @RequestMapping(method = GET, value = "/reset")
-   public void resetState(){
-      File emptyState = new File("../../src/main/resources/cleanstate");
-      burp.restoreState(emptyState);
-      log.info("Burp state is reset to clean");
    }
 
    @ApiOperation(value = "Stop Burp Suite", notes = "This will exit Burp Suite. Use with caution: the API will not work after this endpoint has been called. You have to restart Burp from command-line to re-enable te API.")

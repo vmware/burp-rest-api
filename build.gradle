@@ -15,7 +15,7 @@ apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 
 String BURP_REST_EXTENSION_JAR_NAME = 'burp-rest-api'
-String BURP_REST_EXTENSION_JAR_VERSION = '1.0.0'
+String BURP_REST_EXTENSION_JAR_VERSION = '1.0.1'
 
 jar {
     baseName = BURP_REST_EXTENSION_JAR_NAME
@@ -39,10 +39,12 @@ File schemaTargetDir = new File('build/generated-schema')
 
 configurations {
   jaxb
+    compile.exclude module: "spring-boot-starter-tomcat"
 }
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile("org.springframework.boot:spring-boot-starter-jetty")
     compile fileTree(dir: 'lib', include: '**/*.jar')
     compile "io.springfox:springfox-swagger2:2.+"
     compile "io.springfox:springfox-swagger-ui:2.+"

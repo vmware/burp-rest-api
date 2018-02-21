@@ -10,13 +10,8 @@ import burp.BurpExtender;
 import burp.IHttpRequestResponse;
 import burp.IScanIssue;
 import burp.IScanQueueItem;
-import com.vmware.burp.extension.domain.Config;
-import com.vmware.burp.extension.domain.ConfigItem;
-import com.vmware.burp.extension.domain.HttpMessage;
-import com.vmware.burp.extension.domain.ReportType;
-import com.vmware.burp.extension.domain.ScanIssue;
+import com.vmware.burp.extension.domain.*;
 import com.vmware.burp.extension.domain.internal.ScanQueueMap;
-import com.vmware.burp.extension.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +31,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class BurpService {
@@ -114,31 +108,6 @@ public class BurpService {
    public void updateConfigFromJson(String configJson) {
       log.info("Updating the Burp Configuration...");
       BurpExtender.getInstance().getCallbacks().loadConfigFromJson(configJson);
-   }
-
-   public Config getConfig() {
-      Map<String, String> configMap = BurpExtender.getInstance().getCallbacks().saveConfig();
-
-      List<ConfigItem> configItems = new ArrayList<>();
-      for (String property : configMap.keySet()) {
-         ConfigItem configItem = new ConfigItem(property, configMap.get(property));
-         configItems.add(configItem);
-      }
-      return new Config(configItems);
-   }
-
-   public void setConfig(Config config) {
-      log.info("Setting the Burp Configuration");
-      Map<String, String> configMap = Utils.convertConfigurationListToMap(config);
-      BurpExtender.getInstance().getCallbacks().loadConfig(configMap);
-   }
-
-   public void updateConfig(Config config) {
-      Map<String, String> existingConfiguration = BurpExtender.getInstance().getCallbacks()
-            .saveConfig();
-      existingConfiguration.putAll(Utils.convertConfigurationListToMap(config));
-      log.info("Updating the Burp Configuration");
-      BurpExtender.getInstance().getCallbacks().loadConfig(existingConfiguration);
    }
 
    public List<HttpMessage> getProxyHistory() {
@@ -237,11 +206,6 @@ public class BurpService {
    public void sendToSpider(String baseUrl) throws MalformedURLException {
       URL url = new URL(baseUrl);
       BurpExtender.getInstance().getCallbacks().sendToSpider(url);
-   }
-
-   public void restoreState(File state) {
-      log.info("Restoring state by replacing state with a new state");
-      BurpExtender.getInstance().getCallbacks().restoreState(state);
    }
 
    public void exitSuite(boolean promptUser) {
