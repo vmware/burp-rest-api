@@ -1,26 +1,58 @@
-# =============================
-# Gradle
-# =============================
-.gradle
-
-# =============================
-# IntelliJ
-# =============================
-*.iml
-.idea
-
-# =============================
-# Burp
-# =============================
-lib/burpsuite_pro_*.jar
-lib/burpsuite_free_*.jar
-
-build/
-**/.DS_Store
-/bin/
-
 # MergeTool
 *.orig
 
 # Profile files
 .profile
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+#Ant, Gradle specific
+dist/
+build/
+build.xml
+.gradle
+
+#Netbeans specific
+core
+nbproject/*
+libs/*
+lib/*
+manifest.mf
+.jacocoverage/
+coverage/
+src/
+bin/
+
+#Java specific
+*.class
+
+#General swap/backup files
+*.so
+*.log
+*.out
+*~
+*.swp
+*.DS_Store
+*.lock
+
+#Idea specific
+.classpath
+.project
+.settings
+.idea
+.metadata
+*.iml
+*.ipr
+**/*~
+/target/
+
+# Burp suite specific
+lib/burpsuite_pro*.jar
+lib/burpsuite_free*.jar
+lib/burpsuite_community*.jar
