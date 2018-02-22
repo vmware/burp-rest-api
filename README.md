@@ -80,11 +80,11 @@ or
 
 With the executable JAR:
 ```
-    java -jar burp-rest-api-1.0.0.jar --server.port=8081
+    java -jar burp-rest-api-1.0.2.jar --server.port=8081
 ```
 or
 ```
-    java -jar burp-rest-api-1.0.0.jar --port=8081
+    java -jar burp-rest-api-1.0.2.jar --port=8081
 ```
 
 ### Command Line Arguments
