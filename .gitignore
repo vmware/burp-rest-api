@@ -17,16 +17,8 @@ dist/
 build/
 build.xml
 .gradle
-
-#Netbeans specific
-core
-nbproject/*
 libs/*
 lib/*
-manifest.mf
-.jacocoverage/
-coverage/
-src/
 bin/
 
 #Java specific
