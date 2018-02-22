@@ -8,11 +8,7 @@ package com.vmware.burp.extension.web;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vmware.burp.extension.domain.HttpMessageList;
-import com.vmware.burp.extension.domain.ReportType;
-import com.vmware.burp.extension.domain.ScanIssueList;
-import com.vmware.burp.extension.domain.ScanProgress;
-import com.vmware.burp.extension.domain.ScopeItem;
+import com.vmware.burp.extension.domain.*;
 import com.vmware.burp.extension.service.BurpService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -32,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.File;
 import java.net.MalformedURLException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -48,6 +43,18 @@ public class BurpController {
    public BurpController() {
    }
 
+   @ApiOperation(value = "Get the version of Burp and the version of the burp-rest-api Extension", notes = "Returns a JSON containing the Burp version and the extension version.")
+   @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "Success", response = Versions.class),
+           @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = GET, value = "/versions")
+   public Versions getVersions() {
+      Versions runningVersions = new Versions();
+      runningVersions.setBurpVersion(burp.getBurpVersion());
+      runningVersions.setExtensionVersion(burp.getVersion());
+      return runningVersions;
+   }
 
    @ApiOperation(value = "Get Burp suite project-level configuration", notes = "Burp suite project-level configuration is returned as JSON.")
    @ApiResponses(value = {

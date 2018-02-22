@@ -14,7 +14,7 @@ Upon successfully building the project, an executable JAR file is created with t
 
 * Java 8
 * Gradle
-* Licensed Burp Suite Professional version 1.7.03 or later from: <http://portswigger.net/burp/>
+* Licensed Burp Suite Professional version 1.7.x or later from: <http://portswigger.net/burp/>
 
 
 ### Build & Run
@@ -35,8 +35,8 @@ or
     # build the jar (note that testing phase will fail if you provide free edition jar in ./lib)
     gradlew clean build
     # and run it
-    java -jar build/libs/burp-rest-api-1.0.0.jar # for pro edition, or
-    java -jar build/libs/burp-rest-api-1.0.0.jar --burp.edition=free # for free edition
+    java -jar build/libs/burp-rest-api-1.0.2.jar # for pro edition, or
+    java -jar build/libs/burp-rest-api-1.0.2.jar --burp.edition=free # for free edition
 ```
 The version number of the JAR should match the version number from `build.gradle` while generating the JAR.
 
@@ -44,8 +44,7 @@ The version number of the JAR should match the version number from `build.gradle
 
 ### Configuration
 
-By default, Burp is launched in headless mode with the Proxy running on port 8080 and the REST endpoint running on
- 8090.
+By default, Burp is launched in headless mode with the Proxy running on port 8080/tcp and the REST endpoint running on 8090/tcp.
 
 To __run Burp in UI mode__ from the command line, use one of the following commands:
 
@@ -60,11 +59,11 @@ or
 
 With the executable JAR:
 ```
-    java -jar burp-rest-api-1.0.0.jar -Djava.awt.headless=false
+    java -jar burp-rest-api-1.0.2.jar -Djava.awt.headless=false
 ```
 or
 ```
-    java -jar burp-rest-api-1.0.0.jar --headless.mode=false
+    java -jar burp-rest-api-1.0.2.jar --headless.mode=false
 ```
 
 
@@ -105,8 +104,11 @@ Command line arguments passed to the executable burp-rest-api JAR are forwarded 
 `--project-file=<filename>` : Opens the specified project file. The file will be created as a new project if it doesn't
  exist already.
 
-`--config-file=<filename>` : Opens the project using the options contained in the selected Burp configuration file. To
- load multiple configurations, this argument can be passed more than once with different values.
+`--config-file=<filename>` : Opens the project using the options contained in the selected project configuration file. To
+ load multiple project configurations, this argument can be passed more than once with different values.
+ 
+ `--user-config-file=<filename>` : Opens the project using the options contained in the selected user configuration file. To
+  load multiple user configurations, this argument can be passed more than once with different values.
 
 For more information on Projects, refer to the Burp Suite documentation
  [here](https://portswigger.net/burp/help/suite_burp_projects.html).
@@ -114,12 +116,12 @@ For more information on Projects, refer to the Burp Suite documentation
 
 ### Default Burp Configuration ###
 
-If the burp-rest-api JAR is launched without the `--project-file` and `--config-file` arguments, then Burp Suite is
+If the burp-rest-api JAR is launched without the `--project-file`, `--config-file` or `--user-config-file` arguments, then Burp Suite is
  launched with a temporary project file and some default configuration. The temporary project file gets created upon
  launch of Burp Suite, and gets deleted at the end of the run.
 
 For the default configuration used to launch Burp Suite, refer to the files _burp-default-project-options.json_ and
- _burp-default-user-options.json_ inside the JAR under the _static_ folder.
+_burp-default-user-options.json_ inside the JAR under the _static_ folder.
 
 ### HTTP API
 

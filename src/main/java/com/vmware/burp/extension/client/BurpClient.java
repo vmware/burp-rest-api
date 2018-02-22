@@ -135,7 +135,7 @@ public class BurpClient {
       return restTemplate.getForObject(uriString, ScanIssueList.class);
    }
 
-   public byte[] getReportData(ReportType reportType) throws IOException {
+   public byte[] getReportData(ReportType reportType) {
       String uriString = buildUriFromPathSegments("burp", "report");
       URI uri = UriComponentsBuilder.fromUriString(uriString).queryParam("reportType", reportType)
             .build().toUri();

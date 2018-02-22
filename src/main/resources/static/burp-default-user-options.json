@@ -39,20 +39,9 @@
             }
         },
         "extender":{
-            "extensions":[
-                {
-                    "bapp_serial_version":4,
-                    "bapp_uuid":"371cebe47d8d4049a92dc03b66e1105f",
-                    "errors":"ui",
-                    "extension_file":"bapps/371cebe47d8d4049a92dc03b66e1105f/burp_csj.jar",
-                    "extension_type":"java",
-                    "loaded":false,
-                    "name":"Burp CSJ",
-                    "output":"ui"
-                }
-            ],
+            "extensions":[],
             "java":{
-                "folder_for_loading_library_jar_files":"/Users/dmettem/Projects/vr-burp-rest-extension/tmp/exploded"
+                "folder_for_loading_library_jar_files":""
             },
             "python":{
                 "folder_for_loading_modules":"",
@@ -62,10 +51,18 @@
                 "location_of_jruby_jar_file":""
             },
             "settings":{
-                "automatically_reload_extensions_on_startup":true
+                "automatically_reload_extensions_on_startup":true,
+                "automatically_update_bapps_on_startup":true
             }
         },
         "misc":{
+            "automatic_project_backup":{
+                "delete_on_shutdown":true,
+                "enabled":true,
+                "in_scope_only":false,
+                "interval":30,
+                "show_progress":true
+            },
             "enable_proxy_interception_at_startup":"always",
             "hotkeys":[
                 {
@@ -241,8 +238,19 @@
                     "hotkey":"Ctrl+Shift+End"
                 }
             ],
+            "out_of_scope_history_logging_action":"prompt",
             "submit_anonymous_feedback":true,
             "temporary_files_location":""
+        },
+        "proxy":{
+            "http_history":{
+                "sort_column":"#",
+                "sort_order":"ascending"
+            },
+            "websockets_history":{
+                "sort_column":"#",
+                "sort_order":"ascending"
+            }
         },
         "repeater":{
             "view":"left_right_split"
