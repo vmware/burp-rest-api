@@ -85,7 +85,7 @@ public class BurpClientIT {
     }
 
     @Test
-    public void testGetProxyHistoryAndSiteMap() throws IOException {
+    public void testGetProxyHistoryAndSiteMap() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         HttpMessageList proxyHistory = burpClient.getProxyHistory();
         assertEquals(0, proxyHistory.getHttpMessages().size());
 
@@ -97,7 +97,7 @@ public class BurpClientIT {
         sendRequestThruProxy();
 
         proxyHistory = burpClient.getProxyHistory();
-        assertEquals(2, proxyHistory.getHttpMessages().size());
+        assertNotEquals(0, proxyHistory.getHttpMessages().size());
 
         siteMap = burpClient.getSiteMap(urlString);
         assertNotEquals(0, siteMap.getHttpMessages().size());
@@ -125,12 +125,10 @@ public class BurpClientIT {
     }
 
     @Test
-    public void testScannerSpiderAndReportMethods() throws IOException, InterruptedException {
+    public void testScannerSpiderAndReportMethods() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         assertEquals(100, burpClient.getScannerStatus());
 
         String urlPrefix = "https://www.vmware.com";
-        //      assertEquals(0, burpClient.getScanIssues().getScanIssues().size());
-        //      assertEquals(0, burpClient.getScanIssues(urlPrefix).getScanIssues().size());
 
         sendRequestThruProxy();
 
@@ -147,22 +145,14 @@ public class BurpClientIT {
         burpClient.excludeFromScope(urlPrefix);
     }
 
-    private void sendRequestThruProxy() throws IOException {
+    private void sendRequestThruProxy() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
         SSLContext sslContext = null;
-        try {
-            sslContext = SSLContexts.custom().loadTrustMaterial((chain, authType) -> true).build();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        }
+        sslContext = SSLContexts.custom().loadTrustMaterial((chain, authType) -> true).build();
 
         SSLConnectionSocketFactory sslConnectionSocketFactory =
                 new SSLConnectionSocketFactory(sslContext, new String[]
-                        {"SSLv2Hello", "SSLv3", "TLSv1","TLSv1.1", "TLSv1.2" }, null,
+                        {"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"}, null,
                         NoopHostnameVerifier.INSTANCE);
 
         try (CloseableHttpClient httpClient = HttpClients.custom()

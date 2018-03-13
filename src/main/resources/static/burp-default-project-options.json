@@ -3,29 +3,9 @@
         "connections":{
             "hostname_resolution":[],
             "out_of_scope_requests":{
+                "advanced_mode":false,
                 "drop_all_out_of_scope":false,
-                "exclude":[
-                    {
-                        "enabled":true,
-                        "file":"logout",
-                        "protocol":"any"
-                    },
-                    {
-                        "enabled":true,
-                        "file":"logoff",
-                        "protocol":"any"
-                    },
-                    {
-                        "enabled":true,
-                        "file":"exit",
-                        "protocol":"any"
-                    },
-                    {
-                        "enabled":true,
-                        "file":"signout",
-                        "protocol":"any"
-                    }
-                ],
+                "exclude":[],
                 "include":[],
                 "scope_option":"suite"
             },
@@ -68,6 +48,7 @@
                 "understand_100_continue_responses":true
             },
             "streaming_responses":{
+                "scope_advanced_mode":false,
                 "store":true,
                 "strip_chunked_encoding_metadata":true,
                 "urls":[]
@@ -79,6 +60,28 @@
                 "poll_over_unencrypted_http":false,
                 "polling_location":"",
                 "type":"default"
+            },
+            "logging":{
+                "requests":{
+                    "all_tools":"",
+                    "extender":"",
+                    "intruder":"",
+                    "proxy":"",
+                    "repeater":"",
+                    "scanner":"",
+                    "sequencer":"",
+                    "spider":""
+                },
+                "responses":{
+                    "all_tools":"",
+                    "extender":"",
+                    "intruder":"",
+                    "proxy":"",
+                    "repeater":"",
+                    "scanner":"",
+                    "sequencer":"",
+                    "spider":""
+                }
             },
             "scheduled_tasks":{
                 "tasks":[]
@@ -117,7 +120,8 @@
                             "Spider",
                             "Scanner"
                         ],
-                        "url_scope":"all"
+                        "url_scope":"all",
+                        "url_scope_advanced_mode":false
                     }
                 ]
             }
@@ -130,6 +134,7 @@
             "negotiation":{
                 "allow_unsafe_renegotiation":false,
                 "automatically_select_compatible_ssl_parameters_on_failure":true,
+                "disable_ssl_session_resume":false,
                 "enabled_ciphers":[],
                 "enabled_protocols":[],
                 "use_platform_default_protocols_and_ciphers":true
@@ -336,7 +341,7 @@
             {
                 "comment":"Add spoofed CORS origin",
                 "enabled":false,
-                "is_simple_match":false,
+                "is_simple_match":true,
                 "rule_type":"request_header",
                 "string_replace":"Origin: foo.example.org"
             },
@@ -350,18 +355,20 @@
             {
                 "comment":"Disable browser XSS protection",
                 "enabled":false,
-                "is_simple_match":false,
+                "is_simple_match":true,
                 "rule_type":"response_header",
                 "string_replace":"X-XSS-Protection: 0"
             }
         ],
         "miscellaneous":{
-            "allow_requests_to_web_interface_using_fully_qualified_dns_hostnames":false,
             "disable_logging_to_history_and_site_map":false,
+            "disable_out_of_scope_logging_to_history_and_site_map":false,
             "disable_web_interface":false,
+            "remove_unsupported_encodings_from_accept_encoding_headers_in_incoming_requests":true,
             "set_connection_close_header_on_requests":true,
             "set_connection_close_header_on_responses":false,
             "strip_proxy_headers_in_incoming_requests":true,
+            "strip_sec_websocket_extensions_headers_in_incoming_requests":true,
             "suppress_burp_error_messages_in_browser":false,
             "unpack_gzip_deflate_in_requests":false,
             "unpack_gzip_deflate_in_responses":true,
@@ -419,44 +426,11 @@
         "update_content_length":true
     },
     "scanner":{
-        "active_scanning_areas":{
-            "csrf":true,
-            "external_interaction":true,
-            "file_path_traversal":true,
-            "header_manipulation":true,
-            "http_header_injection":true,
-            "input_retrieval_reflected":false,
-            "input_retrieval_stored":false,
-            "ldap_injection":true,
-            "open_redirection":true,
-            "os_command_injection":{
-                "blind_checks":true,
-                "enabled":true,
-                "informed_checks":true
-            },
-            "reflected_dom_issues":true,
-            "reflected_xss":true,
-            "server_level_issues":true,
-            "server_side_code_injection":true,
-            "server_side_template_injection":true,
-            "sql_injection":{
-                "boolean_condition_checks":true,
-                "enabled":true,
-                "error_based_checks":true,
-                "mssql_checks":true,
-                "mysql_checks":true,
-                "oracle_checks":true,
-                "time_delay_checks":true
-            },
-            "stored_dom_issues":true,
-            "stored_xss":true,
-            "xml_soap_injection":true
-        },
         "active_scanning_engine":{
+            "concurrent_request_limit":10,
             "do_throttle":false,
             "follow_redirects":true,
             "number_of_retries_on_failure":3,
-            "number_of_threads":10,
             "pause_before_retry_on_failure":2000,
             "throttle_interval":500,
             "throttle_random":false
@@ -566,69 +540,25 @@
             "use_nested_insertion_points":true
         },
         "live_active_scanning":{
-            "exclude":[
-                {
-                    "enabled":true,
-                    "file":"logout",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"logoff",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"exit",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"signout",
-                    "protocol":"any"
-                }
-            ],
+            "advanced_mode":false,
+            "exclude":[],
             "include":[],
             "scope_option":"nothing"
         },
         "live_passive_scanning":{
-            "exclude":[
-                {
-                    "enabled":true,
-                    "file":"logout",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"logoff",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"exit",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"signout",
-                    "protocol":"any"
-                }
-            ],
+            "advanced_mode":false,
+            "exclude":[],
             "include":[],
             "scope_option":"everything"
         },
-        "passive_scanning_areas":{
-            "asp_net_viewstate":true,
-            "caching":true,
-            "cookies":true,
-            "forms":true,
-            "frameable_responses":true,
-            "headers":true,
-            "information_disclosure":true,
-            "links":true,
-            "mime_type":true,
-            "parameters":true,
-            "server_level_issues":true
+        "scan_issues":{
+            "scan_type_intrusive_active":true,
+            "scan_type_light_active":true,
+            "scan_type_medium_active":true,
+            "scan_type_passive":true,
+            "scan_type_static_code_analysis":true,
+            "select_individual_issues":false,
+            "selected_issues":[]
         },
         "scan_queue":{
             "hide_finished_items":false
@@ -836,28 +766,8 @@
             "use_referer":true
         },
         "scope":{
-            "exclude":[
-                {
-                    "enabled":true,
-                    "file":"logout",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"logoff",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"exit",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"signout",
-                    "protocol":"any"
-                }
-            ],
+            "advanced_mode":false,
+            "exclude":[],
             "include":[],
             "scope_option":"suite"
         }
@@ -918,28 +828,8 @@
             }
         },
         "scope":{
-            "exclude":[
-                {
-                    "enabled":true,
-                    "file":"logout",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"logoff",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"exit",
-                    "protocol":"any"
-                },
-                {
-                    "enabled":true,
-                    "file":"signout",
-                    "protocol":"any"
-                }
-            ],
+            "advanced_mode":false,
+            "exclude":[],
             "include":[]
         }
     }
