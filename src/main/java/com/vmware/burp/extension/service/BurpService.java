@@ -182,11 +182,14 @@ public class BurpService {
             for (IHttpRequestResponse iHttpRequestResponse : siteMapInScope) {
                 URL url = BurpExtender.getInstance().getHelpers().analyzeRequest(iHttpRequestResponse)
                         .getUrl();
+                if(url.getPort() == url.getDefaultPort()) {
+                    url = new URL(url.getProtocol(), url.getHost(), url.getFile());
+                }
                 if (url.toExternalForm().startsWith(baseUrl)) {
                     boolean useHttps = url.getProtocol().equalsIgnoreCase("HTTPS");
                     log.debug("Submitting Active Scan for the URL {}", url.toExternalForm());
                     IScanQueueItem iScanQueueItem = BurpExtender.getInstance().getCallbacks()
-                            .doActiveScan(url.getHost(), url.getPort(), useHttps,
+                            .doActiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
                                     iHttpRequestResponse.getRequest());
                     scans.addItem(url.toExternalForm(), iScanQueueItem);
                 }
