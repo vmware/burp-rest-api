@@ -66,7 +66,9 @@ public class ScanQueueMap {
       int totalPercentCompletion = 0;
       for (String url : map.keySet()) {
          for (IScanQueueItem iScanQueueItem : getQueue(url)) {
-            if(!iScanQueueItem.getStatus().equalsIgnoreCase("cancelled")) {
+            if (iScanQueueItem.getStatus().equalsIgnoreCase("cancelled") || iScanQueueItem.getStatus().contains("abandoned")) {
+               log.info("Scan Queue Item 'cancelled' or 'abandoned'");
+            } else {
                numberOfScans++;
                totalPercentCompletion += iScanQueueItem.getPercentageComplete();
             }
