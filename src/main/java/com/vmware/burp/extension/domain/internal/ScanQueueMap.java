@@ -70,8 +70,12 @@ public class ScanQueueMap {
             totalPercentCompletion += iScanQueueItem.getPercentageComplete();
          }
       }
-      int percentComplete = totalPercentCompletion / numberOfScans;
-      log.info("Scan Percent Complete: {}", percentComplete);
-      return percentComplete;
+      if(totalPercentCompletion > 0) {
+         int percentComplete = totalPercentCompletion / numberOfScans;
+         log.info("Scan Percent Complete: {}", percentComplete);
+         return percentComplete;
+      }else{
+         return 0;
+      }
    }
 }
