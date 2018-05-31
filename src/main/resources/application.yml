@@ -7,4 +7,4 @@ headless:
 burp:
   edition: pro
 
-build.version: 1.0.2
+build.version: 1.0.3

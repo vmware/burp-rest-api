@@ -66,12 +66,20 @@ public class ScanQueueMap {
       int totalPercentCompletion = 0;
       for (String url : map.keySet()) {
          for (IScanQueueItem iScanQueueItem : getQueue(url)) {
-            numberOfScans++;
-            totalPercentCompletion += iScanQueueItem.getPercentageComplete();
+            if (iScanQueueItem.getStatus().equalsIgnoreCase("cancelled") || iScanQueueItem.getStatus().contains("abandoned")) {
+               log.info("Scan Queue Item 'cancelled' or 'abandoned'");
+            } else {
+               numberOfScans++;
+               totalPercentCompletion += iScanQueueItem.getPercentageComplete();
+            }
          }
       }
-      int percentComplete = totalPercentCompletion / numberOfScans;
-      log.info("Scan Percent Complete: {}", percentComplete);
-      return percentComplete;
+      if(totalPercentCompletion > 0) {
+         int percentComplete = totalPercentCompletion / numberOfScans;
+         log.info("Scan Percent Complete: {}", percentComplete);
+         return percentComplete;
+      }else{
+         return 0;
+      }
    }
 }

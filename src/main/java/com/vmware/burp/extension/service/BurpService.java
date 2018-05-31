@@ -14,6 +14,7 @@ import com.vmware.burp.extension.domain.HttpMessage;
 import com.vmware.burp.extension.domain.ReportType;
 import com.vmware.burp.extension.domain.ScanIssue;
 import com.vmware.burp.extension.domain.internal.ScanQueueMap;
+import com.vmware.burp.extension.domain.internal.SpiderQueueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class BurpService {
     private static final String USER_CONFIG_FILE_ARGUMENT = "--" + USER_CONFIG_FILE + "=";
     private static final String TEMPORARY_PROJECT_FILE_NAME = "temp-project.burp";
     private ScanQueueMap scans;
+    private SpiderQueueMap spiders;
 
     @Value("${java.awt.headless}")
     private boolean awtHeadLessMode;
@@ -106,6 +108,7 @@ public class BurpService {
         burp.StartBurp.main(burpOptions);
 
         scans = new ScanQueueMap();
+        spiders = new SpiderQueueMap(3000);
     }
 
     private String generateProjectOptionsTempFile() throws IOException {
@@ -171,14 +174,14 @@ public class BurpService {
         return httpMessageList;
     }
 
-    public boolean scan(String baseUrl)
+    public boolean scan(String baseUrl, boolean isActive)
             throws MalformedURLException {
         boolean inScope = isInScope(baseUrl);
         log.info("Total SiteMap size: {}", BurpExtender.getInstance().getCallbacks().getSiteMap("").length);
         log.info("Is {} in Scope: {}", baseUrl, inScope);
         if (inScope) {
             IHttpRequestResponse[] siteMapInScope = BurpExtender.getInstance().getCallbacks().getSiteMap(baseUrl);
-            log.info("Number of URLs submitting for Active Scan: {}", siteMapInScope.length);
+            log.info("Number of URLs submitting for Active/Passive Scan: {}", siteMapInScope.length);
             for (IHttpRequestResponse iHttpRequestResponse : siteMapInScope) {
                 URL url = BurpExtender.getInstance().getHelpers().analyzeRequest(iHttpRequestResponse)
                         .getUrl();
@@ -187,11 +190,22 @@ public class BurpService {
                 }
                 if (url.toExternalForm().startsWith(baseUrl)) {
                     boolean useHttps = url.getProtocol().equalsIgnoreCase("HTTPS");
-                    log.debug("Submitting Active Scan for the URL {}", url.toExternalForm());
-                    IScanQueueItem iScanQueueItem = BurpExtender.getInstance().getCallbacks()
-                            .doActiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
-                                    iHttpRequestResponse.getRequest());
-                    scans.addItem(url.toExternalForm(), iScanQueueItem);
+                    if(isActive) {
+                        //Trigger Burp's Active Scan
+                        log.debug("Submitting Active Scan for the URL {}", url.toExternalForm());
+                        IScanQueueItem iScanQueueItem = BurpExtender.getInstance().getCallbacks()
+                                .doActiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
+                                        iHttpRequestResponse.getRequest());
+                        scans.addItem(url.toExternalForm(), iScanQueueItem);
+                    }else{
+                        //Trigger Burp's Passive Scan
+                        log.debug("Submitting Passive Scan for the URL {}", url.toExternalForm());
+                        if (iHttpRequestResponse.getResponse() != null) {
+                            BurpExtender.getInstance().getCallbacks()
+                                    .doPassiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
+                                            iHttpRequestResponse.getRequest(), iHttpRequestResponse.getResponse());
+                        }
+                    }
                 }
             }
             return true;
@@ -253,14 +267,20 @@ public class BurpService {
         return Files.readAllBytes(reportFile);
     }
 
-    public int getPercentageComplete() {
-        log.info("Getting percentage complete.");
+    public int getScanPercentageComplete() {
+        log.info("Getting Scanner percentage complete.");
         return scans.getPercentageComplete();
+    }
+
+    public int getSpiderPercentageComplete() {
+        log.info("Estimate Spider percentage complete.");
+        return spiders.getPercentageComplete();
     }
 
     public void sendToSpider(String baseUrl) throws MalformedURLException {
         URL url = new URL(baseUrl);
         BurpExtender.getInstance().getCallbacks().sendToSpider(url);
+        spiders.addItem(url.toString(),BurpExtender.getInstance().getCallbacks().getSiteMap(url.toString()));
     }
 
     public void exitSuite(boolean promptUser) {

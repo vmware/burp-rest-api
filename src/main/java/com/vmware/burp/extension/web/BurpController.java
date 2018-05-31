@@ -166,6 +166,32 @@ public class BurpController {
       burp.excludeFromScope(url);
    }
 
+   @ApiOperation(value = "Send a base url to Burp Scanner to perform a passive scan", notes = "Scans through Burp Sitemap and sends all HTTP requests/responses with url starting with baseUrl to Burp Scanner for passive scan.")
+   @ApiImplicitParams({
+           @ApiImplicitParam(name = "baseUrl", value = "Base Url to submit for Passive scan.", required = true, dataType = "string", paramType = "query")
+   })
+   @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "Success"),
+           @ApiResponse(code = 400, message = "Bad Request"),
+           @ApiResponse(code = 409, message = "Conflict"),
+           @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = POST, value = "/scanner/scans/passive")
+   public void scanPassive(@RequestParam(value = "baseUrl") String baseUrl)
+           throws MalformedURLException {
+      if (StringUtils.isEmpty(baseUrl)) {
+         throw new IllegalArgumentException("The 'baseUrl' parameter in payload must not be null or empty.");
+      }
+
+      boolean inScope = burp.isInScope(baseUrl);
+      log.info("Is {} in Scope: {}", baseUrl, inScope);
+      if (!inScope) {
+         log.info("Scan is NOT performed as the {} URL is not in scope.", baseUrl);
+         throw new IllegalStateException("The 'baseUrl' is NOT in scope. Set the 'baseUrl' scope to true before retry.");
+      }
+
+      burp.scan(baseUrl,false);
+   }
 
    @ApiOperation(value = "Send a base url to Burp Scanner to perform active scan", notes = "Scans through Burp Sitemap and sends all HTTP requests with url starting with baseUrl to Burp Scanner for active scan.")
    @ApiImplicitParams({
@@ -178,7 +204,7 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = POST, value = "/scanner/scans/active")
-   public void scan(@RequestParam(value = "baseUrl") String baseUrl)
+   public void scanActive(@RequestParam(value = "baseUrl") String baseUrl)
          throws MalformedURLException {
       if (StringUtils.isEmpty(baseUrl)) {
          throw new IllegalArgumentException("The 'baseUrl' parameter in payload must not be null or empty.");
@@ -191,7 +217,7 @@ public class BurpController {
          throw new IllegalStateException("The 'baseUrl' is NOT in scope. Set the 'baseUrl' scope to true before retry.");
       }
 
-      burp.scan(baseUrl);
+      burp.scan(baseUrl,true);
    }
 
    @ApiOperation(value = "Deletes the active scan queue map from memory", notes = "Deletes the scan queue map from memory, not from Burp suite UI.")
@@ -250,11 +276,23 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/scanner/status")
-   public ScanProgress percentComplete() {
+   public ScanProgress scanPercentComplete() {
       ScanProgress scanProgress = new ScanProgress();
-      scanProgress.setTotalScanPercentage(burp.getPercentageComplete());
+      scanProgress.setTotalScanPercentage(burp.getScanPercentageComplete());
       return scanProgress;
    }
+
+    @ApiOperation(value = "Get the status of the spider", notes = "Returns an estimate of the current status of the spider. Due to the current limitations in Burp's Extender API, this endpoint will return 100% whenever the spider is no longer discovering new resources. On newer Burp APIs, we expect to be able to provide discrete values.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SpiderProgress.class),
+            @ApiResponse(code = 500, message = "Failure")
+    })
+    @RequestMapping(method = GET, value = "/spider/status")
+    public SpiderProgress spiderPercentComplete() {
+        SpiderProgress spiderProgress = new SpiderProgress();
+        spiderProgress.setTotalSpiderPercentage(burp.getSpiderPercentageComplete());
+        return spiderProgress;
+    }
 
    @ApiOperation(value = "Send a seed url to Burp Spider", notes = "Sends a seed URL to the Burp Spider tool. The baseUrl should be in Suite-wide scope for the Spider to run..")
    @ApiImplicitParams({
