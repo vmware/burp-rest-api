@@ -7,11 +7,16 @@
 package com.vmware.burp.extension.domain;
 
 import burp.BurpExtender;
+import burp.ICookie;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
+import burp.IParameter;
+import burp.IRequestInfo;
+import burp.IResponseInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,6 +24,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonIgnoreProperties(value = { "request", "response" })
 @XmlRootElement
@@ -53,6 +60,21 @@ public class HttpMessage {
    @XmlElement(required = true)
    private String highlight;
 
+   @XmlElement(required = true)
+   private String method;
+
+   @JsonProperty("responseHeaders")
+   @XmlElement(required = true)
+   private List<String> responseHeaders = new ArrayList<String>();
+
+   @JsonProperty("cookies")
+   @XmlElement(required = true)
+   private List<Cookie> cookies = new ArrayList<Cookie>();
+
+   @JsonProperty("parameters")
+   @XmlElement(required = true)
+   private List<Parameter> parameters = new ArrayList<Parameter>();
+
    public HttpMessage() {
    }
 
@@ -60,16 +82,27 @@ public class HttpMessage {
       this.host = iHttpRequestResponse.getHttpService().getHost();
       this.port = iHttpRequestResponse.getHttpService().getPort();
       this.protocol = iHttpRequestResponse.getHttpService().getProtocol();
-      IExtensionHelpers helpers = BurpExtender.getInstance().getHelpers();
-      this.url = helpers.analyzeRequest(iHttpRequestResponse).getUrl();
-      if ((iHttpRequestResponse.getResponse() != null)) {
-         this.statusCode = helpers.analyzeResponse(iHttpRequestResponse.getResponse())
-               .getStatusCode();
-      }
       this.request = iHttpRequestResponse.getRequest();
       this.response = iHttpRequestResponse.getResponse();
       this.comment = iHttpRequestResponse.getComment();
       this.highlight = iHttpRequestResponse.getHighlight();
+      
+      IExtensionHelpers helpers = BurpExtender.getInstance().getHelpers();
+      IRequestInfo requestInfo = helpers.analyzeRequest(iHttpRequestResponse);
+      this.url = requestInfo.getUrl();
+      this.method = requestInfo.getMethod();
+      for (IParameter iParameter : requestInfo.getParameters()) {
+         this.parameters.add(new Parameter(iParameter));
+      }
+      
+      if (iHttpRequestResponse.getResponse() != null) {
+         IResponseInfo responseInfo = helpers.analyzeResponse(iHttpRequestResponse.getResponse());
+         this.statusCode = responseInfo.getStatusCode();
+         this.responseHeaders = responseInfo.getHeaders();
+         for (ICookie iCookie : responseInfo.getCookies()) {
+            this.cookies.add(new Cookie(iCookie));
+         }
+      }
    }
 
    public String getHost() {
@@ -143,5 +176,36 @@ public class HttpMessage {
    public void setHighlight(String highlight) {
       this.highlight = highlight;
    }
+   
+   public String getMethod() {
+      return method;
+   }
 
+   public void setMethod(String method) {
+      this.method = method;
+   }
+
+   public List<String> getResponseHeaders() {
+      return responseHeaders;
+   }
+
+   public void setResponseHeaders(List<String> responseHeaders) {
+      this.responseHeaders = responseHeaders;
+   }
+
+   public List<Cookie> getCookies() {
+      return cookies;
+   }
+
+   public void setCookies(List<Cookie> cookies) {
+      this.cookies = cookies;
+   }
+
+   public List<Parameter> getParameters() {
+      return parameters;
+   }
+
+   public void setParameters(List<Parameter> parameters) {
+      this.parameters = parameters;
+   }
 }
