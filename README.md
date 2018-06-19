@@ -20,7 +20,7 @@ Upon successfully building the project, an executable JAR file is created with t
 ### Build & Run
 
 1. [Download](https://portswigger.net/burp/download.html) the Professional edition of Burp Suite. You _may_ use Free edition but capabilities are limited.
-2. Create a `lib` folder under the project directory and place the Burp Suite JAR file into it.
+2. Create a `lib` folder under the project directory and place the Burp Suite JAR file into it and rename it to "burpsuite_pro.jar".
 3. The project can be run either by running the Gradle Spring `bootRun` command or by directly launching the JAR
  created from building the project:
 
