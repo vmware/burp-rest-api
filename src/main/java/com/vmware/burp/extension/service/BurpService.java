@@ -188,23 +188,28 @@ public class BurpService {
                 if(url.getPort() == url.getDefaultPort()) {
                     url = new URL(url.getProtocol(), url.getHost(), url.getFile());
                 }
-				boolean useHttps = url.getProtocol().equalsIgnoreCase("HTTPS");
-				if(isActive) {
-					//Trigger Burp's Active Scan
-					log.debug("Submitting Active Scan for the URL {}", url.toExternalForm());
-					IScanQueueItem iScanQueueItem = BurpExtender.getInstance().getCallbacks()
-							.doActiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
-									iHttpRequestResponse.getRequest());
-					scans.addItem(url.toExternalForm(), iScanQueueItem);
-				}else{
-					//Trigger Burp's Passive Scan
-					log.debug("Submitting Passive Scan for the URL {}", url.toExternalForm());
-					if (iHttpRequestResponse.getResponse() != null) {
-						BurpExtender.getInstance().getCallbacks()
-								.doPassiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
-										iHttpRequestResponse.getRequest(), iHttpRequestResponse.getResponse());
-					}
-				}                
+                // check if the url from the sitemap is still in scope (checking exceptions to scope)
+                if(isInScope(url.toExternalForm())){
+                    boolean useHttps = url.getProtocol().equalsIgnoreCase("HTTPS");
+                    if(isActive) {
+                        //Trigger Burp's Active Scan
+                        log.debug("Submitting Active Scan for the URL {}", url.toExternalForm());
+                        IScanQueueItem iScanQueueItem = BurpExtender.getInstance().getCallbacks()
+                                .doActiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
+                                        iHttpRequestResponse.getRequest());
+                        scans.addItem(url.toExternalForm(), iScanQueueItem);
+                    }else{
+                        //Trigger Burp's Passive Scan
+                        log.debug("Submitting Passive Scan for the URL {}", url.toExternalForm());
+                        if (iHttpRequestResponse.getResponse() != null) {
+                            BurpExtender.getInstance().getCallbacks()
+                                    .doPassiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
+                                            iHttpRequestResponse.getRequest(), iHttpRequestResponse.getResponse());
+                        }
+                    }
+                } else {
+                    log.info("URL {} not submitted to scan, since it matches a scope exception", url.toExternalForm());
+                }               
             }
             return true;
         } else {
@@ -290,3 +295,4 @@ public class BurpService {
         BurpExtender.getInstance().getCallbacks().exitSuite(promptUser);
     }
 }
+
