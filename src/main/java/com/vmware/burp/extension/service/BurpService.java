@@ -71,7 +71,7 @@ public class BurpService {
 
         //Project Data File
         //Note: Burp Free does not support project data files
-        if (!burpEdition.equalsIgnoreCase("free") || !args.containsOption(PROJECT_FILE) {
+        if (!burpEdition.equalsIgnoreCase("free") || !args.containsOption(PROJECT_FILE)) {
             projectData = new String[]{generateProjectDataTempFile()};
         } else {
             projectData = args.getOptionValues(PROJECT_FILE).stream().toArray(String[]::new);
