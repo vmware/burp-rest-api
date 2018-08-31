@@ -56,7 +56,10 @@ or
 ```
     gradlew bootRun -Dheadless.mode=false
 ```
-
+or with the `bootRun` command using the `-PappArgs` to pass args directly to burp suite :
+```
+    gradlew bootRun -PappArgs="['-Djava.awt.headless=false','--project-file=./test.burp']"
+```
 With the executable JAR:
 ```
     java -jar burp-rest-api-1.0.2.jar -Djava.awt.headless=false
