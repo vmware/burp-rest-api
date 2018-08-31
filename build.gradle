@@ -85,6 +85,10 @@ task createschemaTargetDir () {
 
 bootRun {
     // support passing -Dsystem.property=value to bootRun task
+    //support passing -PappArgs="['arg1']" ex : gradlew bootRun -PappArgs="['--project-file=/test/tes.burp']"
+     if (project.hasProperty("appArgs")) {
+        args Eval.me(appArgs)
+    }
     systemProperties = System.properties
 
     if (System.getProperty('DEBUG', 'false') == 'true') {
