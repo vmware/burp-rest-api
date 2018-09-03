@@ -76,9 +76,13 @@ public class BurpService {
                 projectData[i] = PROJECT_FILE_ARGUMENT + projectData[i];
             }
         } else { 
-		//Note: Burp Free does not support project data files
+	//Note: Burp Free does not support project data files
+            if(!burpEdition.equalsIgnoreCase("free")){
                        projectData = new String[]{generateProjectDataTempFile()};
-        } 
+                       } else {
+                           projectData = new String[]{};
+                       }
+        }  
 
         //Project Options File
         if (!args.containsOption(CONFIG_FILE)) {
