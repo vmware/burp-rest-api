@@ -189,6 +189,10 @@ public class BurpService {
                 }
                 // check if the url from the sitemap is still in scope (checking exceptions to scope)
                 if(isInScope(url.toExternalForm())){
+                    if (iHttpRequestResponse.getResponse() == null) {
+                        // Do not scan site map entries without a response
+                        continue;
+                    }
                     boolean useHttps = url.getProtocol().equalsIgnoreCase("HTTPS");
                     if(isActive) {
                         //Trigger Burp's Active Scan
@@ -200,11 +204,9 @@ public class BurpService {
                     }else{
                         //Trigger Burp's Passive Scan
                         log.debug("Submitting Passive Scan for the URL {}", url.toExternalForm());
-                        if (iHttpRequestResponse.getResponse() != null) {
-                            BurpExtender.getInstance().getCallbacks()
-                                    .doPassiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
-                                            iHttpRequestResponse.getRequest(), iHttpRequestResponse.getResponse());
-                        }
+                        BurpExtender.getInstance().getCallbacks()
+                                .doPassiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
+                                        iHttpRequestResponse.getRequest(), iHttpRequestResponse.getResponse());
                     }
                 } else {
                     log.info("URL {} not submitted to scan, since it matches a scope exception", url.toExternalForm());
