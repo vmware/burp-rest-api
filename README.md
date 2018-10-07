@@ -140,7 +140,7 @@ This project also comes with a client (_BurpClient.java_) written in Java for us
 ## Credits
 
 This project is originally inspired from [Resty-Burp](https://github.com/continuumsecurity/resty-burp
- "continuumsecurity/resty-burp: REST/JSON interface to Burp Suite").
+ "continuumsecurity/resty-burp: REST/JSON interface to Burp Suite") and is developed in partnership with [Doyensec](https:/www.doyensec.com/).
 
 ## Contributing
 
