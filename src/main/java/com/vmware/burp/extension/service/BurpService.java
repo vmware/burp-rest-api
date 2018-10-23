@@ -70,19 +70,15 @@ public class BurpService {
         String[] userOptions;
 
         //Project Data File
-       if (burpEdition.equalsIgnoreCase("pro") && args.containsOption(PROJECT_FILE)) {
-			 projectData = args.getOptionValues(PROJECT_FILE).stream().toArray(String[]::new);
+        //Note: Burp Free does not support project data files
+        if (!burpEdition.equalsIgnoreCase("free") || !args.containsOption(PROJECT_FILE)) {
+            projectData = new String[]{generateProjectDataTempFile()};
+        } else {
+            projectData = args.getOptionValues(PROJECT_FILE).stream().toArray(String[]::new);
             for( int i = 0; i < projectData.length; i++) {
                 projectData[i] = PROJECT_FILE_ARGUMENT + projectData[i];
             }
-        } else { 
-	//Note: Burp Free does not support project data files
-            if(!burpEdition.equalsIgnoreCase("free")){
-                       projectData = new String[]{generateProjectDataTempFile()};
-                       } else {
-                           projectData = new String[]{};
-                       }
-        }  
+        }
 
         //Project Options File
         if (!args.containsOption(CONFIG_FILE)) {
