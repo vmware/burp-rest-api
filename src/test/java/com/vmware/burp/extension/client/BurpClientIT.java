@@ -58,6 +58,7 @@ public class BurpClientIT {
     @Before
     public void setUp() {
         burpClient = new BurpClient("http://localhost:" + port);
+        log.info("!! Make sure that there are no applications configured to use the proxy !!");
     }
 
     @Test
@@ -104,7 +105,7 @@ public class BurpClientIT {
     }
 
     @Test
-    public void testScopeMethods() throws UnsupportedEncodingException {
+    public void testScopeMethods() {
         String httpBaseUrl = "http://source.vmware.com";
         String httpsBaseUrl = "https://source.vmware.com";
 
@@ -147,7 +148,7 @@ public class BurpClientIT {
 
     private void sendRequestThruProxy() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
-        SSLContext sslContext = null;
+        SSLContext sslContext;
         sslContext = SSLContexts.custom().loadTrustMaterial((chain, authType) -> true).build();
 
         SSLConnectionSocketFactory sslConnectionSocketFactory =
@@ -157,7 +158,7 @@ public class BurpClientIT {
 
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLSocketFactory(sslConnectionSocketFactory)
-                .build();) {
+                .build()) {
             HttpHost target = new HttpHost(BurpClientIT.TARGET_HOST);
             HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT, PROXY_SCHEME);
 
