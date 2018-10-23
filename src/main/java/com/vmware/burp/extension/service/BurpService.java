@@ -56,22 +56,21 @@ public class BurpService {
     private String version;
 
     @Autowired
-    public BurpService(ApplicationArguments args, @Value("${headless.mode}") boolean headlessMode, @Value("${burp.edition}") String burpEdition)
+    public BurpService(ApplicationArguments args, @Value("${headless.mode}") boolean headlessMode)
             throws IOException {
         if (!headlessMode) {
             log.info("Setting java.awt.headless to false...");
             System.setProperty("java.awt.headless", Boolean.toString(false));
         }
         log.info("# of command line arguments received to Burp suite: {}", args.getSourceArgs().length);
-        log.info("Launching the Burp suite ({} edition) in {} mode...", burpEdition, headlessMode ? "headless" : "UI");
+        log.info("Launching Burp suite in {} mode...", headlessMode ? "headless" : "UI");
 
         String[] projectData;
         String[] projectOptions;
         String[] userOptions;
 
         //Project Data File
-        //Note: Burp Free does not support project data files
-        if (!burpEdition.equalsIgnoreCase("free") || !args.containsOption(PROJECT_FILE)) {
+        if (!args.containsOption(PROJECT_FILE)) {
             projectData = new String[]{generateProjectDataTempFile()};
         } else {
             projectData = args.getOptionValues(PROJECT_FILE).stream().toArray(String[]::new);
