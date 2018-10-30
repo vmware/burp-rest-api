@@ -48,3 +48,6 @@ bin/
 lib/burpsuite_pro*.jar
 lib/burpsuite_free*.jar
 lib/burpsuite_community*.jar
+
+# Avoid committing generated files
+src/main/resources/static/*.jar

@@ -6,7 +6,7 @@
 
 package com.vmware.burp.extension.domain;
 
-import burp.BurpExtender;
+import burp.LegacyBurpExtender;
 import burp.ICookie;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
@@ -88,7 +88,7 @@ public class HttpMessage {
       this.comment = iHttpRequestResponse.getComment();
       this.highlight = iHttpRequestResponse.getHighlight();
       
-      IExtensionHelpers helpers = BurpExtender.getInstance().getHelpers();
+      IExtensionHelpers helpers = LegacyBurpExtender.getInstance().getHelpers();
       IRequestInfo requestInfo = helpers.analyzeRequest(iHttpRequestResponse);
       this.url = requestInfo.getUrl();
       this.method = requestInfo.getMethod();

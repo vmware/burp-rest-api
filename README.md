@@ -34,7 +34,7 @@ or
     # build the jar
     gradlew clean build
     # and run it
-    java -jar build/libs/burp-rest-api-1.0.2.jar
+    java -jar build/libs/burp-rest-api-*.jar --burp.jar=./lib/burpsuite_pro.jar 
 ```
 The version number of the JAR should match the version number from `build.gradle` while generating the JAR.
 
@@ -48,11 +48,11 @@ To __run Burp in UI mode__ from the command line, use one of the following comma
 
 With the `bootRun` command:
 ```
-    gradlew bootRun -Djava.awt.headless=false
+    gradlew bootRun -Djava.awt.headless=false --burp.jar=./lib/burpsuite_pro.jar
 ```
 or
 ```
-    gradlew bootRun -Dheadless.mode=false
+    gradlew bootRun -Dheadless.mode=false --burp.jar=./lib/burpsuite_pro.jar
 ```
 or with the `bootRun` command using the `-PappArgs` to pass args directly to burp suite :
 ```
@@ -60,11 +60,11 @@ or with the `bootRun` command using the `-PappArgs` to pass args directly to bur
 ```
 With the executable JAR:
 ```
-    java -jar burp-rest-api-1.0.2.jar -Djava.awt.headless=false
+    java -jar burp-rest-api-1.0.2.jar -Djava.awt.headless=false --burp.jar=./lib/burpsuite_pro.jar
 ```
 or
 ```
-    java -jar burp-rest-api-1.0.2.jar --headless.mode=false
+    java -jar burp-rest-api-1.0.2.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 
@@ -72,20 +72,20 @@ To __modify the server port__ on which the API is accessible, use one of the fol
 
 With the `bootRun` command:
 ```
-    gradlew bootRun -Dserver.port=8081
+    gradlew bootRun -Dserver.port=8081 --burp.jar=./lib/burpsuite_pro.jar
 ```
 or
 ```
-    gradlew bootRun -Dport=8081
+    gradlew bootRun -Dport=8081 --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 With the executable JAR:
 ```
-    java -jar burp-rest-api-1.0.2.jar --server.port=8081
+    java -jar burp-rest-api-1.0.2.jar --server.port=8081 --burp.jar=./lib/burpsuite_pro.jar
 ```
 or
 ```
-    java -jar burp-rest-api-1.0.2.jar --port=8081
+    java -jar burp-rest-api-1.0.2.jar --port=8081 --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 You can also __modify the server address__, used for network address binding:
