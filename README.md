@@ -42,7 +42,7 @@ The version number of the JAR should match the version number from `build.gradle
 
 ### Configuration
 
-By default, Burp is launched in headless mode with the Proxy running on port 8080/tcp and the REST endpoint running on 8090/tcp.
+By default, Burp is launched in headless mode with the Proxy running on port 8080/tcp (localhost only) and the REST endpoint running on 8090/tcp (localhost only).
 
 To __run Burp in UI mode__ from the command line, use one of the following commands:
 
@@ -88,12 +88,26 @@ or
     java -jar burp-rest-api-1.0.2.jar --port=8081
 ```
 
+You can also __modify the server address__, used for network address binding:
+
+With the `bootRun` command:
+```
+    gradlew bootRun -Dserver.address=192.168.1.2
+```
+or
+```
+    gradlew bootRun -Daddress=192.168.1.2
+```
+
 ### Command Line Arguments
 
 The following command line arguments are used only by the extension to configure the run mode and port number.
 
 `--server.port=<port_number>` : The REST API endpoint is available at the given port number. `--port=<port_number>`
  works as short hand argument.
+ 
+ `--server.address=<network address>` : Network address to which the REST API endpoint should bind. `--address=<address_ip>`
+  works as short hand argument.
 
 `--headless.mode=<true/false>` : When set to false, runs Burp Suite in UI mode. Otherwise runs Burp Suite in headless
  mode. Default value: System Property (java.awt.headless)

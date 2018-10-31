@@ -74,7 +74,7 @@ public class BurpService {
             projectData = new String[]{generateProjectDataTempFile()};
         } else {
             projectData = args.getOptionValues(PROJECT_FILE).stream().toArray(String[]::new);
-            for( int i = 0; i < projectData.length; i++) {
+            for(int i = 0; i < projectData.length; i++) {
                 projectData[i] = PROJECT_FILE_ARGUMENT + projectData[i];
             }
         }
@@ -84,7 +84,7 @@ public class BurpService {
             projectOptions = new String[]{generateProjectOptionsTempFile()};
         } else {
             projectOptions = args.getOptionValues(CONFIG_FILE).stream().toArray(String[]::new);
-            for( int i = 0; i < projectOptions.length; i++) {
+            for(int i = 0; i < projectOptions.length; i++) {
                 projectOptions[i] = CONFIG_FILE_ARGUMENT + projectOptions[i];
             }
         }
@@ -94,7 +94,7 @@ public class BurpService {
             userOptions = new String[]{generateUserOptionsTempFile()};
         } else {
             userOptions = args.getOptionValues(USER_CONFIG_FILE).stream().toArray(String[]::new);
-            for( int i = 0; i < userOptions.length; i++) {
+            for(int i = 0; i < userOptions.length; i++) {
                 userOptions[i] = USER_CONFIG_FILE_ARGUMENT + userOptions[i];
             }
         }
@@ -143,9 +143,14 @@ public class BurpService {
         return PROJECT_FILE_ARGUMENT + projectTempDir.toAbsolutePath() + File.separator + TEMPORARY_PROJECT_FILE_NAME;
     }
 
-    public String getConfigAsJson() {
-        log.info("Retrieving the Burp Configuration...");
-        return BurpExtender.getInstance().getCallbacks().saveConfigAsJson();
+    public String getConfigAsJson(String configPaths) {
+        if (configPaths != null) {
+            log.info("Retrieving the Burp Configuration for configPaths: " + configPaths);
+            return BurpExtender.getInstance().getCallbacks().saveConfigAsJson(configPaths);
+        } else {
+            log.info("Retrieving the Burp Configuration with empty configPaths");
+            return BurpExtender.getInstance().getCallbacks().saveConfigAsJson();
+        }
     }
 
     public String getBurpVersion() {

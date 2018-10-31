@@ -99,7 +99,7 @@ public class SpiderQueueMap {
 
         if(totalPercentCompletion > 0) {
             int percentComplete = totalPercentCompletion / map.size();
-            log.info("Scan Percent Complete: {}", percentComplete);
+            log.info("Spider Percent Complete: {}", percentComplete);
             return percentComplete;
         }else{
             return 0;

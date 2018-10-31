@@ -27,7 +27,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonIgnoreProperties(value = { "request", "response" })
+//Returning full HTTP request and response
+//@JsonIgnoreProperties(value = { "request", "response" })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonInclude(Include.NON_NULL)

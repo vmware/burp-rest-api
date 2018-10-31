@@ -58,12 +58,23 @@ public class BurpController {
 
    @ApiOperation(value = "Get Burp suite project-level configuration", notes = "Burp suite project-level configuration is returned as JSON.")
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = JsonNode.class),
-         @ApiResponse(code = 500, message = "Failure")
+           @ApiResponse(code = 200, message = "Success", response = JsonNode.class),
+           @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/configuration")
    public JsonNode getConfiguration() throws IOException {
-      String configuration = burp.getConfigAsJson();
+      String configuration = burp.getConfigAsJson("");
+      return new ObjectMapper().readTree(configuration);
+   }
+
+   @ApiOperation(value = "Get Burp suite project-level configuration with provided configuration path", notes = "Burp suite project-level configuration returned as JSON, from the given configuration path (e.g. 'proxy.request_listeners')")
+   @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "Success", response = JsonNode.class),
+           @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = POST, value = "/configuration")
+   public JsonNode getConfiguration(@RequestBody String configAsJson) throws IOException {
+      String configuration = burp.getConfigAsJson(configAsJson);
       return new ObjectMapper().readTree(configuration);
    }
 

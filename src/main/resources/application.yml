@@ -1,5 +1,10 @@
 server:
+  address: ${address:127.0.0.1}
   port: ${port:8090}
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: '*/*'
 
 headless:
   mode: ${java.awt.headless}
