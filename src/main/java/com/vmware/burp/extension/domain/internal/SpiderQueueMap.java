@@ -6,7 +6,7 @@
 
 package com.vmware.burp.extension.domain.internal;
 
-import burp.BurpExtender;
+import burp.LegacyBurpExtender;
 import burp.IHttpRequestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +86,7 @@ public class SpiderQueueMap {
         int totalPercentCompletion = 0;
         for (String url : map.keySet()) {
             IHttpRequestResponse[] httpMessageListOld = map.get(url);
-            IHttpRequestResponse[] httpMessageListNew = BurpExtender.getInstance().getCallbacks().getSiteMap(url);
+            IHttpRequestResponse[] httpMessageListNew = LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(url);
 
             if(compareSiteMap(httpMessageListNew, httpMessageListOld)){
                 totalPercentCompletion += 100;
@@ -95,7 +95,7 @@ public class SpiderQueueMap {
             }
         }
 
-        map.replaceAll((url, v) -> BurpExtender.getInstance().getCallbacks().getSiteMap(url));
+        map.replaceAll((url, v) -> LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(url));
 
         if(totalPercentCompletion > 0) {
             int percentComplete = totalPercentCompletion / map.size();

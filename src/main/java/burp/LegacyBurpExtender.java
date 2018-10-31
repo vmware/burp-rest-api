@@ -6,15 +6,15 @@ import org.slf4j.LoggerFactory;
 import java.io.PrintWriter;
 
 /**
- * Copyright VMware, Inc. All rights reserved. -- VMware Confidential
+ * Copyright VMware, Inc. All rights reserved.
  */
-public class BurpExtender implements IBurpExtender {
-    private static final Logger log = LoggerFactory.getLogger(BurpExtender.class);
-    private static BurpExtender instance;
+public class LegacyBurpExtender implements IBurpExtender {
+    private static final Logger log = LoggerFactory.getLogger(LegacyBurpExtender.class);
+    private static LegacyBurpExtender instance;
     private IBurpExtenderCallbacks callbacks;
     private IExtensionHelpers helpers;
 
-    public static BurpExtender getInstance() {
+    public static LegacyBurpExtender getInstance() {
         return instance;
     }
 

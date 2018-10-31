@@ -15,7 +15,7 @@ apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 
 final def extensionName = 'burp-rest-api'
-version = '1.0.4'
+version = '2.0.0'
 
 def updateVersion() {
     def configFile = new File('src/main/resources/application.yml')
@@ -24,6 +24,17 @@ def updateVersion() {
     configContent = configContent.replaceAll(/build\.version: .*/, "build.version: ${version}")
     configFile.write(configContent, 'UTF-8')
 }
+
+sourceSets {
+    entrypoint {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+        }
+    }
+}
+
+test.onlyIf { file('./lib/burpsuite_pro.jar').exists() }
 
 allprojects {
     //Display warning
@@ -55,19 +66,22 @@ targetCompatibility = 1.8
 File schemaTargetDir = new File('build/generated-schema')
 
 configurations {
-  jaxb
+    jaxb
     compile.exclude module: "spring-boot-starter-tomcat"
+    testCompile.extendsFrom entrypointCompile
+    testRuntime.extendsFrom entrypointRuntime
 }
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.boot:spring-boot-starter-jetty")
-    compile fileTree(dir: 'lib', include: '**/*.jar')
     compile "io.springfox:springfox-swagger2:2.+"
     compile "io.springfox:springfox-swagger-ui:2.+"
-    
-    compile name: 'burpsuite_pro'
+    compileOnly "net.portswigger.burp.extender:burp-extender-api:1.7.22"
 
+    entrypointCompileOnly "net.portswigger.burp.extender:burp-extender-api:1.7.22"
+
+    testCompile fileTree(dir: 'lib', include: '**/*.jar')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.apache.httpcomponents:httpclient:4.5.2')
 
@@ -96,6 +110,20 @@ bootRun {
                 '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005'
     }
 }
+
+
+task entrypointJar(type: Jar) {
+    destinationDir = file("src/main/resources/static/")
+    from(sourceSets.entrypoint.output) {
+        include '**/*.class'
+    }
+    archiveName = 'rest-api.jar'
+}
+jar.dependsOn entrypointJar
+task deleteEntrypointOriginalJar(type: Delete) {
+    delete entrypointJar.archivePath.toString() + '.original'
+}
+assemble.dependsOn deleteEntrypointOriginalJar
 
 task extractApi(type: Copy) {
 	from(zipTree('build/libs/' + extensionName + '-' + version + '.jar'))
