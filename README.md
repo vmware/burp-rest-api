@@ -17,10 +17,6 @@ By default, Burp is launched in headless mode with the Proxy running on port 808
 To __run Burp in UI mode__ from the command line, use one of the following commands:
 
 ```
-    java -jar burp-rest-api-2.0.0.jar -Djava.awt.headless=false --burp.jar=./lib/burpsuite_pro.jar
-```
-or
-```
     java -jar burp-rest-api-2.0.0.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
 ```
 
@@ -66,17 +62,15 @@ Command line arguments passed to the executable burp-rest-api JAR are forwarded 
  pass the following Burp Suite JAR command line arguments to the burp-rest-api JAR for the same functionality as if
  passing to the Burp Suite JAR directly.
 
-`--project-file=<filename>` : Opens the specified project file. The file will be created as a new project if it doesn't
+`--project-file=<filename>` : Opens the specified **Data Project File** used for keeping the state of the tool. The file will be created as a new project if it doesn't
  exist already.
 
-`--config-file=<filename>` : Opens the project using the options contained in the selected project configuration file. To
- load multiple project configurations, this argument can be passed more than once with different values.
+`--config-file=<filename>` : Opens the project using the options contained in the selected **Project Configuration File**. To load multiple project configurations, this argument can be passed more than once with different values.
  
-`--user-config-file=<filename>` : Opens the project using the options contained in the selected user configuration file. To
-  load multiple user configurations, this argument can be passed more than once with different values.
+`--user-config-file=<filename>` : Opens the project using the options contained in the selected **User Configuration File**. To load multiple user configurations, this argument can be passed more than once with different values.
 
-For more information on Projects, refer to the Burp Suite documentation
- [here](https://portswigger.net/burp/help/suite_burp_projects.html).
+For more information on *Projects*, refer to the Burp Suite documentation
+ [here](https://portswigger.net/burp/help/suite_burp_projects.html) and [here](https://portswigger.net/blog/introducing-burp-projects).
 
 
 ### Default Burp Configuration ###
