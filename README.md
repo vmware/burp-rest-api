@@ -117,7 +117,7 @@ When the JAR is launched, it provides a REST/JSON endpoint to access the Scanner
 
 #### Prerequisites
 
-* Java 8
+* Java 8 x64
 * Gradle
 * Licensed Burp Suite Professional version 1.7.x or later from: <http://portswigger.net/burp/>
 
