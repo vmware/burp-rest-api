@@ -50,14 +50,15 @@ Is Burp Suite v2 supported?
 
 Next generation Burp Suite v2 is a beta release at the time of writing this FAQ. While we will *try* to mantain support for both Burp Suite stable and beta, we cannot ensure full compability. For production, please stay on Burp Suite Professional stable branch.
 
-Why does burp ask me for activation when it was already activated ?
+Why does Burp ask me for activation when it was already activated?
 ----------------------------------------------------------------------------------------------
 
-Burp Suite is using Java and thus , any changes made to the JVM's user preferences might affect your Burp Suite License Activation .
-Keep in mind that [Burp Suite](https://support.portswigger.net/customer/portal/articles/1855756-burp-suite-software) , as well as the burp-rest-api require Java **x64** to run , so , before activating Burp Suite for use with burp-rest-api , make sure your Java version is properly installed , check your JAVA_HOME environment variable and depending on the OS in use , check that the currently active Java Runtime version is the one corresponding to the one mentioned in JAVA_HOME . 
+Any changes made to the Java Virtual Machine's user preferences might affect the Burp Suite license activation.
 
-- **For Windows users**. Before attempting to install another JVM or upgrade JDK or change the JAVA_HOME make a backup of the following registry key : `Computer\HKEY_CURRENT_USER\Software\JavaSoft\Prefs\burp` . The currently active Java Runtime Versions can be checked from `Control Panel -> Java -> (General)(Update)Java -> View` .
-- **For Linux users** Before making any changes to the Java environments make a backup of the following folder : `~/.java/.userPrefs/burp/` . Checking the currently active JVM versions can be done using different methods depending on your distribution :
+Keep in mind that [Burp Suite](https://support.portswigger.net/customer/portal/articles/1855756-burp-suite-software) as well as burp-rest-api require Java **x64** to run. Before activating Burp Suite for use with burp-rest-api, make sure your Java environment is properly installed, check your *JAVA_HOME* environment variable and depending on the OS in use, check that the currently active Java Runtime version is the same as *JAVA_HOME*. 
+
+- **For Windows users**. Before attempting to install another JVM or upgrade JDK or change the JAVA_HOME make a backup of the following registry key : `Computer\HKEY_CURRENT_USER\Software\JavaSoft\Prefs\burp`. The currently active Java Runtime Versions can be checked from `Control Panel -> Java -> (General)(Update)Java -> View`.
+- **For Linux users** Before making any changes to the Java environments make a backup of the following folder: `~/.java/.userPrefs/burp/`. Checking the currently active JVM versions can be done using different methods, depending on the distribution:
 >* Archlinux : using `archlinux-java`
->* Debian : using `sudo update-alternatives --config java`
+>* Debian/Ubuntu : using `sudo update-alternatives --config java`
 
