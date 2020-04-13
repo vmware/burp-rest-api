@@ -45,7 +45,7 @@ or
 
 The following command line arguments are used only by the extension to configure the run mode and port number.
 
-`--burp.jar=<filaname.jar>` : Loads the Burp jar dinamically, and expose it through REST APIs. This flag is required.
+`--burp.jar=<filaname.jar>` : Loads the Burp jar dinamically, and expose it through REST APIs. This flag works only on Java <= 1.8. Use the `burp-rest-api.sh` script for newer java versions.
 
 `--burp.ext=<filename.{jar,rb,py}` : Loads the given Burp extensions during application startup. This flag can be repeated.
 

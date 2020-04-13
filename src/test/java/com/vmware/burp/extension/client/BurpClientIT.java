@@ -8,7 +8,6 @@ package com.vmware.burp.extension.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vmware.burp.extension.BurpApplication;
 import com.vmware.burp.extension.domain.HttpMessageList;
 import com.vmware.burp.extension.domain.ReportType;
 import org.apache.http.HttpHost;
@@ -25,14 +24,12 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -40,9 +37,8 @@ import java.security.NoSuchAlgorithmException;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = BurpApplication.class)
 @WebAppConfiguration
-@IntegrationTest
+@SpringBootTest
 public class BurpClientIT {
     private static final Logger log = LoggerFactory.getLogger(BurpClientIT.class);
     private static final String PROXY_HOST = "localhost";

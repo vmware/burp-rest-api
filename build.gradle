@@ -5,14 +5,14 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.2.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.6.RELEASE")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 
 final def extensionName = 'burp-rest-api'
 version = '2.0.1'
@@ -47,10 +47,10 @@ allprojects {
 }
 
 jar {
-    baseName = extensionName
+    archiveBaseName = extensionName
     manifest {
-        attributes 'Implementation-Title': 'Burp REST API',
-                'Implementation-Version': version
+        attributes('Implementation-Title': 'Burp REST API',
+                'Implementation-Version': archiveVersion)
     }
 }
 
@@ -73,24 +73,22 @@ configurations {
 }
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile("org.springframework.boot:spring-boot-starter-jetty")
-    compile "io.springfox:springfox-swagger2:2.+"
-    compile "io.springfox:springfox-swagger-ui:2.+"
+    implementation('org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE')
+    implementation("org.springframework.boot:spring-boot-starter-jetty:2.2.6.RELEASE")
+    implementation group: 'org.springframework.boot', name: 'spring-boot-loader', version: '2.2.6.RELEASE'
+    implementation "io.springfox:springfox-swagger2:2.+"
+    implementation "io.springfox:springfox-swagger-ui:2.+"
+    implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
     compileOnly "net.portswigger.burp.extender:burp-extender-api:1.7.22"
 
     entrypointCompileOnly "net.portswigger.burp.extender:burp-extender-api:1.7.22"
 
-    testCompile fileTree(dir: 'lib', include: '**/*.jar')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile('org.apache.httpcomponents:httpclient:4.5.2')
+    testImplementation fileTree(dir: 'lib', include: '**/*.jar')
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE')
+    testImplementation('org.apache.httpcomponents:httpclient:4.5.2')
 
     jaxb 'org.glassfish.jaxb:jaxb-jxc:2.+'
 	jaxb 'org.glassfish.jaxb:jaxb-xjc:2.+'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
 }
 
 task createschemaTargetDir () {
@@ -113,11 +111,11 @@ bootRun {
 
 
 task entrypointJar(type: Jar) {
-    destinationDir = file("src/main/resources/static/")
+    destinationDirectory = file("src/main/resources/static/")
     from(sourceSets.entrypoint.output) {
         include '**/*.class'
     }
-    archiveName = 'rest-api.jar'
+    archiveFileName = 'rest-api.jar'
 }
 jar.dependsOn entrypointJar
 task deleteEntrypointOriginalJar(type: Delete) {

@@ -136,6 +136,8 @@ public class BurpService {
         spiders = new SpiderQueueMap(3000);
     }
 
+    // TODO: This call will fail on Java > 1.8 .
+    // Find a solution in the future.
     private static void injectClassLoader(URL url)
             throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         URLClassLoader loader = (URLClassLoader)ClassLoader.getSystemClassLoader();
