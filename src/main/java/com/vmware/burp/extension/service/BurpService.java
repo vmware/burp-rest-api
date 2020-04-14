@@ -118,9 +118,12 @@ public class BurpService {
                 userOptions[i] = USER_CONFIG_FILE_ARGUMENT + ucu.injectExtensions(userOptions[i]);
             }
         }
-
         String[] burpOptions = Stream.concat(Arrays.stream(projectData), Arrays.stream(projectOptions)).toArray(String[]::new);
-        burpOptions = Stream.concat(Arrays.stream(burpOptions), Arrays.stream(userOptions)).toArray(String[]::new);
+        burpOptions = Stream.of(
+                Arrays.stream(args.getSourceArgs()),
+                Arrays.stream(burpOptions),
+                Arrays.stream(userOptions))
+                .reduce(Stream::concat).orElseGet(Stream::empty).toArray(String[]::new);
 
         log.info("Launching the Burp with options: {}", Arrays.toString(burpOptions));
         if (burpJar != null) {
