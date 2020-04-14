@@ -229,7 +229,17 @@ public class BurpService {
         return httpMessageList;
     }
 
-    public boolean scan(String baseUrl, boolean isActive)
+    private boolean isValidInsertionPoint(List<int[]> input) {
+        return input != null &&
+                input.size() > 0 &&
+                input.stream().allMatch(i -> i.length == 2 && i[0] < i[1]);
+    }
+
+    public boolean scan(String baseUrl, boolean isActive) throws MalformedURLException {
+        return this.scan(baseUrl, isActive, null);
+    }
+
+    public boolean scan(String baseUrl, boolean isActive, List<int[]> insertionPoints)
             throws MalformedURLException {
         boolean inScope = isInScope(baseUrl);
         log.info("Total SiteMap size: {}", LegacyBurpExtender.getInstance().getCallbacks().getSiteMap("").length);
@@ -252,10 +262,21 @@ public class BurpService {
                     boolean useHttps = url.getProtocol().equalsIgnoreCase("HTTPS");
                     if(isActive) {
                         //Trigger Burp's Active Scan
-                        log.debug("Submitting Active Scan for the URL {}", url.toExternalForm());
-                        IScanQueueItem iScanQueueItem = LegacyBurpExtender.getInstance().getCallbacks()
-                                .doActiveScan(url.getHost(), url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
-                                        iHttpRequestResponse.getRequest());
+                        IScanQueueItem iScanQueueItem;
+                        if (isValidInsertionPoint(insertionPoints)) {
+                            log.debug("Submitting Active Scan for the URL {} with insertion points",
+                                    url.toExternalForm());
+                            iScanQueueItem = LegacyBurpExtender.getInstance().getCallbacks()
+                                    .doActiveScan(url.getHost(),
+                                            url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
+                                            iHttpRequestResponse.getRequest(), insertionPoints);
+                        } else {
+                            log.debug("Submitting Active Scan for the URL {}", url.toExternalForm());
+                            iScanQueueItem = LegacyBurpExtender.getInstance().getCallbacks()
+                                    .doActiveScan(url.getHost(),
+                                            url.getPort() != -1 ? url.getPort() : url.getDefaultPort(), useHttps,
+                                            iHttpRequestResponse.getRequest());
+                        }
                         scans.addItem(url.toExternalForm(), iScanQueueItem);
                     }else{
                         //Trigger Burp's Passive Scan
