@@ -26,6 +26,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
+import javax.naming.ldap.UnsolicitedNotification;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -220,7 +221,7 @@ public class BurpService {
         LegacyBurpExtender.getInstance().getCallbacks().loadConfigFromJson(configJson);
     }
 
-    public List<HttpMessage> getProxyHistory() {
+    public List<HttpMessage> getProxyHistory() throws UnsupportedEncodingException {
         List<HttpMessage> httpMessageList = new ArrayList<>();
         for (IHttpRequestResponse iHttpRequestResponse : LegacyBurpExtender.getInstance().getCallbacks()
                 .getProxyHistory()) {
@@ -279,7 +280,7 @@ public class BurpService {
         scans.clear();
     }
 
-    public List<HttpMessage> getSiteMap(String urlPrefix) {
+    public List<HttpMessage> getSiteMap(String urlPrefix) throws UnsupportedEncodingException {
         List<HttpMessage> httpMessageList = new ArrayList<>();
         for (IHttpRequestResponse iHttpRequestResponse : LegacyBurpExtender.getInstance().getCallbacks()
                 .getSiteMap(urlPrefix)) {
@@ -307,7 +308,7 @@ public class BurpService {
 
     }
 
-    public List<ScanIssue> getIssues(String urlPrefix) {
+    public List<ScanIssue> getIssues(String urlPrefix) throws UnsupportedEncodingException {
         List<ScanIssue> scanIssues = new ArrayList<>();
         IScanIssue[] iScanIssues = LegacyBurpExtender.getInstance().getCallbacks()
                 .getScanIssues(urlPrefix);
