@@ -2,13 +2,15 @@
 
 ## Overview
 
-A REST/JSON API to the Burp Suite security tool.
+A REST/JSON API to the [Burp Suite](https://portswigger.net/burp) security tool.
 
-Since version 2.0.0 it is possible to run the burp-rest-api release jar,
-downloading it directly from the 
-[release channel](https://github.com/vmware/burp-rest-api/releases).
+Since the first commit back in 2016, **burp-rest-api** has been the default tool for BurpSuite-powered web scanning automation. Many security professionals and organizations have relied on this extension to orchestrate the work of Burp Spider and Scanner.
 
-## Documentation
+## Getting Started
+
+To use burp-rest-api, it is recommended to download the JAR and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases) and place them within a directory having the original Burp Suite JAR (*burpsuite_pro_VERSION.jar*).
+
+At this point, it is possible to bootstrap the system using: `./burp-rest-api.sh` or `./burp-rest-api.bat`
 
 ### Configuration
 
@@ -17,35 +19,40 @@ By default, Burp is launched in headless mode with the Proxy running on port 808
 To __run Burp in UI mode__ from the command line, use one of the following commands:
 
 ```
-    java -jar burp-rest-api-2.1.0.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
+    ./burp-rest-api.sh --headless.mode=false
 ```
 
+On Java <= 1.8, it is also possible to execute burp-rest-api in the following way:
+
+```
+    java -jar burp-rest-api-2.1.0.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
+```
 
 To __modify the server port__ on which the API is accessible, use one of the following commands:
 
 ```
-    java -jar burp-rest-api-2.1.0.jar --server.port=8081 --burp.jar=./lib/burpsuite_pro.jar
+    ./burp-rest-api.sh --server.port=8081
 ```
 or
 ```
-    java -jar burp-rest-api-2.1.0.jar --port=8081 --burp.jar=./lib/burpsuite_pro.jar
+    ./burp-rest-api.sh --port=8081
 ```
 
 You can also __modify the server address__, used for network address binding:
 
 ```
-    java -jar burp-rest-api-2.1.0.jar --server.address=192.168.1.2 --burp.jar=./lib/burpsuite_pro.jar
+    ./burp-rest-api.sh --server.address=192.168.1.2
 ```
 or
 ```
-    java -jar burp-rest-api-2.1.0.jar --address=192.168.1.2 --burp.jar=./lib/burpsuite_pro.jar
+    ./burp-rest-api.sh --address=192.168.1.2
 ```
 
 ### Command Line Arguments
 
 The following command line arguments are used only by the extension to configure the run mode and port number.
 
-`--burp.jar=<filaname.jar>` : Loads the Burp jar dinamically, and expose it through REST APIs. This flag works only on Java <= 1.8. Use the `burp-rest-api.{sh,bat}` script for newer java versions.
+`--burp.jar=<filaname.jar>` : Loads the Burp jar dinamically, and expose it through REST APIs. This flag works on Java <= 1.8 only! Use the `burp-rest-api.{sh,bat}` script for newer java versions.
 
 `--burp.ext=<filename.{jar,rb,py}` : Loads the given Burp extensions during application startup. This flag can be repeated.
 
@@ -79,7 +86,7 @@ If the burp-rest-api JAR is launched without the `--project-file`, `--config-fil
  launched with a temporary project file and some default configuration. The temporary project file gets created upon
  launch of Burp Suite, and gets deleted at the end of the run.
 
-For the default configuration used to launch Burp Suite, refer to the files _burp-default-project-options.json_ and
+For the default configuration used to launch Burp Suite, please refer to the files _burp-default-project-options.json_ and
 _burp-default-user-options.json_ inside the JAR under the _static_ folder.
 
 ### HTTP API
@@ -110,24 +117,20 @@ The burp-rest-api project team welcomes contributions from the community. If you
 
 ### Develop
 
-Upon successfully building the project, an executable JAR file is created.
-The Burp suite JAR can be loaded dinamically through the `--burp.jar=` argument.
-When the JAR is launched, it provides a REST/JSON endpoint to access the Scanner, Spider, Proxy and other
- features of the Burp Suite Professional security tool.
+The following section contains useful information to get started with the development of the extension.
 
 #### Prerequisites
 
-* Java 8 x64
+* Java 8-14 x64
 * Gradle
-* Licensed Burp Suite Professional version 1.7.x or later from: <http://portswigger.net/burp/>
-
+* Licensed Burp Suite Professional version 1.7.x or later from: <http://portswigger.net/burp/>. Considering that Burp Suite Professional 2.x is out of beta, we would recommend to use the latest Burp Suite JAR.
 
 #### Build & Run
 
-1. [Download](https://portswigger.net/burp/download.html) the Professional edition of Burp Suite.
-2. The project can be run either by running the Gradle Spring `bootRun` command or by directly launching the JAR
- created from building the project:
-3. OPTIONAL: Create a `lib` folder under the project directory and place the Burp Suite JAR file into it and rename it to "burpsuite_pro.jar" in order to run the integration tests.
+1. [Download](https://portswigger.net/burp/download.html) the Professional edition of Burp Suite JAR
+2. The project can be run either by executing the Gradle Spring `bootRun` command or by directly launching the JAR
+ created from building the project
+3. Create a `lib` folder under the project directory and place the Burp Suite JAR file into it and rename it to "burpsuite_pro.jar" in order to run the integration tests
 
 ```
     ./gradlew bootRun
@@ -138,13 +141,13 @@ or
 ```
     # build the jar
     ./gradlew clean build
-    # and run it
+    # and run it (Java <= 1.8 only!)
     java -jar build/libs/burp-rest-api-2.1.0.jar --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 The version number of the JAR should match the version number from `build.gradle` while generating the JAR.
 
-If you want to run the script on recent (JRE > 9) versions of JVM use the burp-rest-api.* after putting burpsuite_pro.jar and burp-rest-api.sh in the same directory of the script.
+If you want to run the extension on recent (JRE > 9) versions of the JVM, use the `burp-rest-api.{sh,bat}` launcher script after copying *burpsuite_pro.jar* and the *burp-rest-api.jar* in the same directory of the script.
 
 ```
 # On Unix (Linux, macOS)
@@ -156,7 +159,7 @@ If you want to run the script on recent (JRE > 9) versions of JVM use the burp-r
 ## License
 
 Copyright (c) 2016 VMware, Inc. All Rights Reserved.
-Copyright (c) 2018 Doyensec LLC. All Rights Reserved.
+Copyright (c) 2020 Doyensec LLC. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  following conditions are met: Redistributions of source code must retain the above copyright notice, this list of
