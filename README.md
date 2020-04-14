@@ -17,35 +17,35 @@ By default, Burp is launched in headless mode with the Proxy running on port 808
 To __run Burp in UI mode__ from the command line, use one of the following commands:
 
 ```
-    java -jar burp-rest-api-2.0.0.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
+    java -jar burp-rest-api-2.1.0.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 
 To __modify the server port__ on which the API is accessible, use one of the following commands:
 
 ```
-    java -jar burp-rest-api-2.0.0.jar --server.port=8081 --burp.jar=./lib/burpsuite_pro.jar
+    java -jar burp-rest-api-2.1.0.jar --server.port=8081 --burp.jar=./lib/burpsuite_pro.jar
 ```
 or
 ```
-    java -jar burp-rest-api-2.0.0.jar --port=8081 --burp.jar=./lib/burpsuite_pro.jar
+    java -jar burp-rest-api-2.1.0.jar --port=8081 --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 You can also __modify the server address__, used for network address binding:
 
 ```
-    java -jar burp-rest-api-2.0.0.jar --server.address=192.168.1.2 --burp.jar=./lib/burpsuite_pro.jar
+    java -jar burp-rest-api-2.1.0.jar --server.address=192.168.1.2 --burp.jar=./lib/burpsuite_pro.jar
 ```
 or
 ```
-    java -jar burp-rest-api-2.0.0.jar --address=192.168.1.2 --burp.jar=./lib/burpsuite_pro.jar
+    java -jar burp-rest-api-2.1.0.jar --address=192.168.1.2 --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 ### Command Line Arguments
 
 The following command line arguments are used only by the extension to configure the run mode and port number.
 
-`--burp.jar=<filaname.jar>` : Loads the Burp jar dinamically, and expose it through REST APIs. This flag works only on Java <= 1.8. Use the `burp-rest-api.sh` script for newer java versions.
+`--burp.jar=<filaname.jar>` : Loads the Burp jar dinamically, and expose it through REST APIs. This flag works only on Java <= 1.8. Use the `burp-rest-api.{sh,bat}` script for newer java versions.
 
 `--burp.ext=<filename.{jar,rb,py}` : Loads the given Burp extensions during application startup. This flag can be repeated.
 
@@ -130,7 +130,7 @@ When the JAR is launched, it provides a REST/JSON endpoint to access the Scanner
 3. OPTIONAL: Create a `lib` folder under the project directory and place the Burp Suite JAR file into it and rename it to "burpsuite_pro.jar" in order to run the integration tests.
 
 ```
-    ./gradlew bootRun --burp.jar=./lib/burpsuite_pro.jar
+    ./gradlew bootRun
 ```
 
 or
@@ -139,10 +139,19 @@ or
     # build the jar
     ./gradlew clean build
     # and run it
-    java -jar build/libs/burp-rest-api-2.0.0.jar --burp.jar=./lib/burpsuite_pro.jar 
+    java -jar build/libs/burp-rest-api-2.1.0.jar --burp.jar=./lib/burpsuite_pro.jar
 ```
+
 The version number of the JAR should match the version number from `build.gradle` while generating the JAR.
 
+If you want to run the script on recent (JRE > 9) versions of JVM use the burp-rest-api.* after putting burpsuite_pro.jar and burp-rest-api.sh in the same directory of the script.
+
+```
+# On Unix (Linux, macOS)
+./burp-rest-api.sh
+# On Windows
+./burp-rest-api.bat
+```
 
 ## License
 
