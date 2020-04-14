@@ -35,6 +35,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -85,7 +86,7 @@ public class BurpService {
         if (burpExtension != null) {
             log.info("Loading extensions {}", burpExtension);
             for (String extension : burpExtension.split(",")) {
-                ucu.registerBurpExtension(extension);
+                ucu.registerBurpExtension(Paths.get(extension).toAbsolutePath().normalize().toString());
             }
         }
 
