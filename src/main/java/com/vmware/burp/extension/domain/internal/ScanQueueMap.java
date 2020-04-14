@@ -66,14 +66,18 @@ public class ScanQueueMap {
       int totalPercentCompletion = 0;
       for (String url : map.keySet()) {
          for (IScanQueueItem iScanQueueItem : getQueue(url)) {
-            if (iScanQueueItem.getStatus().equalsIgnoreCase("cancelled") || iScanQueueItem.getStatus().contains("abandoned")) {
-               log.info("Scan Queue Item 'cancelled' or 'abandoned'");
+            numberOfScans++;
+            if (iScanQueueItem.getStatus().equalsIgnoreCase("cancelled")
+                    || iScanQueueItem.getStatus().contains("abandoned")
+                    || iScanQueueItem.getStatus().contains("finished")) {
+               totalPercentCompletion += 100;
             } else {
-               numberOfScans++;
+               // XXX: this method only works on BURP PRO  <= 1.7.+
                totalPercentCompletion += iScanQueueItem.getPercentageComplete();
             }
          }
       }
+
       if(totalPercentCompletion > 0) {
          int percentComplete = totalPercentCompletion / numberOfScans;
          log.info("Scan Percent Complete: {}", percentComplete);
