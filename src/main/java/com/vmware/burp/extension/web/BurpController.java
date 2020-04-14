@@ -30,6 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -216,10 +219,19 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = POST, value = "/scanner/scans/active")
-   public void scanActive(@RequestParam(value = "baseUrl") String baseUrl)
+   public void scanActive(
+           @RequestParam(value = "baseUrl") String baseUrl,
+           @RequestParam(value = "insertionPoint", required = false) List<String> insertionPoints
+   )
          throws MalformedURLException {
       if (StringUtils.isEmpty(baseUrl)) {
          throw new IllegalArgumentException("The 'baseUrl' parameter in payload must not be null or empty.");
+      }
+      List<int[]> convertedInsertionPoint = null;
+      if (insertionPoints != null && insertionPoints.size() != 0) {
+         convertedInsertionPoint = insertionPoints.stream().map(param ->
+                 Arrays.stream(param.split(":")).mapToInt(i -> Integer.parseInt(i, 10)).toArray()
+         ).collect(Collectors.toList());
       }
 
       boolean inScope = burp.isInScope(baseUrl);
@@ -229,7 +241,7 @@ public class BurpController {
          throw new IllegalStateException("The 'baseUrl' is NOT in scope. Set the 'baseUrl' scope to true before retry.");
       }
 
-      burp.scan(baseUrl,true);
+      burp.scan(baseUrl, true, convertedInsertionPoint);
    }
 
    @ApiOperation(value = "Deletes the active scan queue map from memory", notes = "Deletes the scan queue map from memory, not from Burp suite UI.")
