@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class HttpMessage {
    public HttpMessage() {
    }
 
-   public HttpMessage(IHttpRequestResponse iHttpRequestResponse) {
+   public HttpMessage(IHttpRequestResponse iHttpRequestResponse) throws UnsupportedEncodingException {
       this.host = iHttpRequestResponse.getHttpService().getHost();
       this.port = iHttpRequestResponse.getHttpService().getPort();
       this.protocol = iHttpRequestResponse.getHttpService().getProtocol();

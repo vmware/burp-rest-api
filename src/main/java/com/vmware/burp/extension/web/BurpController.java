@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -101,7 +102,7 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/proxy/history")
-   public HttpMessageList getProxyHistory() {
+   public HttpMessageList getProxyHistory() throws UnsupportedEncodingException {
       HttpMessageList httpMessageList = new HttpMessageList();
       httpMessageList.setHttpMessages(burp.getProxyHistory());
       return httpMessageList;
@@ -116,7 +117,7 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/target/sitemap")
-   public HttpMessageList getSiteMap(@RequestParam(required = false) String urlPrefix) {
+   public HttpMessageList getSiteMap(@RequestParam(required = false) String urlPrefix) throws UnsupportedEncodingException {
       HttpMessageList httpMessageList = new HttpMessageList();
       httpMessageList.setHttpMessages(burp.getSiteMap(urlPrefix));
       return httpMessageList;
@@ -250,7 +251,7 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/scanner/issues")
-   public ScanIssueList getScanIssues(@RequestParam(required = false) String urlPrefix) {
+   public ScanIssueList getScanIssues(@RequestParam(required = false) String urlPrefix) throws UnsupportedEncodingException {
       ScanIssueList scanIssueList = new ScanIssueList();
       scanIssueList.setScanIssues(burp.getIssues(urlPrefix));
       return scanIssueList;

@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 @XmlRootElement
@@ -62,7 +63,7 @@ public class ScanIssue {
 
    }
 
-   public ScanIssue(IScanIssue iScanIssue) {
+   public ScanIssue(IScanIssue iScanIssue) throws UnsupportedEncodingException {
       this.url = iScanIssue.getUrl();
       this.issueName = iScanIssue.getIssueName();
       this.issueType = iScanIssue.getIssueType();
