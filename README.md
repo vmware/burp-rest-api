@@ -52,7 +52,7 @@ or
 
 The following command line arguments are used only by the extension to configure the run mode and port number.
 
-`--burp.jar=<filaname.jar>` : Loads the Burp jar dinamically, and expose it through REST APIs. This flag works on Java <= 1.8 only! Use the `burp-rest-api.{sh,bat}` script for newer java versions.
+`--burp.jar=<filaname.jar>` : Loads the Burp jar dynamically, and expose it through REST APIs. This flag works on Java <= 1.8 only! Use the `burp-rest-api.{sh,bat}` script for newer java versions.
 
 `--burp.ext=<filename.{jar,rb,py}` : Loads the given Burp extensions during application startup. This flag can be repeated.
 
@@ -115,7 +115,7 @@ The burp-rest-api project team welcomes contributions from the community. If you
  any questions about the CLA process, please refer to our [CLA FAQ](https://cla.vmware.com/faq). For more detailed
  information, refer to [CONTRIBUTING.md](CONTRIBUTING.md) and [FAQ.md](FAQ.md).
 
-### Develop
+### Extension Development 
 
 The following section contains useful information to get started with the development of the extension.
 
