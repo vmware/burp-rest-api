@@ -12,6 +12,10 @@ To use burp-rest-api, it is recommended to download the JAR and the launcher `bu
 
 At this point, it is possible to bootstrap the system using: `./burp-rest-api.sh` or `./burp-rest-api.bat`
 
+**Note**
+
+If there are JAR files of the [headless-burp-proxy](https://github.com/PortSwigger/headless-burp) project in the same folder with the original Burp Suite JAR, please move them to another location because they can cause the failures of `burp-rest-api.{sh,bat}` script. For more details, please see [issue #107](https://github.com/vmware/burp-rest-api/issues/107) .
+
 ### Configuration
 
 By default, Burp is launched in headless mode with the Proxy running on port 8080/tcp (**localhost only**) and the REST endpoint running on 8090/tcp (**localhost only**).
