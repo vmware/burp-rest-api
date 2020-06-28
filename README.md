@@ -6,11 +6,12 @@ A REST/JSON API to the [Burp Suite](https://portswigger.net/burp) security tool.
 
 Since the first commit back in 2016, **burp-rest-api** has been the default tool for BurpSuite-powered web scanning automation. Many security professionals and organizations have relied on this extension to orchestrate the work of Burp Spider and Scanner.
 
-## Getting Started
+## Getting Started (or "How To Run burp-rest-api")
 
-To use burp-rest-api, it is recommended to download the JAR and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases) and place them within a directory having the original Burp Suite JAR (*burpsuite_pro_VERSION.jar*).
-
-At this point, it is possible to bootstrap the system using: `./burp-rest-api.sh` or `./burp-rest-api.bat`
+1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.1.0.jar`) and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases)
+2) Place them within a directory having the original Burp Suite Professional JAR (e.g. *burpsuite_pro_v2020.2.1.jar*). Please note that the actual JAR filename doesn't matter since the launcher will include all JARs in the classpath 
+3) On Linux and Mac, mark the launcher as executable using `chmod +x burp-rest-api.sh`
+4) Bootstrap the system using either `./burp-rest-api.sh` or `./burp-rest-api.bat`, depending on the operating system
 
 ### Configuration
 
