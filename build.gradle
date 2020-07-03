@@ -76,8 +76,8 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE')
     implementation("org.springframework.boot:spring-boot-starter-jetty:2.2.6.RELEASE")
     implementation group: 'org.springframework.boot', name: 'spring-boot-loader', version: '2.2.6.RELEASE'
-    implementation "io.springfox:springfox-swagger2:2.+"
-    implementation "io.springfox:springfox-swagger-ui:2.+"
+    implementation "io.springfox:springfox-swagger2:2.8.+"
+    implementation "io.springfox:springfox-swagger-ui:2.8.+"
     implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
     compileOnly "net.portswigger.burp.extender:burp-extender-api:2.+"
 
