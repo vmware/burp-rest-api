@@ -6,10 +6,7 @@
 
 package com.vmware.burp.extension.service;
 
-import burp.LegacyBurpExtender;
-import burp.IHttpRequestResponse;
-import burp.IScanIssue;
-import burp.IScanQueueItem;
+import burp.*;
 import com.vmware.burp.extension.domain.HttpMessage;
 import com.vmware.burp.extension.domain.ReportType;
 import com.vmware.burp.extension.domain.ScanIssue;
@@ -26,7 +23,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import javax.naming.ldap.UnsolicitedNotification;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,6 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.NoRouteToHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -236,16 +233,33 @@ public class BurpService {
                 input.stream().allMatch(i -> i.length == 2 && i[0] < i[1]);
     }
 
-    public boolean scan(String baseUrl, boolean isActive) throws MalformedURLException {
+    public boolean scan(String baseUrl, boolean isActive) throws MalformedURLException, NoRouteToHostException {
         return this.scan(baseUrl, isActive, null);
     }
 
     public boolean scan(String baseUrl, boolean isActive, List<int[]> insertionPoints)
-            throws MalformedURLException {
+            throws MalformedURLException, NoRouteToHostException {
         boolean inScope = isInScope(baseUrl);
         log.info("Total SiteMap size: {}", LegacyBurpExtender.getInstance().getCallbacks().getSiteMap("").length);
         log.info("Is {} in Scope: {}", baseUrl, inScope);
         if (inScope) {
+            // check if the target is reachable and include the base IHttpRequestResponse in the sitemap
+            URL target = new URL(baseUrl);
+            boolean isHttps = target.getProtocol().equalsIgnoreCase("HTTPS");
+            int targetPort = target.getPort() != -1 ? target.getPort() : (isHttps ? 443 : 80);
+            IHttpService reqHttpService = LegacyBurpExtender.getInstance().getHelpers().buildHttpService(target.getHost(), targetPort, isHttps);
+            IHttpRequestResponse reqResHttpService = null;
+            try {
+                reqResHttpService = LegacyBurpExtender.getInstance().getCallbacks().makeHttpRequest(reqHttpService, LegacyBurpExtender.getInstance().getHelpers().buildHttpRequest(target));
+            }catch(RuntimeException runtimeException){
+                log.info("Active Scan Target Connection Error. A Fatal Error Occurred!");
+                throw new NoRouteToHostException("Active Scan Target Connection Error");
+            }
+            if (reqResHttpService.getResponse() == null || (reqResHttpService.getResponse() != null && reqResHttpService.getResponse().length == 0)){
+                log.info("Active Scan Target Did Not Respond. A Fatal Error Occurred!");
+                throw new NoRouteToHostException("Active Scan Target Did Not Respond");
+            }
+            LegacyBurpExtender.getInstance().getCallbacks().addToSiteMap(reqResHttpService);
             IHttpRequestResponse[] siteMapInScope = LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(baseUrl);
             log.info("Number of URLs submitting for Active/Passive Scan: {}", siteMapInScope.length);
             for (IHttpRequestResponse iHttpRequestResponse : siteMapInScope) {

@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.NoRouteToHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -193,7 +194,7 @@ public class BurpController {
    })
    @RequestMapping(method = POST, value = "/scanner/scans/passive")
    public void scanPassive(@RequestParam(value = "baseUrl") String baseUrl)
-           throws MalformedURLException {
+           throws MalformedURLException, NoRouteToHostException {
       if (StringUtils.isEmpty(baseUrl)) {
          throw new IllegalArgumentException("The 'baseUrl' parameter in payload must not be null or empty.");
       }
@@ -223,7 +224,7 @@ public class BurpController {
            @RequestParam(value = "baseUrl") String baseUrl,
            @RequestParam(value = "insertionPoint", required = false) List<String> insertionPoints
    )
-         throws MalformedURLException {
+           throws MalformedURLException, NoRouteToHostException {
       if (StringUtils.isEmpty(baseUrl)) {
          throw new IllegalArgumentException("The 'baseUrl' parameter in payload must not be null or empty.");
       }
