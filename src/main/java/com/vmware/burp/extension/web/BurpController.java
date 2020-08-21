@@ -304,6 +304,7 @@ public class BurpController {
    public ScanProgress scanPercentComplete() {
       ScanProgress scanProgress = new ScanProgress();
       scanProgress.setTotalScanPercentage(burp.getScanPercentageComplete());
+      scanProgress.setScanStatus(burp.getScanStatus());
       return scanProgress;
    }
 

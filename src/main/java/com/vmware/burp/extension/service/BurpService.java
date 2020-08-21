@@ -368,6 +368,11 @@ public class BurpService {
         return scans.getPercentageComplete();
     }
 
+    public String getScanStatus() {
+        log.info("Getting Scanner Status.");
+        return scans.getScanStatus();
+    }
+
     public int getSpiderPercentageComplete() {
         log.info("Estimate Spider percentage complete.");
         return spiders.getPercentageComplete();
