@@ -123,6 +123,11 @@ public class BurpClient {
       return restTemplate.getForObject(uriString, ScanProgress.class).getTotalScanPercentage();
    }
 
+   public String getScanStatus() {
+      String uriString = buildUriFromPathSegments("burp", "scanner", "status");
+      return restTemplate.getForObject(uriString, ScanProgress.class).getScanStatus();
+   }
+
    public ScanIssueList getScanIssues(String urlPrefix) {
       String uriString = buildUriFromPathSegments("burp", "scanner", "issues");
       URI uri = UriComponentsBuilder.fromUriString(uriString).queryParam("urlPrefix", urlPrefix)

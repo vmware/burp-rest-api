@@ -86,4 +86,16 @@ public class ScanQueueMap {
          return 0;
       }
    }
+
+   public String getScanStatus(){
+      String status = "none";
+      for (String url : map.keySet()) {
+         for (IScanQueueItem iScanQueueItem : getQueue(url)) {
+            status = iScanQueueItem.getStatus();
+            log.info("Scan Percent Complete: {}", status);
+            return status;
+         }
+      }
+      return status;
+   }
 }

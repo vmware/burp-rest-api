@@ -19,6 +19,7 @@ public class ScanProgress {
    @JsonProperty("scanPercentage")
    @XmlElement(name = "scanPercentage", required = true)
    private int totalScanPercentage;
+   private String scanStatus;
 
    public int getTotalScanPercentage() {
       return totalScanPercentage;
@@ -26,5 +27,13 @@ public class ScanProgress {
 
    public void setTotalScanPercentage(int totalScanPercentage) {
       this.totalScanPercentage = totalScanPercentage;
+   }
+
+   public String getScanStatus(){
+      return scanStatus;
+   }
+
+   public void setScanStatus(String scanStatus){
+      this.scanStatus = scanStatus;
    }
 }
