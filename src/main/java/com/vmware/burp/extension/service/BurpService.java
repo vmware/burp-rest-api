@@ -8,6 +8,8 @@ package com.vmware.burp.extension.service;
 
 import burp.*;
 import com.vmware.burp.extension.domain.HttpMessage;
+import com.vmware.burp.extension.domain.IssueConfidence;
+import com.vmware.burp.extension.domain.IssueSeverity;
 import com.vmware.burp.extension.domain.ReportType;
 import com.vmware.burp.extension.domain.ScanIssue;
 import com.vmware.burp.extension.domain.internal.ScanQueueMap;
@@ -35,6 +37,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -353,13 +357,43 @@ public class BurpService {
         return scanIssues;
     }
 
-    public byte[] generateScanReport(String urlPrefix, ReportType reportType) throws IOException {
+    public byte[] generateScanReport(String urlPrefix, ReportType reportType, IssueSeverity[] issueSeverities,
+                                     IssueConfidence[] issueConfidences, String[] issuePaths) throws IOException {
         Path reportFile = Files.createTempFile("Report", "." + reportType.getReportType());
         reportFile.toFile().deleteOnExit();
-        LegacyBurpExtender.getInstance().getCallbacks()
-                .generateScanReport(reportType.getReportType(),
-                        LegacyBurpExtender.getInstance().getCallbacks().getScanIssues(urlPrefix),
-                        reportFile.toFile());
+
+        IBurpExtenderCallbacks burpExtenderCallbacks = LegacyBurpExtender.getInstance().getCallbacks();
+
+        Supplier<Stream<IScanIssue>> scanIssuesSupplier = () -> Arrays.stream(burpExtenderCallbacks.getScanIssues(urlPrefix));
+
+        boolean shouldFilterBySeverity = issueSeverities.length > 0 && !Arrays.asList(issueSeverities).contains(IssueSeverity.All);
+        boolean shouldFilterByConfidence = issueConfidences.length > 0 && !Arrays.asList(issueConfidences).contains(IssueConfidence.All);
+        boolean shouldFilterByPath = issuePaths.length > 0;
+
+        List<String> severities = Arrays.stream(issueSeverities)
+                .map(issueSeverity -> issueSeverity.getIssueSeverity())
+                .collect(Collectors.toList());
+        List<String> confidences = Arrays.stream(issueConfidences)
+                .map(issueConfidence -> issueConfidence.getIssueConfidence())
+                .collect(Collectors.toList());
+        Supplier<Stream<String>> pathsSupplier = () -> Arrays.stream(issuePaths)
+                .map(path -> path.startsWith("/") ? path : "/" + path);
+
+        IScanIssue[] filteredScanIssues = scanIssuesSupplier.get()
+                .filter(scanIssue ->
+                        // Filter by severity.
+                        (!shouldFilterBySeverity || severities.contains(scanIssue.getSeverity()))
+                        // Filter by confidence.
+                        && (!shouldFilterByConfidence || confidences.contains(scanIssue.getConfidence()))
+                        // Filter by path.
+                        && (!shouldFilterByPath || pathsSupplier.get().anyMatch(path ->
+                            scanIssue.getUrl().getPath().startsWith(path))))
+                .toArray(IScanIssue[]::new);
+
+        burpExtenderCallbacks.generateScanReport(reportType.getReportType(),
+                filteredScanIssues,
+                reportFile.toFile());
+
         return Files.readAllBytes(reportFile);
     }
 
