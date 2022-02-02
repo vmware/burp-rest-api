@@ -273,11 +273,10 @@ public class BurpController {
 
    @ApiOperation(value = "Get the scan report with Scanner issues", notes = "Returns the scan report with current Scanner issues for URLs matching the specified urlPrefix in the form of a byte array. Report format can be specified as HTML or XML. Report with scan issues of all URLs are returned in HTML format if no urlPrefix and format are specified.")
    @ApiImplicitParams({
-         @ApiImplicitParam(name = "urlPrefix", value = "URL prefix in order to extract and include a specific subset of scan issues in the report.", dataType = "string", paramType = "query"),
+         @ApiImplicitParam(name = "urlPrefix", value = "URL prefix in order to extract and include a specific subset of scan issues in the report. Multiple values are also accepted if they are comma-separated.", dataType = "string", paramType = "query"),
          @ApiImplicitParam(name = "reportType", value = "Format to be used to generate report. Acceptable values are HTML and XML.", defaultValue = "HTML", dataType = "string", paramType = "query"),
          @ApiImplicitParam(name = "issueSeverity", value = "Severity of the scan issues to be included in the report. Acceptable values are All, High, Medium, Low and Information. Multiple values are also accepted if they are comma-separated.", defaultValue = "All", dataType = "string", paramType = "query"),
-         @ApiImplicitParam(name = "issueConfidence", value = "Confidence of the scan issues to be included in the report. Acceptable values are All, Certain, Firm and Tentative. Multiple values are also accepted if they are comma-separated.", defaultValue = "All", dataType = "string", paramType = "query"),
-         @ApiImplicitParam(name = "issuePath", value = "Path of the scan issues to be included in the report. Multiple values are accepted if they are comma-separated.", dataType = "string", paramType = "query")
+         @ApiImplicitParam(name = "issueConfidence", value = "Confidence of the scan issues to be included in the report. Acceptable values are All, Certain, Firm and Tentative. Multiple values are also accepted if they are comma-separated.", defaultValue = "All", dataType = "string", paramType = "query")
    })
    @ApiResponses(value = {
          @ApiResponse(code = 200, message = "Success", response = Byte[].class),
@@ -285,12 +284,19 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/report")
-   public byte[] generateReport(@RequestParam(required = false) String urlPrefix,
+   public byte[] generateReport(@RequestParam String urlPrefix,
                                 @RequestParam(required = false, defaultValue = "HTML") String reportType,
                                 @RequestParam(required = false, defaultValue = "All") String issueSeverity,
-                                @RequestParam(required = false, defaultValue = "All") String issueConfidence,
-                                @RequestParam(required = false) String issuePath)
+                                @RequestParam(required = false, defaultValue = "All") String issueConfidence)
          throws IOException {
+
+      List<String> urlPrefixes = new ArrayList<>();
+      if (urlPrefix != null && !urlPrefix.trim().isEmpty()) {
+         urlPrefixes = Arrays.stream(urlPrefix.split(","))
+                 .map(String :: trim)
+                 .collect(Collectors.toList());
+      }
+
       try {
          ReportType.valueOf(reportType);
       } catch (Exception e) {
@@ -321,15 +327,8 @@ public class BurpController {
                  "Invalid value for the issueConfidence parameter. Valid values: All, Certain, Firm, Tentative.");
       }
 
-      List<String> issuePaths = new ArrayList<>();
-      if (issuePath != null && !issuePath.trim().isEmpty()) {
-         issuePaths = Arrays.stream(issuePath.split(","))
-                 .map(String :: trim)
-                 .collect(Collectors.toList());
-      }
-
-      return burp.generateScanReport(urlPrefix, ReportType.valueOf(reportType), issueSeverities.toArray(new IssueSeverity[0]),
-              issueConfidences.toArray(new IssueConfidence[0]), issuePaths.toArray(new String[0]));
+      return burp.generateScanReport(urlPrefixes.toArray(new String[0]), ReportType.valueOf(reportType),
+              issueSeverities.toArray(new IssueSeverity[0]), issueConfidences.toArray(new IssueConfidence[0]));
    }
 
    @ApiOperation(value = "Get the percentage completed for the scan queue items", notes = "Returns an aggregate of percentage completed for all the scan queue items.")

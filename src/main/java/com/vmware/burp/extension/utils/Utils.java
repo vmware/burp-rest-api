@@ -9,6 +9,8 @@ package com.vmware.burp.extension.utils;
 import com.vmware.burp.extension.domain.Config;
 import com.vmware.burp.extension.domain.ConfigItem;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,5 +22,13 @@ public class Utils {
          configMap.put(configItem.getProperty(), configItem.getValue());
       }
       return configMap;
+   }
+
+   public static String convertURLToStringWithoutPort(URL url) {
+      try {
+         return new URL(url.getProtocol(), url.getHost(), url.getFile()).toString();
+      } catch (MalformedURLException e) {
+         return null;
+      }
    }
 }
