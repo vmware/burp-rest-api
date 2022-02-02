@@ -87,15 +87,13 @@ public class ScanQueueMap {
       }
    }
 
-   public String getScanStatus(){
-      String status = "none";
+   public List<String[]> getScanStatuses() {
+      List<String[]> statuses = new ArrayList<>();
       for (String url : map.keySet()) {
          for (IScanQueueItem iScanQueueItem : getQueue(url)) {
-            status = iScanQueueItem.getStatus();
-            log.info("Scan Percent Complete: {}", status);
-            return status;
+            statuses.add(new String[]{url, iScanQueueItem.getStatus()});
          }
       }
-      return status;
+      return statuses;
    }
 }

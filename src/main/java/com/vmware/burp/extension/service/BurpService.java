@@ -10,6 +10,7 @@ import burp.*;
 import com.vmware.burp.extension.domain.HttpMessage;
 import com.vmware.burp.extension.domain.ReportType;
 import com.vmware.burp.extension.domain.ScanIssue;
+import com.vmware.burp.extension.domain.ScanStatus;
 import com.vmware.burp.extension.domain.internal.ScanQueueMap;
 import com.vmware.burp.extension.domain.internal.SpiderQueueMap;
 import com.vmware.burp.extension.utils.UserConfigUtils;
@@ -35,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -363,14 +365,11 @@ public class BurpService {
         return Files.readAllBytes(reportFile);
     }
 
-    public int getScanPercentageComplete() {
-        log.info("Getting Scanner percentage complete.");
-        return scans.getPercentageComplete();
-    }
-
-    public String getScanStatus() {
-        log.info("Getting Scanner Status.");
-        return scans.getScanStatus();
+    public List<ScanStatus> getScanStatuses() {
+        log.info("Retrieving Scans statuses.");
+        return scans.getScanStatuses().stream()
+                .map(status -> new ScanStatus(status[0], status[1]))
+                .collect(Collectors.toList());
     }
 
     public int getSpiderPercentageComplete() {
