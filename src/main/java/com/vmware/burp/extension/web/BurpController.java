@@ -8,6 +8,7 @@ package com.vmware.burp.extension.web;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vmware.burp.extension.domain.ScanStatusList;
 import com.vmware.burp.extension.domain.*;
 import com.vmware.burp.extension.service.BurpService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -331,16 +332,16 @@ public class BurpController {
               issueSeverities.toArray(new IssueSeverity[0]), issueConfidences.toArray(new IssueConfidence[0]));
    }
 
-   @ApiOperation(value = "Get the percentage completed for the scan queue items", notes = "Returns an aggregate of percentage completed for all the scan queue items.")
+   @ApiOperation(value = "Get the status of each scan", notes = "Returns status details of items in the scan queue.")
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = ScanProgress.class),
+         @ApiResponse(code = 200, message = "Success", response = ScanStatusList.class),
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/scanner/status")
-   public ScanProgress scanPercentComplete() {
-      ScanProgress scanProgress = new ScanProgress();
-      scanProgress.setTotalScanPercentage(burp.getScanPercentageComplete());
-      return scanProgress;
+   public ScanStatusList scanPercentComplete() {
+      ScanStatusList scanStatusList = new ScanStatusList();
+      scanStatusList.setScanStatuses(burp.getScanStatuses());
+      return scanStatusList;
    }
 
     @ApiOperation(value = "Get the status of the spider", notes = "Returns an estimate of the current status of the spider. Due to the current limitations in Burp's Extender API, this endpoint will return 100% whenever the spider is no longer discovering new resources. On newer Burp APIs, we expect to be able to provide discrete values.")

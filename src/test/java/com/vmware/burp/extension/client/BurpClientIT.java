@@ -123,7 +123,7 @@ public class BurpClientIT {
 
     @Test
     public void testScannerSpiderAndReportMethods() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        assertEquals(100, burpClient.getScannerStatus());
+        assertEquals(0, burpClient.getScanStatuses().getScanStatuses().size());
 
         String urlPrefix = "https://www.vmware.com";
         IssueSeverity[] issueSeverity = new IssueSeverity[] { IssueSeverity.High, IssueSeverity.Medium };
@@ -141,9 +141,7 @@ public class BurpClientIT {
         burpClient.includeInScope(urlPrefix);
         burpClient.spider(urlPrefix);
         burpClient.scan(urlPrefix);
-
-        assertNotEquals(100, burpClient.getScannerStatus());
-
+        assertNotEquals(0, burpClient.getScanStatuses().getScanStatuses().size());
         Thread.sleep(4000);
 
         assertNotEquals(0, burpClient.getScanIssues().getScanIssues().size());

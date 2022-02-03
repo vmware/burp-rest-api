@@ -86,4 +86,14 @@ public class ScanQueueMap {
          return 0;
       }
    }
+
+   public List<String[]> getScanStatuses() {
+      List<String[]> statuses = new ArrayList<>();
+      for (String url : map.keySet()) {
+         for (IScanQueueItem iScanQueueItem : getQueue(url)) {
+            statuses.add(new String[]{url, iScanQueueItem.getStatus()});
+         }
+      }
+      return statuses;
+   }
 }

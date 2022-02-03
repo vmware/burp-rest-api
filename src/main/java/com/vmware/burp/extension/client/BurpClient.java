@@ -8,7 +8,11 @@ package com.vmware.burp.extension.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vmware.burp.extension.domain.*;
+import com.vmware.burp.extension.domain.ScanStatusList;
+import com.vmware.burp.extension.domain.Config;
+import com.vmware.burp.extension.domain.HttpMessageList;
+import com.vmware.burp.extension.domain.ReportType;
+import com.vmware.burp.extension.domain.ScanIssueList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -24,7 +28,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,9 +119,9 @@ public class BurpClient {
 
    //TODO: Client method for clearScans. Is this needed?
 
-   public int getScannerStatus() {
+   public ScanStatusList getScanStatuses() {
       String uriString = buildUriFromPathSegments("burp", "scanner", "status");
-      return restTemplate.getForObject(uriString, ScanProgress.class).getTotalScanPercentage();
+      return restTemplate.getForObject(uriString, ScanStatusList.class);
    }
 
    public ScanIssueList getScanIssues(String urlPrefix) {

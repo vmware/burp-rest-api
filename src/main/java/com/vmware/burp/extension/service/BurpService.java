@@ -12,6 +12,7 @@ import com.vmware.burp.extension.domain.IssueConfidence;
 import com.vmware.burp.extension.domain.IssueSeverity;
 import com.vmware.burp.extension.domain.ReportType;
 import com.vmware.burp.extension.domain.ScanIssue;
+import com.vmware.burp.extension.domain.ScanStatus;
 import com.vmware.burp.extension.domain.internal.ScanQueueMap;
 import com.vmware.burp.extension.domain.internal.SpiderQueueMap;
 import com.vmware.burp.extension.utils.UserConfigUtils;
@@ -399,9 +400,11 @@ public class BurpService {
         return Files.readAllBytes(reportFile);
     }
 
-    public int getScanPercentageComplete() {
-        log.info("Getting Scanner percentage complete.");
-        return scans.getPercentageComplete();
+    public List<ScanStatus> getScanStatuses() {
+        log.info("Retrieving Scans statuses.");
+        return scans.getScanStatuses().stream()
+                .map(status -> new ScanStatus(status[0], status[1]))
+                .collect(Collectors.toList());
     }
 
     public int getSpiderPercentageComplete() {
