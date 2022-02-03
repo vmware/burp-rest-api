@@ -21,6 +21,8 @@ public class ScanStatus {
     @XmlElement(required = true)
     private String status;
 
+    private ScanStatus() { }
+
     public ScanStatus(String url, String status) {
         this.url = url;
         this.status = status;
