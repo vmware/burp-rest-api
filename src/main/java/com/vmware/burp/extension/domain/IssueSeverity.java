@@ -4,31 +4,18 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.vmware.burp.extension.utils;
+package com.vmware.burp.extension.domain;
 
-import com.vmware.burp.extension.domain.Config;
-import com.vmware.burp.extension.domain.ConfigItem;
+public enum IssueSeverity {
+    All("All"), High("High"), Medium("Medium"), Low("Low"), Information("Information");
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+    private final String issueSeverity;
 
-public class Utils {
+    IssueSeverity(String issueSeverity) {
+        this.issueSeverity = issueSeverity;
+    }
 
-   public static Map<String, String> convertConfigurationListToMap(Config config) {
-      Map<String, String> configMap = new HashMap<>();
-      for (ConfigItem configItem : config.getConfiguration()) {
-         configMap.put(configItem.getProperty(), configItem.getValue());
-      }
-      return configMap;
-   }
-
-   public static String convertURLToStringWithoutPort(URL url) {
-      try {
-         return new URL(url.getProtocol(), url.getHost(), url.getFile()).toString();
-      } catch (MalformedURLException e) {
-         return null;
-      }
-   }
+    public String getIssueSeverity() {
+        return issueSeverity;
+    }
 }
