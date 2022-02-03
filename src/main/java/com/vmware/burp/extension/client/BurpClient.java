@@ -8,11 +8,7 @@ package com.vmware.burp.extension.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vmware.burp.extension.domain.Config;
-import com.vmware.burp.extension.domain.HttpMessageList;
-import com.vmware.burp.extension.domain.ReportType;
-import com.vmware.burp.extension.domain.ScanIssueList;
-import com.vmware.burp.extension.domain.ScanProgress;
+import com.vmware.burp.extension.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -31,8 +27,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BurpClient {
    private static final Logger log = LoggerFactory.getLogger(BurpClient.class);
@@ -135,10 +133,27 @@ public class BurpClient {
       return restTemplate.getForObject(uriString, ScanIssueList.class);
    }
 
-   public byte[] getReportData(ReportType reportType) {
+   public byte[] getReportData(String urlPrefix, ReportType reportType,
+                               IssueSeverity[] issueSeverity, IssueConfidence[] issueConfidence) {
       String uriString = buildUriFromPathSegments("burp", "report");
-      URI uri = UriComponentsBuilder.fromUriString(uriString).queryParam("reportType", reportType)
-            .build().toUri();
+      String issueSeverityStr = null;
+      if (issueSeverity != null) {
+         issueSeverityStr = String.join(",", Arrays.stream(issueSeverity)
+                 .map(severity -> severity.getIssueSeverity())
+                 .collect(Collectors.toList()));
+      }
+      String issueConfidenceStr = null;
+      if (issueConfidence != null) {
+         issueConfidenceStr = String.join(",", Arrays.stream(issueConfidence)
+                 .map(confidence -> confidence.getIssueConfidence())
+                 .collect(Collectors.toList()));
+      }
+      URI uri = UriComponentsBuilder.fromUriString(uriString)
+              .queryParam("urlPrefix", urlPrefix)
+              .queryParam("reportType", reportType)
+              .queryParam("issueSeverity", issueSeverityStr)
+              .queryParam("issueConfidence", issueConfidenceStr)
+              .build().toUri();
       HttpHeaders headers = new HttpHeaders();
       headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
 

@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.NoRouteToHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -272,8 +273,10 @@ public class BurpController {
 
    @ApiOperation(value = "Get the scan report with Scanner issues", notes = "Returns the scan report with current Scanner issues for URLs matching the specified urlPrefix in the form of a byte array. Report format can be specified as HTML or XML. Report with scan issues of all URLs are returned in HTML format if no urlPrefix and format are specified.")
    @ApiImplicitParams({
-         @ApiImplicitParam(name = "urlPrefix", value = "URL prefix in order to extract and include a specific subset of scan issues in the report.", dataType = "string", paramType = "query"),
-         @ApiImplicitParam(name = "reportType", value = "Format to be used to generate report. Acceptable values are HTML and XML.", defaultValue = "HTML", dataType = "string", paramType = "query")
+         @ApiImplicitParam(name = "urlPrefix", value = "URL prefix in order to extract and include a specific subset of scan issues in the report. Multiple values are also accepted if they are comma-separated.", dataType = "string", paramType = "query"),
+         @ApiImplicitParam(name = "reportType", value = "Format to be used to generate report. Acceptable values are HTML and XML.", defaultValue = "HTML", dataType = "string", paramType = "query"),
+         @ApiImplicitParam(name = "issueSeverity", value = "Severity of the scan issues to be included in the report. Acceptable values are All, High, Medium, Low and Information. Multiple values are also accepted if they are comma-separated.", defaultValue = "All", dataType = "string", paramType = "query"),
+         @ApiImplicitParam(name = "issueConfidence", value = "Confidence of the scan issues to be included in the report. Acceptable values are All, Certain, Firm and Tentative. Multiple values are also accepted if they are comma-separated.", defaultValue = "All", dataType = "string", paramType = "query")
    })
    @ApiResponses(value = {
          @ApiResponse(code = 200, message = "Success", response = Byte[].class),
@@ -281,9 +284,19 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/report")
-   public byte[] generateReport(@RequestParam(required = false) String urlPrefix,
-         @RequestParam(required = false, defaultValue = "HTML") String reportType)
+   public byte[] generateReport(@RequestParam String urlPrefix,
+                                @RequestParam(required = false, defaultValue = "HTML") String reportType,
+                                @RequestParam(required = false, defaultValue = "All") String issueSeverity,
+                                @RequestParam(required = false, defaultValue = "All") String issueConfidence)
          throws IOException {
+
+      List<String> urlPrefixes = new ArrayList<>();
+      if (urlPrefix != null && !urlPrefix.trim().isEmpty()) {
+         urlPrefixes = Arrays.stream(urlPrefix.split(","))
+                 .map(String :: trim)
+                 .collect(Collectors.toList());
+      }
+
       try {
          ReportType.valueOf(reportType);
       } catch (Exception e) {
@@ -292,7 +305,30 @@ public class BurpController {
                "Invalid value for the reportType parameter. Valid values: HTML, XML.");
       }
 
-      return burp.generateScanReport(urlPrefix, ReportType.valueOf(reportType));
+      List<IssueSeverity> issueSeverities = new ArrayList<>();
+      try {
+         for (String sev : issueSeverity.split(",")) {
+            issueSeverities.add(IssueSeverity.valueOf(sev.trim()));
+         }
+      } catch (Exception e) {
+         log.error("Invalid Issue Severity in the request: {}", issueSeverity);
+         throw new IllegalArgumentException(
+                 "Invalid value for the issueSeverity parameter. Valid values: All, High, Medium, Low, Information.");
+      }
+
+      List<IssueConfidence> issueConfidences = new ArrayList<>();
+      try {
+         for (String conf : issueConfidence.split(",")) {
+            issueConfidences.add(IssueConfidence.valueOf(conf.trim()));
+         }
+      } catch (Exception e) {
+         log.error("Invalid Issue Confidence in the request: {}", issueConfidence);
+         throw new IllegalArgumentException(
+                 "Invalid value for the issueConfidence parameter. Valid values: All, Certain, Firm, Tentative.");
+      }
+
+      return burp.generateScanReport(urlPrefixes.toArray(new String[0]), ReportType.valueOf(reportType),
+              issueSeverities.toArray(new IssueSeverity[0]), issueConfidences.toArray(new IssueConfidence[0]));
    }
 
    @ApiOperation(value = "Get the percentage completed for the scan queue items", notes = "Returns an aggregate of percentage completed for all the scan queue items.")

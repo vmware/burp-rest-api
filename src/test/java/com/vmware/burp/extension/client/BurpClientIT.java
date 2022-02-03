@@ -9,6 +9,8 @@ package com.vmware.burp.extension.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vmware.burp.extension.domain.HttpMessageList;
+import com.vmware.burp.extension.domain.IssueConfidence;
+import com.vmware.burp.extension.domain.IssueSeverity;
 import com.vmware.burp.extension.domain.ReportType;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
@@ -124,19 +126,29 @@ public class BurpClientIT {
         assertEquals(100, burpClient.getScannerStatus());
 
         String urlPrefix = "https://www.vmware.com";
+        IssueSeverity[] issueSeverity = new IssueSeverity[] { IssueSeverity.High, IssueSeverity.Medium };
+        IssueConfidence[] issueConfidence = new IssueConfidence[] { IssueConfidence.Certain };
 
         sendRequestThruProxy();
 
-        assertNotNull(burpClient.getReportData(ReportType.HTML));
-        assertNotNull(burpClient.getReportData(ReportType.XML));
+        assertNotNull(burpClient.getReportData(urlPrefix, null, null, null));
+        assertNotNull(burpClient.getReportData(urlPrefix, ReportType.HTML, null, null));
+        assertNotNull(burpClient.getReportData(urlPrefix, ReportType.XML, null, null));
+        assertNotNull(burpClient.getReportData(urlPrefix, ReportType.HTML, issueSeverity, null));
+        assertNotNull(burpClient.getReportData(urlPrefix, ReportType.HTML, null, issueConfidence));
+        assertNotNull(burpClient.getReportData(urlPrefix, ReportType.HTML, issueSeverity, issueConfidence));
 
         burpClient.includeInScope(urlPrefix);
         burpClient.spider(urlPrefix);
         burpClient.scan(urlPrefix);
+
         assertNotEquals(100, burpClient.getScannerStatus());
+
         Thread.sleep(4000);
+
         assertNotEquals(0, burpClient.getScanIssues().getScanIssues().size());
         assertNotEquals(0, burpClient.getScanIssues(urlPrefix).getScanIssues().size());
+
         burpClient.excludeFromScope(urlPrefix);
     }
 
