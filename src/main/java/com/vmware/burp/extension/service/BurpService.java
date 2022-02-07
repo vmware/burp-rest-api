@@ -56,6 +56,8 @@ public class BurpService {
     private ScanQueueMap scans;
     private SpiderQueueMap spiders;
     private String restApiPath;
+    final String API_KEY_ARGUMENT = "apikey";
+    private String apiKey;
 
     @Value("${java.awt.headless}")
     private boolean awtHeadLessMode;
@@ -123,9 +125,17 @@ public class BurpService {
                 userOptions[i] = USER_CONFIG_FILE_ARGUMENT + ucu.injectExtensions(userOptions[i]);
             }
         }
+
+
+        if (args.containsOption(API_KEY_ARGUMENT)) {
+            String[] apiKeysValues = args.getOptionValues(API_KEY_ARGUMENT).stream().toArray(String[]::new);
+            setAPIKey(apiKeysValues);
+        }
+
+
         String[] burpOptions = Stream.concat(Arrays.stream(projectData), Arrays.stream(projectOptions)).toArray(String[]::new);
         burpOptions = Stream.of(
-                Arrays.stream(args.getSourceArgs()),
+                Arrays.stream(args.getSourceArgs()).filter(arg -> !arg.contains(API_KEY_ARGUMENT)),
                 Arrays.stream(burpOptions),
                 Arrays.stream(userOptions))
                 .reduce(Stream::concat).orElseGet(Stream::empty).toArray(String[]::new);
@@ -142,6 +152,20 @@ public class BurpService {
 
         scans = new ScanQueueMap();
         spiders = new SpiderQueueMap(3000);
+    }
+
+    private void setAPIKey(String[] apiKeysValues) {
+        if (apiKeysValues.length == 1 && apiKeysValues[0].trim().length() > 0) {
+            log.info("APIKEY received");
+            this.apiKey = apiKeysValues[0];
+        }
+        else {
+            log.warn("APIKEY has empty value");
+        }
+    }
+
+    public String getAPIKey() {
+        return this.apiKey;
     }
 
     // TODO: This call will fail on Java > 1.8 .
