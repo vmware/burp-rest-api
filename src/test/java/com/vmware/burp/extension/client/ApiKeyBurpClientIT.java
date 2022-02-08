@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, args = {"--apikey=test-api-key"})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+// @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ApiKeyBurpClientIT {
     private static final Logger log = LoggerFactory.getLogger(ApiKeyBurpClientIT.class);
     private static final String PROXY_HOST = "localhost";
