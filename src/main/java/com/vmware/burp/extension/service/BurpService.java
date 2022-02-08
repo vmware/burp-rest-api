@@ -56,7 +56,7 @@ public class BurpService {
     private ScanQueueMap scans;
     private SpiderQueueMap spiders;
     private String restApiPath;
-    final String API_KEY_ARGUMENT = "apikey";
+    private final String API_KEY_ARGUMENT = "apikey";
     private String apiKey;
 
     @Value("${java.awt.headless}")
@@ -126,7 +126,7 @@ public class BurpService {
             }
         }
 
-
+        // apikey argument parsing, if present
         if (args.containsOption(API_KEY_ARGUMENT)) {
             String[] apiKeysValues = args.getOptionValues(API_KEY_ARGUMENT).stream().toArray(String[]::new);
             setAPIKey(apiKeysValues);
