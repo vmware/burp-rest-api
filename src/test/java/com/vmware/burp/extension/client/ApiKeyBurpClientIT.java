@@ -108,7 +108,8 @@ public class ApiKeyBurpClientIT {
     public void testGetProxyHistoryAndSiteMapWithAPIKeyHeader() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         HttpMessageList proxyHistory = burpClient.getProxyHistory();
 
-        // Assume.assumeTrue is necessary when running multiple integration tests that uses the same instance of burp that has
+        // Assume.assumeTrue is necessary when running multiple integration tests that uses the same instance of burp.
+        // If other tests have already filled the proxy history, this test will be skipped because the initial proxy history is not empty
         Assume.assumeTrue(proxyHistory.getHttpMessages().size() == 0);
         assertEquals(0, proxyHistory.getHttpMessages().size());
 
@@ -139,7 +140,8 @@ public class ApiKeyBurpClientIT {
     @Test
     public void testScannerSpiderAndReportMethodsWithAPIKeyHeader() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 
-        // Assume.assumeTrue is necessary when running multiple integration tests that uses the same instance of burp with previous scans in the session
+        // Assume.assumeTrue is necessary when running multiple integration tests that uses the same instance of burp with previous scans in the session;
+        // if other tests have already requested some scans, this test will be skipped because the initial list of scans is not empty.
         Assume.assumeTrue(burpClient.getScanStatuses().getScanStatuses().size() == 0);
         assertEquals(0, burpClient.getScanStatuses().getScanStatuses().size());
 
