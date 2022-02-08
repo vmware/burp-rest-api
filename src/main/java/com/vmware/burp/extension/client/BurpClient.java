@@ -8,11 +8,7 @@ package com.vmware.burp.extension.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vmware.burp.extension.domain.ScanStatusList;
-import com.vmware.burp.extension.domain.Config;
-import com.vmware.burp.extension.domain.HttpMessageList;
-import com.vmware.burp.extension.domain.ReportType;
-import com.vmware.burp.extension.domain.ScanIssueList;
+import com.vmware.burp.extension.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -37,11 +33,23 @@ import java.util.stream.Collectors;
 
 public class BurpClient {
    private static final Logger log = LoggerFactory.getLogger(BurpClient.class);
-   private RestTemplate restTemplate = new RestTemplate();
+   private RestTemplate restTemplate; //  = new RestTemplate();
    private String baseUrl;
 
    public BurpClient(String baseUrl) {
+      /*
       this.baseUrl = baseUrl;
+      List<HttpMessageConverter<?>> converters = new ArrayList<>();
+      converters.add(new MappingJackson2HttpMessageConverter());
+      converters.add(new ByteArrayHttpMessageConverter());
+      restTemplate.setMessageConverters(converters);
+      */
+      this(baseUrl, new RestTemplate());
+   }
+
+   public BurpClient(String baseUrl, RestTemplate restTemplate) {
+      this.baseUrl = baseUrl;
+      this.restTemplate = restTemplate;
       List<HttpMessageConverter<?>> converters = new ArrayList<>();
       converters.add(new MappingJackson2HttpMessageConverter());
       converters.add(new ByteArrayHttpMessageConverter());
