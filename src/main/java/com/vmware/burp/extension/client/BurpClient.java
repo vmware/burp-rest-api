@@ -33,17 +33,10 @@ import java.util.stream.Collectors;
 
 public class BurpClient {
    private static final Logger log = LoggerFactory.getLogger(BurpClient.class);
-   private RestTemplate restTemplate; //  = new RestTemplate();
+   private RestTemplate restTemplate;
    private String baseUrl;
 
    public BurpClient(String baseUrl) {
-      /*
-      this.baseUrl = baseUrl;
-      List<HttpMessageConverter<?>> converters = new ArrayList<>();
-      converters.add(new MappingJackson2HttpMessageConverter());
-      converters.add(new ByteArrayHttpMessageConverter());
-      restTemplate.setMessageConverters(converters);
-      */
       this(baseUrl, new RestTemplate());
    }
 
