@@ -1,7 +1,7 @@
 package com.vmware.burp.extension.client;
 
 import com.vmware.burp.extension.config.SwaggerConfig;
-import com.vmware.burp.extension.filter.APIKeyFilter;
+import com.vmware.burp.extension.filter.ApiKeyFilter;
 import com.vmware.burp.extension.service.BurpService;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class APIKEYFilterTest {
+public class ApiKeyFilterTest {
 
     /**
      * Requesting the protected path /burp/*
@@ -24,7 +24,7 @@ public class APIKEYFilterTest {
         BurpService service = Mockito.mock(BurpService.class);
         Mockito.when(service.getAPIKey()).thenReturn("test-api-key");
 
-        APIKeyFilter customURLFilter = new APIKeyFilter(service);
+        ApiKeyFilter customURLFilter = new ApiKeyFilter(service);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         MockHttpServletResponse res = new MockHttpServletResponse();
@@ -40,7 +40,7 @@ public class APIKEYFilterTest {
 
         BurpService service = Mockito.mock(BurpService.class);
 
-        APIKeyFilter customURLFilter = new APIKeyFilter(service);
+        ApiKeyFilter customURLFilter = new ApiKeyFilter(service);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         MockHttpServletResponse res = new MockHttpServletResponse();
@@ -65,7 +65,7 @@ public class APIKEYFilterTest {
         MockFilterChain chain = new MockFilterChain();
         Mockito.when(req.getRequestURI()).then(invocation -> {return "/burp/versions";});
 
-        APIKeyFilter customURLFilter = new APIKeyFilter(service);
+        ApiKeyFilter customURLFilter = new ApiKeyFilter(service);
 
         customURLFilter.doFilter(req, res, chain);
         Assertions.assertEquals(res.getStatus(), 200);

@@ -1,7 +1,7 @@
 package com.vmware.burp.extension.config;
 
 
-import com.vmware.burp.extension.filter.APIKeyFilter;
+import com.vmware.burp.extension.filter.ApiKeyFilter;
 import com.vmware.burp.extension.service.BurpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -19,9 +19,9 @@ public class AppConfig {
     BurpService service;
 
     @Bean
-    public FilterRegistrationBean<APIKeyFilter> filterRegistrationBean() {
-        FilterRegistrationBean < APIKeyFilter > registrationBean = new FilterRegistrationBean();
-        APIKeyFilter apiKeyFilter = new APIKeyFilter(service);
+    public FilterRegistrationBean<ApiKeyFilter> filterRegistrationBean() {
+        FilterRegistrationBean <ApiKeyFilter> registrationBean = new FilterRegistrationBean();
+        ApiKeyFilter apiKeyFilter = new ApiKeyFilter(service);
         registrationBean.setFilter(apiKeyFilter);
         registrationBean.addUrlPatterns("/burp/*");
         registrationBean.setOrder(1);

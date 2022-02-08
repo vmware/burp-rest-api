@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class APIKeyFilter implements Filter {
+public class ApiKeyFilter implements Filter {
 
     private final BurpService service;
 
-    public APIKeyFilter(BurpService service) {
+    public ApiKeyFilter(BurpService service) {
         this.service = service;
     }
 
