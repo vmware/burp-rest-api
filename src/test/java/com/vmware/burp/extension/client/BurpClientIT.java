@@ -8,10 +8,7 @@ package com.vmware.burp.extension.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vmware.burp.extension.domain.HttpMessageList;
-import com.vmware.burp.extension.domain.IssueConfidence;
-import com.vmware.burp.extension.domain.IssueSeverity;
-import com.vmware.burp.extension.domain.ReportType;
+import com.vmware.burp.extension.domain.*;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;

@@ -23,10 +23,7 @@ import org.apache.http.ssl.SSLContexts;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,7 +82,6 @@ public class ApiKeyBurpClientIT {
     public void testConfigurationMethodsWithAPIKeyHeader() {
         JsonNode configJson = burpClient.getConfiguration();
 
-        System.out.println("\n\n " + configJson +  "\n\n");
         assertNotNull(configJson);
 
         assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
@@ -109,7 +105,7 @@ public class ApiKeyBurpClientIT {
     }
 
     @Test
-    public void testGetProxyHistoryAndSiteMap() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InterruptedException {
+    public void testGetProxyHistoryAndSiteMapWithAPIKeyHeader() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         HttpMessageList proxyHistory = burpClient.getProxyHistory();
 
         // Assume.assumeTrue is necessary when running multiple integration tests that uses the same instance of burp that has
@@ -131,18 +127,17 @@ public class ApiKeyBurpClientIT {
     }
 
     @Test
-    public void testScopeMethods() {
+    public void testScopeMethodsWithAPIKeyHeader() {
         String httpBaseUrl = "http://source.vmware.com";
         assertFalse(burpClient.isInScope(httpBaseUrl));
         burpClient.includeInScope(httpBaseUrl);
         assertTrue(burpClient.isInScope(httpBaseUrl));
         burpClient.excludeFromScope(httpBaseUrl);
         assertFalse(burpClient.isInScope(httpBaseUrl));
-
     }
 
     @Test
-    public void testScannerSpiderAndReportMethods() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public void testScannerSpiderAndReportMethodsWithAPIKeyHeader() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 
         // Assume.assumeTrue is necessary when running multiple integration tests that uses the same instance of burp with previous scans in the session
         Assume.assumeTrue(burpClient.getScanStatuses().getScanStatuses().size() == 0);
