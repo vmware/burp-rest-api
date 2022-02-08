@@ -1,7 +1,6 @@
-package com.vmware.burp.extension.client;
+package com.vmware.burp.extension.filter;
 
 import com.vmware.burp.extension.config.SwaggerConfig;
-import com.vmware.burp.extension.filter.ApiKeyFilter;
 import com.vmware.burp.extension.service.BurpService;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
