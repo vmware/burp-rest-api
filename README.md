@@ -80,6 +80,7 @@ Command line arguments passed to the executable burp-rest-api JAR are forwarded 
 For more information on *Projects*, refer to the Burp Suite documentation
  [here](https://portswigger.net/burp/help/suite_burp_projects.html) and [here](https://portswigger.net/blog/introducing-burp-projects).
 
+`--apikey=<customApiKey>` : Enables API key authentication to protect APIs at **/burp/***. The customApiKey, if passed as an argument, must be included in every HTTP request as an additional header: **"API-KEY: <customApiKey\>"**.
 
 ### Default Burp Configuration ###
 

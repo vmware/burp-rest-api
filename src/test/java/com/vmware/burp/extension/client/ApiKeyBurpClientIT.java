@@ -8,7 +8,10 @@ package com.vmware.burp.extension.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vmware.burp.extension.domain.*;
+import com.vmware.burp.extension.domain.HttpMessageList;
+import com.vmware.burp.extension.domain.IssueConfidence;
+import com.vmware.burp.extension.domain.IssueSeverity;
+import com.vmware.burp.extension.domain.ReportType;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -18,13 +21,17 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -35,13 +42,15 @@ import java.security.NoSuchAlgorithmException;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class BurpClientIT {
-    private static final Logger log = LoggerFactory.getLogger(BurpClientIT.class);
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, args = {"--apikey=test-api-key"})
+// @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+public class ApiKeyBurpClientIT {
+    private static final Logger log = LoggerFactory.getLogger(ApiKeyBurpClientIT.class);
     private static final String PROXY_HOST = "localhost";
     private static final int PROXY_PORT = 8080;
     private static final String PROXY_SCHEME = "http";
     private static final String TARGET_HOST = "www.vmware.com";
+
 
     private BurpClient burpClient;
 
@@ -50,12 +59,21 @@ public class BurpClientIT {
 
     @Before
     public void setUp() {
-        burpClient = new BurpClient("http://localhost:" + port);
+        RestTemplate restTemplate;
+
+        String authAPIKEY = "test-api-key";
+        restTemplate = new RestTemplateBuilder(rt -> rt.getInterceptors().add((request, body, execution) -> {
+            request.getHeaders().add("API-KEY", authAPIKEY);
+            return execution.execute(request, body);
+        })).build();
+
+        burpClient = new BurpClient("http://localhost:" + port, restTemplate);
         log.info("!! Make sure that there are no applications configured to use the proxy !!");
     }
 
+
     @Test
-    public void testConfigurationMethods() {
+    public void testConfigurationMethodsSendingApiKeyHeader() {
         JsonNode configJson = burpClient.getConfiguration();
         assertNotNull(configJson);
         assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
@@ -78,8 +96,12 @@ public class BurpClientIT {
         assertFalse(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
     }
 
+
+
+    // line @Ignore can be commented if this class is run individually
+    @Ignore("This test works correctly but if it runs before other integration tests, it fills Burp history and may make other tests fails.")
     @Test
-    public void testGetProxyHistoryAndSiteMap() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public void testGetProxyHistoryAndSiteMapSendingApiKeyHeader() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         HttpMessageList proxyHistory = burpClient.getProxyHistory();
         assertEquals(0, proxyHistory.getHttpMessages().size());
 
@@ -97,10 +119,11 @@ public class BurpClientIT {
         assertNotEquals(0, siteMap.getHttpMessages().size());
     }
 
+
     @Test
-    public void testScopeMethods() {
-        String httpBaseUrl = "http://source.vmware.com";
-        String httpsBaseUrl = "https://source.vmware.com";
+    public void testScopeMethodsSendingApiKeyHeader() {
+        String httpBaseUrl = "http://yahoo.com";
+        String httpsBaseUrl = "https://yahoo.com";
 
         assertFalse(burpClient.isInScope(httpBaseUrl));
         assertFalse(burpClient.isInScope(httpsBaseUrl));
@@ -118,8 +141,10 @@ public class BurpClientIT {
         assertFalse(burpClient.isInScope(httpsBaseUrl));
     }
 
+    // line @Ignore can be commented if this class is run individually
+    @Ignore("This test works correctly but if it runs before other integration tests, it fills Burp history and may make other tests fails.")
     @Test
-    public void testScannerSpiderAndReportMethods() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public void testScannerSpiderAndReportMethodsSendingApiKeyHeader() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         assertEquals(0, burpClient.getScanStatuses().getScanStatuses().size());
 
         String urlPrefix = "https://www.vmware.com";
@@ -160,15 +185,15 @@ public class BurpClientIT {
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLSocketFactory(sslConnectionSocketFactory)
                 .build()) {
-            HttpHost target = new HttpHost(BurpClientIT.TARGET_HOST);
+            HttpHost target = new HttpHost(ApiKeyBurpClientIT.TARGET_HOST);
             HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT, PROXY_SCHEME);
 
             RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
             HttpGet request = new HttpGet("/");
             request.setConfig(config);
-
             log.info("Executing request {} to {} via {} proxy", request.getRequestLine(),
                     target.toString(), proxy.toString());
+
 
             httpClient.execute(target, request);
 
