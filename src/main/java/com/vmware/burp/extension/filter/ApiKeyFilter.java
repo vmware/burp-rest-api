@@ -7,6 +7,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 public class ApiKeyFilter implements Filter {
 
@@ -22,9 +24,12 @@ public class ApiKeyFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (service.getAPIKey() != null) {
+        String apiKey = service.getAPIKey();
+
+        if (apiKey != null) {
             String apikeyHeader = request.getHeader(SwaggerConfig.API_KEY_HEADER);
-            if (service.getAPIKey().equals(apikeyHeader)) {
+
+            if (isValidApiKey(apiKey, apikeyHeader)) {
                 filterChain.doFilter(request, response);
             }
             else {
@@ -35,6 +40,15 @@ public class ApiKeyFilter implements Filter {
         else {
             filterChain.doFilter(request, response);
         }
+    }
+
+    // constant-time equals is provided by MessageDigest.isEqual
+    private boolean isValidApiKey(String apiKey, String apikeyHeader) {
+
+        if (apikeyHeader == null)
+            return false;
+
+        return MessageDigest.isEqual(apiKey.getBytes(StandardCharsets.UTF_8), apikeyHeader.getBytes(StandardCharsets.UTF_8));
     }
 
 }
