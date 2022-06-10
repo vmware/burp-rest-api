@@ -356,6 +356,31 @@ public class BurpController {
         return spiderProgress;
     }
 
+   @ApiOperation(value = "Get the cookies in the CookieJar")
+   @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "Success" /*, response = SpiderProgress.class*/),
+           @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = GET, value = "/cookiejar")
+   public List<Cookie> getCookiesFromCookieJar() {
+      List<Cookie> cookieFromCookieJar = burp.getCookieFromCookieJar();
+      return cookieFromCookieJar;
+   }
+
+   @ApiOperation(value = "Update the cookies in the CookieJar")
+   @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "Success" /*, response = SpiderProgress.class*/),
+           @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = PUT, value = "/cookiejar")
+   public void updateCookiesInCookieJar(@RequestBody List<Cookie> cookieJarAsJson) {
+      if (cookieJarAsJson == null /*|| StringUtils.isEmpty(cookieJarAsJson)*/) {
+         throw new IllegalArgumentException("Invalid json received");
+      }
+      burp.updateCookieInCookieJar(cookieJarAsJson);
+
+   }
+
    @ApiOperation(value = "Send a seed url to Burp Spider", notes = "Sends a seed URL to the Burp Spider tool. The baseUrl should be in Suite-wide scope for the Spider to run..")
    @ApiImplicitParams({
          @ApiImplicitParam(name = "baseUrl", value = "Base Url to send to Spider tool.", required = true, dataType = "string", paramType = "query")

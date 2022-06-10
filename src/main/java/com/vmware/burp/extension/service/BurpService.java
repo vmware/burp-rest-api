@@ -442,6 +442,22 @@ public class BurpService {
         spiders.addItem(url.toString(),LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(url.toString()));
     }
 
+    public List<Cookie> getCookieFromCookieJar() {
+        List<Cookie> cookies = new LinkedList<>();
+        List<ICookie> cookieJarContents = LegacyBurpExtender.getInstance().getCallbacks().getCookieJarContents();
+        for (ICookie icookie : cookieJarContents) {
+            cookies.add(new Cookie(icookie));
+        }
+        return cookies;
+    }
+
+    public void updateCookieInCookieJar(List<Cookie> toUpdate) {
+        for (Cookie c : toUpdate) {
+            System.out.println("Desired update for " + c.getName() + c.getValue());
+            LegacyBurpExtender.getInstance().getCallbacks().updateCookieJar((ICookie) c);
+        }
+
+    }
     public void exitSuite(boolean promptUser) {
         log.info("Shutting down the Burp Suite...");
         if (awtHeadLessMode && promptUser) {
