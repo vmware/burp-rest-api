@@ -178,6 +178,21 @@ public class BurpClient {
       restTemplate.postForLocation(uri, null);
    }
 
+   public List<CookieInCookieJar> getCookieFromCookieJar() {
+      String uriString = buildUriFromPathSegments("burp", "cookiejar");
+      URI uri = UriComponentsBuilder.fromUriString(uriString).queryParam("baseUrl", baseUrl).build().toUri();
+      return restTemplate.getForObject(uri, new ArrayList<CookieInCookieJar>().getClass());
+
+   }
+
+   /*
+   public void updateCookieInCookieJar(CookieInCookieJar cookie) {
+      String uriString = buildUriFromPathSegments("burp", "cookiejar");
+      URI uri = UriComponentsBuilder.fromUriString(uriString).queryParam("baseUrl", baseUrl).build().toUri();
+      restTemplate.put(uri, cookie);
+   }
+   */
+
    private String buildUriFromPathSegments(String... pathSegments) {
       return UriComponentsBuilder.fromUriString(baseUrl).pathSegment(pathSegments).toUriString();
    }

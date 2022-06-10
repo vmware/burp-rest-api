@@ -147,6 +147,17 @@ public class BurpClientIT {
         burpClient.excludeFromScope(urlPrefix);
     }
 
+
+    @Test
+    public void testCookieJarGetAndUpdate() throws IOException,NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        assertEquals(0, burpClient.getCookieFromCookieJar().size());
+        sendRequestThruProxy();
+        assertNotEquals(0, burpClient.getCookieFromCookieJar().size());
+    }
+
+
+
+
     private void sendRequestThruProxy() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
         SSLContext sslContext;
