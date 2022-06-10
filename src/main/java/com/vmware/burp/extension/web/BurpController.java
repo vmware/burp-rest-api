@@ -360,7 +360,7 @@ public class BurpController {
 
    @ApiOperation(value = "Get the cookies in the CookieJar")
    @ApiResponses(value = {
-           @ApiResponse(code = 200, message = "Success" /*, response = SpiderProgress.class*/),
+           @ApiResponse(code = 200, message = "Success"),
            @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/cookiejar")
@@ -371,15 +371,15 @@ public class BurpController {
 
    @ApiOperation(value = "Update the cookies in the CookieJar")
    @ApiResponses(value = {
-           @ApiResponse(code = 200, message = "Success" /*, response = SpiderProgress.class*/),
+           @ApiResponse(code = 200, message = "Success"),
            @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = PUT, value = "/cookiejar")
-   public void updateCookiesInCookieJar(@RequestBody List<CookieInCookieJar> cookieJarAsJson) {
-      if (cookieJarAsJson == null /*|| StringUtils.isEmpty(cookieJarAsJson)*/) {
+   public void updateCookiesInCookieJar(@RequestBody List<CookieInCookieJar> cookieJarList) {
+      if (cookieJarList == null) {
          throw new IllegalArgumentException("Invalid json received");
       }
-      burp.updateCookieInCookieJar(cookieJarAsJson);
+      burp.updateCookieInCookieJar(cookieJarList);
 
    }
 
