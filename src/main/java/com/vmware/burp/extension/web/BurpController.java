@@ -114,6 +114,48 @@ public class BurpController {
       return httpMessageList;
    }
 
+
+   @ApiOperation(value = "Get Burp suite Proxy Partial History", notes = "Returns details of the subset of items in Burp Suite Proxy history.")
+   @ApiImplicitParams({
+      @ApiImplicitParam(name = "from", value = "Position of the starting request - starting from 1", required = true, dataType = "String", paramType = "query"),
+      @ApiImplicitParam(name = "to", value = "Position of the last desired request. If not set, return history to the last request", required = false, dataType = "String", paramType = "query")
+})
+   @ApiResponses(value = {
+         @ApiResponse(code = 200, message = "Success", response = HttpMessageList.class),
+         @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = GET, value = "/proxy/history/partial")
+   public HttpMessageList getProxyPartialHistory(@RequestParam String from, @RequestParam(required = false) String to) throws UnsupportedEncodingException {
+      List<HttpMessage> history = burp.getProxyHistory();
+      if (history.isEmpty()) {
+         throw new IllegalArgumentException("History proxy is empty");
+      }
+
+      if (StringUtils.isEmpty(from)) {
+         throw new IllegalArgumentException("The 'from' parameter must not be null or empty.");
+      }
+      int fromIndex = Integer.parseInt(from);
+      int toIndex =  -1;
+      if (fromIndex < 1) {
+         throw new IllegalArgumentException("The 'from' parameter must start from 1");
+      }
+      if (!StringUtils.isEmpty(to)) {
+         toIndex = Integer.parseInt(to);
+      }
+      else {
+         toIndex = history.size();
+      }
+
+      if (fromIndex > history.size() || toIndex > history.size()) {
+         throw new IllegalArgumentException("Indexes out of bound: Min value for 'from' : " + 1 + " - Max value for 'to': " +history.size());
+      }
+
+      List<HttpMessage> sublistHistory = history.subList(fromIndex -1, toIndex);
+      HttpMessageList httpMessageList = new HttpMessageList();
+      httpMessageList.setHttpMessages(sublistHistory);
+      return httpMessageList;
+   }
+
    @ApiOperation(value = "Get Burp suite Site Map", notes = "Returns details of items in the Burp suite Site map. urlPrefix parameter can be used to specify a URL prefix, in order to extract a specific subset of the site map.")
    @ApiImplicitParams({
          @ApiImplicitParam(name = "urlPrefix", value = "URL prefix in order to extract a specific subset of the site map. Performs a simple case-sensitive text match, returning all site map items whose URL begins with the specified prefix. Returns entire site map if this parameter is null.", dataType = "string", paramType = "query")
