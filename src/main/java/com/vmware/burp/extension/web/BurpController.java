@@ -344,6 +344,18 @@ public class BurpController {
       return scanStatusList;
    }
 
+   @ApiOperation(value = "Get the percentage of the scan completion", notes = "For Burp 2.x returns an estimate of scan completion.")
+   @ApiResponses(value = {
+         @ApiResponse(code = 200, message = "Success", response = String.class),
+         @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = GET, value = "/scanner/status/percentage")
+   public String scanPercentCompletePercentage() {
+      int percentageComplete = burp.getScannerPercentageComplete();
+      System.out.println("Percentage complete " + percentageComplete);
+      return  "{ \"scanPercentage\" : \"" +  percentageComplete + "%\"}";
+   }
+
     @ApiOperation(value = "Get the status of the spider", notes = "Returns an estimate of the current status of the spider. Due to the current limitations in Burp's Extender API, this endpoint will return 100% whenever the spider is no longer discovering new resources. On newer Burp APIs, we expect to be able to provide discrete values.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SpiderProgress.class),
