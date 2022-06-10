@@ -33,7 +33,7 @@ public class Cookie {
    @XmlElement(required=true)
    private String value;
 
-   private Cookie() {
+   protected Cookie() {
 
    }
 
