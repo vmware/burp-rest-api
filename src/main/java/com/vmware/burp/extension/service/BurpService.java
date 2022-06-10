@@ -454,7 +454,7 @@ public class BurpService {
 
     public void updateCookieInCookieJar(List<CookieInCookieJar> toUpdate) {
         for (ICookie c : toUpdate) {
-            System.out.println("Desired update for " + c.getName() + " - " + c.getValue());
+            log.info("Desired update for Cookie" + c.getName() + " - " + c.getValue());
             LegacyBurpExtender.getInstance().getCallbacks().updateCookieJar(c);
         }
     }
