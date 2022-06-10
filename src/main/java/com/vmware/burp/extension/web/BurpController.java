@@ -37,6 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import burp.ICookie;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
@@ -362,8 +364,8 @@ public class BurpController {
            @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/cookiejar")
-   public List<Cookie> getCookiesFromCookieJar() {
-      List<Cookie> cookieFromCookieJar = burp.getCookieFromCookieJar();
+   public List<ICookie> getCookiesFromCookieJar() {
+      List<ICookie> cookieFromCookieJar = burp.getCookieFromCookieJar();
       return cookieFromCookieJar;
    }
 
@@ -373,7 +375,7 @@ public class BurpController {
            @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = PUT, value = "/cookiejar")
-   public void updateCookiesInCookieJar(@RequestBody List<Cookie> cookieJarAsJson) {
+   public void updateCookiesInCookieJar(@RequestBody List<CookieInCookieJar> cookieJarAsJson) {
       if (cookieJarAsJson == null /*|| StringUtils.isEmpty(cookieJarAsJson)*/) {
          throw new IllegalArgumentException("Invalid json received");
       }

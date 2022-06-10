@@ -7,6 +7,10 @@
 package com.vmware.burp.extension.service;
 
 import burp.*;
+import burp.ICookie;
+
+import com.vmware.burp.extension.domain.Cookie;
+import com.vmware.burp.extension.domain.CookieInCookieJar;
 import com.vmware.burp.extension.domain.HttpMessage;
 import com.vmware.burp.extension.domain.IssueConfidence;
 import com.vmware.burp.extension.domain.IssueSeverity;
@@ -30,6 +34,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.CookieStore;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -442,22 +447,18 @@ public class BurpService {
         spiders.addItem(url.toString(),LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(url.toString()));
     }
 
-    public List<Cookie> getCookieFromCookieJar() {
-        List<Cookie> cookies = new LinkedList<>();
+    public List<ICookie> getCookieFromCookieJar() {
         List<ICookie> cookieJarContents = LegacyBurpExtender.getInstance().getCallbacks().getCookieJarContents();
-        for (ICookie icookie : cookieJarContents) {
-            cookies.add(new Cookie(icookie));
-        }
-        return cookies;
+        return cookieJarContents;
     }
 
-    public void updateCookieInCookieJar(List<Cookie> toUpdate) {
-        for (Cookie c : toUpdate) {
-            System.out.println("Desired update for " + c.getName() + c.getValue());
-            LegacyBurpExtender.getInstance().getCallbacks().updateCookieJar((ICookie) c);
+    public void updateCookieInCookieJar(List<CookieInCookieJar> toUpdate) {
+        for (ICookie c : toUpdate) {
+            System.out.println("Desired update for " + c.getName() + " - " + c.getValue());
+            LegacyBurpExtender.getInstance().getCallbacks().updateCookieJar(c);
         }
-
     }
+
     public void exitSuite(boolean promptUser) {
         log.info("Shutting down the Burp Suite...");
         if (awtHeadLessMode && promptUser) {
