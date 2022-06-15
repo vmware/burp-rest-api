@@ -79,6 +79,13 @@ public class BurpClient {
       return restTemplate.getForObject(uriString, HttpMessageList.class);
    }
 
+   public HttpMessageList getPartialProxyHistory(String from, String to) {
+      String uriString = buildUriFromPathSegments("burp", "proxy", "history", "partial");
+      URI uri = UriComponentsBuilder.fromHttpUrl(uriString).queryParam("from", from).queryParam("to", to).build().toUri();
+      return restTemplate.getForObject(uri, HttpMessageList.class);
+   }
+
+
    public HttpMessageList getSiteMap(String urlPrefix) {
       String uriString = buildUriFromPathSegments("burp", "target", "sitemap");
       if (!StringUtils.isEmpty(urlPrefix)) {

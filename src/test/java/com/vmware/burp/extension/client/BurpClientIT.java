@@ -95,6 +95,21 @@ public class BurpClientIT {
 
         siteMap = burpClient.getSiteMap(urlString);
         assertNotEquals(0, siteMap.getHttpMessages().size());
+
+        // partial History
+        // Get only the first request
+        HttpMessageList partialHistory = burpClient.getPartialProxyHistory("1", "1");
+        assertEquals(1, partialHistory.getHttpMessages().size());
+
+        // issue some request to fill the history proxy
+        sendRequestThruProxy();
+        sendRequestThruProxy();
+        sendRequestThruProxy();
+
+        proxyHistory = burpClient.getProxyHistory();
+
+        // If only "from" param, it returns proxy history to the end
+        assertEquals(proxyHistory.getHttpMessages().size(), burpClient.getPartialProxyHistory("1", null).getHttpMessages().size());
     }
 
     @Test
