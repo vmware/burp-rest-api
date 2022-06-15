@@ -448,7 +448,15 @@ public class BurpService {
             log.info("Burp suite is running in headless mode. Overriding the promptUser to false.");
             promptUser = false;
         }
-        LegacyBurpExtender.getInstance().getCallbacks().exitSuite(promptUser);
+        try {
+            // When Burp finds old temporary projects it ask whether to delete or to keep them. If you call the endopoint /burp/stop 
+            // in that case, the burpExtension is not registered yet and it throws the NullPointerException.
+            LegacyBurpExtender.getInstance().getCallbacks().exitSuite(promptUser);
+        } catch (Exception e) {
+            log.info("Burp encountered an exception while stopping. Shutdown in progress");
+            e.printStackTrace();
+            System.exit(-1); 
+        }
     }
 }
 
