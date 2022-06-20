@@ -189,7 +189,7 @@ public class BurpClient {
    public void updateCookieInCookieJar(CookieInCookieJar cookie) {
       String uriString = buildUriFromPathSegments("burp", "cookiejar");
       URI uri = UriComponentsBuilder.fromUriString(uriString).queryParam("baseUrl", baseUrl).build().toUri();
-      restTemplate.put(uri, cookie);
+      restTemplate.put(uri, List.of(cookie));
    }
 
 
