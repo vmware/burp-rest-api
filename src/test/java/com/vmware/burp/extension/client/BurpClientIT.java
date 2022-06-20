@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -156,6 +157,20 @@ public class BurpClientIT {
         sendRequestThruProxy();
         assertNotEquals(0, burpClient.getCookieFromCookieJar().size());
         */
+
+        List<CookieInCookieJar> initialCookieList = burpClient.getCookieFromCookieJar();
+        String testCookieName="testKey";
+        String testCookieValue="testValue";
+        CookieInCookieJar dumbCookie = new CookieInCookieJar();
+        dumbCookie.setDomain(".vmware.com");
+        dumbCookie.setPath("/");
+        dumbCookie.setName(testCookieName);
+        dumbCookie.setValue(testCookieValue);
+
+        burpClient.updateCookieInCookieJar(dumbCookie);
+
+        // check that the update works correctly
+        assertNotEquals(initialCookieList.size(), burpClient.getCookieFromCookieJar().size());
     }
     
 

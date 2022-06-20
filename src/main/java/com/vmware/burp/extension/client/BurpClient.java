@@ -185,13 +185,13 @@ public class BurpClient {
 
    }
 
-   /*
+
    public void updateCookieInCookieJar(CookieInCookieJar cookie) {
       String uriString = buildUriFromPathSegments("burp", "cookiejar");
       URI uri = UriComponentsBuilder.fromUriString(uriString).queryParam("baseUrl", baseUrl).build().toUri();
       restTemplate.put(uri, cookie);
    }
-   */
+
 
    private String buildUriFromPathSegments(String... pathSegments) {
       return UriComponentsBuilder.fromUriString(baseUrl).pathSegment(pathSegments).toUriString();
