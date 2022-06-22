@@ -13,6 +13,10 @@ Since the first commit back in 2016, **burp-rest-api** has been the default tool
 3) On Linux and Mac, mark the launcher as executable using `chmod +x burp-rest-api.sh`
 4) Bootstrap the system using either `./burp-rest-api.sh` or `./burp-rest-api.bat`, depending on the operating system
 
+### Burp Suite Support and Limitations
+
+**burp-rest-api** supports both the legacy Burp Suite Professional v1.7 and the newer Burp Suite Professional v2022.x. Since this project relies on [Burp Extender API](https://portswigger.net/burp/extender), the behaviour of certain functionalities might be slighlty different depending on the version of Burp. For example, the [Burp Suite Scanner configuration in v2022.x is no longer customizable](https://forum.portswigger.net/thread/scan-configuration-80c07e6d3e1080058). 
+
 ### Configuration
 
 By default, Burp is launched in headless mode with the Proxy running on port 8080/tcp (**localhost only**) and the REST endpoint running on 8090/tcp (**localhost only**).
@@ -62,6 +66,8 @@ The following command line arguments are used only by the extension to configure
  
  `--server.address=<network address>` : Network address to which the REST API endpoint should bind. `--address=<address_ip>`
   works as short hand argument.
+  
+ `--apikey=<customApiKey>` : Enables API key authentication to protect APIs at **/burp/***. The customApiKey, if passed as an argument, must be included in every HTTP request as an additional header: **"API-KEY: <customApiKey\>"**.
 
 `--headless.mode=<true/false>` : When set to false, runs Burp Suite in UI mode. Otherwise runs Burp Suite in headless
  mode. Default value: System Property (java.awt.headless)
@@ -73,14 +79,12 @@ Command line arguments passed to the executable burp-rest-api JAR are forwarded 
 `--project-file=<filename>` : Opens the specified **Data Project File** used for keeping the state of the tool. The file will be created as a new project if it doesn't
  exist already.
 
-`--config-file=<filename>` : Opens the project using the options contained in the selected **Project Configuration File**. To load multiple project configurations, this argument can be passed more than once with different values.
+`--config-file=<filename>` : Opens the project using the options contained in the selected **Project Configuration File**. To load multiple project configurations, this argument can be passed more than once with different values. 
  
-`--user-config-file=<filename>` : Opens the project using the options contained in the selected **User Configuration File**. To load multiple user configurations, this argument can be passed more than once with different values.
+`--user-config-file=<filename>` : Opens the project using the options contained in the selected **User Configuration File**. To load multiple user configurations, this argument can be passed more than once with different values. 
 
 For more information on *Projects*, refer to the Burp Suite documentation
- [here](https://portswigger.net/burp/help/suite_burp_projects.html) and [here](https://portswigger.net/blog/introducing-burp-projects).
-
-`--apikey=<customApiKey>` : Enables API key authentication to protect APIs at **/burp/***. The customApiKey, if passed as an argument, must be included in every HTTP request as an additional header: **"API-KEY: <customApiKey\>"**.
+ [here](https://portswigger.net/burp/help/suite_burp_projects.html) and [here](https://portswigger.net/blog/introducing-burp-projects). For scanner settings, please refer to the "Burp Suite Support and Limitations" section.
 
 ### Default Burp Configuration ###
 
@@ -125,20 +129,13 @@ The following section contains useful information to get started with the develo
 
 * Java 8-14 x64
 * Gradle
-* Licensed Burp Suite Professional version 1.7.x or later from: <http://portswigger.net/burp/>. Considering that Burp Suite Professional 2.x is out of beta, we would recommend to use the latest Burp Suite JAR.
+* Licensed Burp Suite Professional version 1.7.x or later from: <http://portswigger.net/burp/>. Considering that Burp Suite Professional 2022.x is out of beta, we would recommend to use the latest Burp Suite JAR.
 
 #### Build & Run
 
 1. [Download](https://portswigger.net/burp/download.html) the Professional edition of Burp Suite JAR
-2. The project can be run either by executing the Gradle Spring `bootRun` command or by directly launching the JAR
- created from building the project
+2. The project can be run by directly launching the JAR created from building the project
 3. Create a `lib` folder under the project directory and place the Burp Suite JAR file into it and rename it to "burpsuite_pro.jar" in order to run the integration tests
-
-```
-    ./gradlew bootRun
-```
-
-or
 
 ```
     # build the jar
@@ -161,7 +158,7 @@ If you want to run the extension on recent (JRE > 9) versions of the JVM, use th
 ## License
 
 Copyright (c) 2016 VMware, Inc. All Rights Reserved.
-Copyright (c) 2020 Doyensec LLC. All Rights Reserved.
+Copyright (c) 2022 Doyensec LLC. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  following conditions are met: Redistributions of source code must retain the above copyright notice, this list of
