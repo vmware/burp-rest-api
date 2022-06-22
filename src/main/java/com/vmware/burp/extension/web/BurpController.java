@@ -374,16 +374,28 @@ public class BurpController {
               issueSeverities.toArray(new IssueSeverity[0]), issueConfidences.toArray(new IssueConfidence[0]));
    }
 
-   @ApiOperation(value = "Get the status of each scan", notes = "Returns status details of items in the scan queue.")
+   @ApiOperation(value = "Get the status of each scan", notes = "Returns status details of items in the scan queue. For percentage, use /scanner/status instead.")
    @ApiResponses(value = {
          @ApiResponse(code = 200, message = "Success", response = ScanStatusList.class),
          @ApiResponse(code = 500, message = "Failure")
    })
-   @RequestMapping(method = GET, value = "/scanner/status")
+   @RequestMapping(method = GET, value = "/scanner/status/details")
    public ScanStatusList scanPercentComplete() {
       ScanStatusList scanStatusList = new ScanStatusList();
       scanStatusList.setScanStatuses(burp.getScanStatuses());
       return scanStatusList;
+   }
+
+   @ApiOperation(value = "Get the percentage of the scan completion", notes = "Please note that the scanner status percentages returned by Burp v1.7 and v2.x don't have the same granularity.")
+   @ApiResponses(value = {
+         @ApiResponse(code = 200, message = "Success", response = String.class),
+         @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = GET, value = "/scanner/status")
+   public String scanPercentCompletePercentage() {
+      int percentageComplete = burp.getScannerPercentageComplete();
+      System.out.println("Percentage complete " + percentageComplete);
+      return  "{ \"scanPercentage\" : \"" +  percentageComplete + "%\"}";
    }
 
     @ApiOperation(value = "Get the status of the spider", notes = "Returns an estimate of the current status of the spider. Due to the current limitations in Burp's Extender API, this endpoint will return 100% whenever the spider is no longer discovering new resources. On newer Burp APIs, we expect to be able to provide discrete values.")
