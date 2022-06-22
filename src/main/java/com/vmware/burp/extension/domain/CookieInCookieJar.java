@@ -7,6 +7,7 @@
 package com.vmware.burp.extension.domain;
 
 import burp.ICookie;
+import com.vmware.burp.extension.domain.Cookie;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -16,72 +17,12 @@ import java.util.Date;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Cookie {
+public class CookieInCookieJar extends Cookie implements ICookie {
 
-   @XmlElement(required=true)
-   private String domain;
-
-   @XmlElement(required=true)
-   private Date expiration;
-
-   @XmlElement(required=true)
-   private String name;
-
-   @XmlElement(required=true)
-   private String path;
-
-   @XmlElement(required=true)
-   private String value;
-
-   protected Cookie() {
-
+   public CookieInCookieJar() {}
+   
+   public CookieInCookieJar(ICookie iCookie) {
+      super(iCookie);
    }
 
-   public Cookie(ICookie iCookie) {
-      this.domain = iCookie.getDomain();
-      this.expiration = iCookie.getExpiration();
-      this.name = iCookie.getName();
-      this.path = iCookie.getPath();
-      this.value = iCookie.getValue();
-   }
-
-   public String getDomain() {
-      return domain;
-   }
-
-   public void setDomain(String domain) {
-      this.domain = domain;
-   }
-
-   public Date getExpiration() {
-      return expiration;
-   }
-
-   public void setExpiration(Date expiration) {
-      this.expiration = expiration;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   public String getPath() {
-      return path;
-   }
-
-   public void setPath(String path) {
-      this.path = path;
-   }
-
-   public String getValue() {
-      return value;
-   }
-
-   public void setValue(String value) {
-      this.value = value;
-   }
 }

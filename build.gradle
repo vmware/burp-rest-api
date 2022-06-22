@@ -86,6 +86,7 @@ dependencies {
     testImplementation fileTree(dir: 'lib', include: '**/*.jar')
     testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE')
     testImplementation('org.apache.httpcomponents:httpclient:4.5.2')
+    testImplementation('net.portswigger.burp.extender:burp-extender-api:2.+')
 
     jaxb 'org.glassfish.jaxb:jaxb-jxc:2.+'
 	jaxb 'org.glassfish.jaxb:jaxb-xjc:2.+'

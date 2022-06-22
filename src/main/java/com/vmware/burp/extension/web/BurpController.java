@@ -37,6 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import burp.ICookie;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
@@ -409,6 +411,31 @@ public class BurpController {
         spiderProgress.setTotalSpiderPercentage(burp.getSpiderPercentageComplete());
         return spiderProgress;
     }
+
+   @ApiOperation(value = "Get the cookies in the CookieJar")
+   @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "Success"),
+           @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = GET, value = "/cookiejar")
+   public List<ICookie> getCookiesFromCookieJar() {
+      List<ICookie> cookieFromCookieJar = burp.getCookieFromCookieJar();
+      return cookieFromCookieJar;
+   }
+
+   @ApiOperation(value = "Update the cookies in the CookieJar")
+   @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "Success"),
+           @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = PUT, value = "/cookiejar")
+   public void updateCookiesInCookieJar(@RequestBody List<CookieInCookieJar> cookieJarList) {
+      if (cookieJarList == null) {
+         throw new IllegalArgumentException("Invalid json received");
+      }
+      burp.updateCookieInCookieJar(cookieJarList);
+
+   }
 
    @ApiOperation(value = "Send a seed url to Burp Spider", notes = "Sends a seed URL to the Burp Spider tool. The baseUrl should be in Suite-wide scope for the Spider to run..")
    @ApiImplicitParams({
