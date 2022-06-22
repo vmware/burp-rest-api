@@ -121,7 +121,7 @@ public class BurpClient {
    //TODO: Client method for clearScans. Is this needed?
 
    public ScanStatusList getScanStatuses() {
-      String uriString = buildUriFromPathSegments("burp", "scanner", "status");
+      String uriString = buildUriFromPathSegments("burp", "scanner", "status", "details");
       return restTemplate.getForObject(uriString, ScanStatusList.class);
    }
 
