@@ -9,4 +9,4 @@ server:
 headless:
   mode: ${java.awt.headless}
 
-build.version: 2.1.0
+build.version: 2.2.0
