@@ -390,13 +390,15 @@ public class BurpController {
 
    @ApiOperation(value = "Get the percentage of the scan completion", notes = "Please note that the scanner status percentages returned by Burp v1.7 and v2.x don't have the same granularity.")
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
+         @ApiResponse(code = 200, message = "Success", response = ScanProgress.class),
          @ApiResponse(code = 500, message = "Failure")
    })
-   @RequestMapping(method = GET, value = "/scanner/status", produces = {"application/json"})
-   public String scanPercentCompletePercentage() {
+   @RequestMapping(method = GET, value = "/scanner/status")
+   public ScanProgress scanPercentCompletePercentage() {
       int percentageComplete = burp.getScannerPercentageComplete();
-      return  "{\"scanPercentage\":" +  percentageComplete + "}";
+      ScanProgress scanProgress = new ScanProgress();
+      scanProgress.setTotalScanPercentage(percentageComplete);
+      return  scanProgress;
       
    }
 
