@@ -8,7 +8,7 @@ Since the first commit back in 2016, **burp-rest-api** has been the default tool
 
 ## Getting Started (or "How To Run burp-rest-api")
 
-1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.1.0.jar`) and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases)
+1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.2.0.jar`) and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases)
 2) Place them within a directory having the original Burp Suite Professional JAR (e.g. *burpsuite_pro_v2020.2.1.jar*). Please note that the actual JAR filename doesn't matter since the launcher will include all JARs in the classpath 
 3) On Linux and Mac, mark the launcher as executable using `chmod +x burp-rest-api.sh`
 4) Bootstrap the system using either `./burp-rest-api.sh` or `./burp-rest-api.bat`, depending on the operating system
@@ -30,7 +30,7 @@ To __run Burp in UI mode__ from the command line, use one of the following comma
 On Java <= 1.8, it is also possible to execute burp-rest-api in the following way:
 
 ```
-    java -jar burp-rest-api-2.1.0.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
+    java -jar burp-rest-api-2.2.0.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 To __modify the server port__ on which the API is accessible, use one of the following commands:
@@ -141,7 +141,7 @@ The following section contains useful information to get started with the develo
     # build the jar
     ./gradlew clean build
     # and run it (Java <= 1.8 only!)
-    java -jar build/libs/burp-rest-api-2.1.0.jar --burp.jar=./lib/burpsuite_pro.jar
+    java -jar build/libs/burp-rest-api-2.2.0.jar --burp.jar=./lib/burpsuite_pro.jar
 ```
 
 The version number of the JAR should match the version number from `build.gradle` while generating the JAR.
