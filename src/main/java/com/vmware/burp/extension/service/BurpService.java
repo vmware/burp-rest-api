@@ -268,12 +268,12 @@ public class BurpService {
                 input.stream().allMatch(i -> i.length == 2 && i[0] < i[1]);
     }
 
-    public boolean scan(String baseUrl, boolean isActive) throws MalformedURLException, NoRouteToHostException {
+    public boolean scan(String baseUrl, boolean isActive) throws MalformedURLException, NoRouteToHostException, URISyntaxException {
         return this.scan(baseUrl, isActive, null);
     }
 
     public boolean scan(String baseUrl, boolean isActive, List<int[]> insertionPoints)
-            throws MalformedURLException, NoRouteToHostException {
+            throws MalformedURLException, NoRouteToHostException, URISyntaxException {
         boolean inScope = isInScope(baseUrl);
         log.info("Total SiteMap size: {}", LegacyBurpExtender.getInstance().getCallbacks().getSiteMap("").length);
         log.info("Is {} in Scope: {}", baseUrl, inScope);
@@ -295,7 +295,7 @@ public class BurpService {
                 throw new NoRouteToHostException("Active Scan Target Did Not Respond");
             }
             LegacyBurpExtender.getInstance().getCallbacks().addToSiteMap(reqResHttpService);
-            IHttpRequestResponse[] siteMapInScope = LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(baseUrl);
+            IHttpRequestResponse[] siteMapInScope = Utils.getSiteMapWrapper(baseUrl);
             log.info("Number of URLs submitting for Active/Passive Scan: {}", siteMapInScope.length);
             for (IHttpRequestResponse iHttpRequestResponse : siteMapInScope) {
                 URL url = LegacyBurpExtender.getInstance().getHelpers().analyzeRequest(iHttpRequestResponse)
@@ -350,10 +350,9 @@ public class BurpService {
         scans.clear();
     }
 
-    public List<HttpMessage> getSiteMap(String urlPrefix) throws UnsupportedEncodingException {
+    public List<HttpMessage> getSiteMap(String urlPrefix) throws UnsupportedEncodingException, MalformedURLException {
         List<HttpMessage> httpMessageList = new ArrayList<>();
-        for (IHttpRequestResponse iHttpRequestResponse : LegacyBurpExtender.getInstance().getCallbacks()
-                .getSiteMap(urlPrefix)) {
+        for (IHttpRequestResponse iHttpRequestResponse : Utils.getSiteMapWrapper(urlPrefix)) {
             httpMessageList.add(new HttpMessage(iHttpRequestResponse));
         }
         return httpMessageList;
@@ -442,7 +441,7 @@ public class BurpService {
         return scans.getPercentageComplete();
     }
 
-    public int getSpiderPercentageComplete() {
+    public int getSpiderPercentageComplete() throws MalformedURLException {
         log.info("Estimate Spider percentage complete.");
         return spiders.getPercentageComplete();
     }
@@ -450,7 +449,7 @@ public class BurpService {
     public void sendToSpider(String baseUrl) throws MalformedURLException {
         URL url = new URL(baseUrl);
         LegacyBurpExtender.getInstance().getCallbacks().sendToSpider(url);
-        spiders.addItem(url.toString(),LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(url.toString()));
+        spiders.addItem(url.toString(),Utils.getSiteMapWrapper(baseUrl));
     }
 
     public List<ICookie> getCookieFromCookieJar() {

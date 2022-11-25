@@ -8,9 +8,12 @@ package com.vmware.burp.extension.domain.internal;
 
 import burp.LegacyBurpExtender;
 import burp.IHttpRequestResponse;
+import com.vmware.burp.extension.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +73,7 @@ public class SpiderQueueMap {
         return sameSiteMap;
     }
 
-    public int getPercentageComplete() {
+    public int getPercentageComplete() throws MalformedURLException {
         if (map.keySet().size() == 0) {
             log.info("Spider Queue is empty. Returning the Percent Complete as 100%.");
             return 100;
@@ -86,7 +89,7 @@ public class SpiderQueueMap {
         int totalPercentCompletion = 0;
         for (String url : map.keySet()) {
             IHttpRequestResponse[] httpMessageListOld = map.get(url);
-            IHttpRequestResponse[] httpMessageListNew = LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(url);
+            IHttpRequestResponse[] httpMessageListNew = Utils.getSiteMapWrapper(url);
 
             if(compareSiteMap(httpMessageListNew, httpMessageListOld)){
                 totalPercentCompletion += 100;
@@ -95,7 +98,13 @@ public class SpiderQueueMap {
             }
         }
 
-        map.replaceAll((url, v) -> LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(url));
+        map.replaceAll((url, v) -> {
+            try {
+                return Utils.getSiteMapWrapper(url);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         if(totalPercentCompletion > 0) {
             int percentComplete = totalPercentCompletion / map.size();

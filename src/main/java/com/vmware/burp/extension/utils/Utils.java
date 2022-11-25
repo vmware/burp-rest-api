@@ -6,6 +6,8 @@
 
 package com.vmware.burp.extension.utils;
 
+import burp.IHttpRequestResponse;
+import burp.LegacyBurpExtender;
 import com.vmware.burp.extension.domain.Config;
 import com.vmware.burp.extension.domain.ConfigItem;
 
@@ -22,6 +24,17 @@ public class Utils {
          configMap.put(configItem.getProperty(), configItem.getValue());
       }
       return configMap;
+   }
+
+   public static IHttpRequestResponse[] getSiteMapWrapper(String urlPrefix) throws MalformedURLException {
+      URL target = new URL(urlPrefix);
+      boolean isHttps = target.getProtocol().equalsIgnoreCase("HTTPS");
+      int targetPort = target.getPort() != -1 ? target.getPort() : (isHttps ? 443 : 80);
+      if(targetPort == 80 || targetPort == 443){
+         return LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(Utils.convertURLToStringWithoutPort(target));
+      }else {
+         return LegacyBurpExtender.getInstance().getCallbacks().getSiteMap(urlPrefix);
+      }
    }
 
    public static String convertURLToStringWithoutPort(URL url) {
