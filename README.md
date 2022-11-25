@@ -9,7 +9,7 @@ Since the first commit back in 2016, **burp-rest-api** has been the default tool
 ## Getting Started (or "How To Run burp-rest-api")
 
 1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.2.0.jar`) and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases)
-2) Place them within a directory having the original Burp Suite Professional JAR (e.g. *burpsuite_pro_v2020.2.1.jar*). Please note that the actual JAR filename doesn't matter since the launcher will include all JARs in the classpath 
+2) Place them within a directory having the original Burp Suite Professional JAR (e.g. *burpsuite_pro_v2020.2.1.jar*). This is the JAR downloaded from https://portswigger.net/burp/releases. Please note that the actual JAR filename doesn't matter since the launcher will include all JARs in the classpath 
 3) On Linux and Mac, mark the launcher as executable using `chmod +x burp-rest-api.sh`
 4) Bootstrap the system using either `./burp-rest-api.sh` or `./burp-rest-api.bat`, depending on the operating system
 
