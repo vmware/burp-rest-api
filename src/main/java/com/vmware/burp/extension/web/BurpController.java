@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.NoRouteToHostException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -167,7 +168,7 @@ public class BurpController {
          @ApiResponse(code = 500, message = "Failure")
    })
    @RequestMapping(method = GET, value = "/target/sitemap")
-   public HttpMessageList getSiteMap(@RequestParam(required = false) String urlPrefix) throws UnsupportedEncodingException {
+   public HttpMessageList getSiteMap(@RequestParam(required = false) String urlPrefix) throws UnsupportedEncodingException, MalformedURLException {
       HttpMessageList httpMessageList = new HttpMessageList();
       httpMessageList.setHttpMessages(burp.getSiteMap(urlPrefix));
       return httpMessageList;
@@ -240,7 +241,7 @@ public class BurpController {
    })
    @RequestMapping(method = POST, value = "/scanner/scans/passive")
    public void scanPassive(@RequestParam(value = "baseUrl") String baseUrl)
-           throws MalformedURLException, NoRouteToHostException {
+           throws MalformedURLException, NoRouteToHostException, URISyntaxException {
       if (StringUtils.isEmpty(baseUrl)) {
          throw new IllegalArgumentException("The 'baseUrl' parameter in payload must not be null or empty.");
       }
@@ -270,7 +271,7 @@ public class BurpController {
            @RequestParam(value = "baseUrl") String baseUrl,
            @RequestParam(value = "insertionPoint", required = false) List<String> insertionPoints
    )
-           throws MalformedURLException, NoRouteToHostException {
+           throws MalformedURLException, NoRouteToHostException, URISyntaxException {
       if (StringUtils.isEmpty(baseUrl)) {
          throw new IllegalArgumentException("The 'baseUrl' parameter in payload must not be null or empty.");
       }
@@ -408,7 +409,7 @@ public class BurpController {
             @ApiResponse(code = 500, message = "Failure")
     })
     @RequestMapping(method = GET, value = "/spider/status")
-    public SpiderProgress spiderPercentComplete() {
+    public SpiderProgress spiderPercentComplete() throws MalformedURLException {
         SpiderProgress spiderProgress = new SpiderProgress();
         spiderProgress.setTotalSpiderPercentage(burp.getSpiderPercentageComplete());
         return spiderProgress;
