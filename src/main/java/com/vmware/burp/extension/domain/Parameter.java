@@ -12,6 +12,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.vmware.burp.extension.utils.URLDecoderUtil;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -33,8 +36,8 @@ public class Parameter {
    }
 
    public Parameter(IParameter iParameter) throws UnsupportedEncodingException {
-      this.name = URLDecoder.decode(iParameter.getName(), "UTF-8");
-      this.value = URLDecoder.decode(iParameter.getValue(), "UTF-8");
+      this.name = URLDecoderUtil.safeDecode(iParameter.getName()); 
+      this.value = URLDecoderUtil.safeDecode(iParameter.getValue()); 
       this.type = ParameterType.getEnum(iParameter.getType());
    }
 

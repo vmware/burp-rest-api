@@ -15,7 +15,7 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
 final def extensionName = 'burp-rest-api'
-version = '2.2.0'
+version = '2.2.1'
 
 def updateVersion() {
     def configFile = new File('src/main/resources/application.yml')
