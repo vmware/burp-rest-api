@@ -1,24 +1,24 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.6.RELEASE")
-    }
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5' apply false
+    id 'io.spring.dependency-management' version '1.1.5'
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 final def extensionName = 'burp-rest-api'
-version = '2.2.0'
+version = '2.3.0'
 
 def updateVersion() {
     def configFile = new File('src/main/resources/application.yml')
+    if (!configFile.exists()) {
+        println "Warning: ${configFile} does not exist. Skipping version update."
+        return
+    }
     println "Updating version to '${version}' in ${configFile}"
     String configContent = configFile.getText('UTF-8')
     configContent = configContent.replaceAll(/build\.version: .*/, "build.version: ${version}")
@@ -31,6 +31,12 @@ sourceSets {
             compileClasspath += main.output
             runtimeClasspath += main.output
         }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -61,8 +67,8 @@ repositories {
     }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 File schemaTargetDir = new File('build/generated-schema')
 
 configurations {
@@ -73,23 +79,23 @@ configurations {
 }
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE')
-    implementation("org.springframework.boot:spring-boot-starter-jetty:2.2.6.RELEASE")
+    implementation('org.springframework.boot:spring-boot-starter-web:3.2.5')
+    implementation('org.springframework.boot:spring-boot-starter-jetty:3.2.5')
     implementation group: 'org.springframework.boot', name: 'spring-boot-loader', version: '2.2.6.RELEASE'
-    implementation "io.springfox:springfox-swagger2:2.8.+"
-    implementation "io.springfox:springfox-swagger-ui:2.8.+"
-    implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:3.0.1'
     compileOnly "net.portswigger.burp.extender:burp-extender-api:2.+"
 
     entrypointCompileOnly "net.portswigger.burp.extender:burp-extender-api:2.+"
 
     testImplementation fileTree(dir: 'lib', include: '**/*.jar')
-    testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE')
+    testImplementation('org.springframework.boot:spring-boot-starter-test:3.2.5')
     testImplementation('org.apache.httpcomponents:httpclient:4.5.2')
     testImplementation('net.portswigger.burp.extender:burp-extender-api:2.+')
 
-    jaxb 'org.glassfish.jaxb:jaxb-jxc:2.+'
-	jaxb 'org.glassfish.jaxb:jaxb-xjc:2.+'
+    jaxb 'org.glassfish.jaxb:jaxb-jxc:3.0.1'
+	jaxb 'org.glassfish.jaxb:jaxb-xjc:3.0.1'
 }
 
 task createschemaTargetDir () {

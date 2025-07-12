@@ -10,8 +10,8 @@ package com.vmware.burp.extension.client;
  */
 
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.client.ClientHttpResponse;
@@ -24,7 +24,6 @@ import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.Series.CLIENT_ERROR;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, args = {"--apikey=test-api-key"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ApiKeyFilterNoHeaderTest {
@@ -33,14 +32,14 @@ public class ApiKeyFilterNoHeaderTest {
     private int port;
 
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void responseIs403WhenMissingApiKeyHeader() {
 
         RestTemplate restTemplateNoHeader = new RestTemplate();
         restTemplateNoHeader.setErrorHandler(new ResponseErrorHandler() {
             @Override
             public boolean hasError(ClientHttpResponse response) throws IOException {
-                return response.getStatusCode().series() == CLIENT_ERROR;
+                return response.getStatusCode().is4xxClientError();
             }
 
             @Override
@@ -52,7 +51,7 @@ public class ApiKeyFilterNoHeaderTest {
         });
 
         BurpClient burpClientNoHeader = new BurpClient("http://localhost:" + port, restTemplateNoHeader);
-        burpClientNoHeader.getConfig();
+        Assertions.assertThrows(RuntimeException.class, burpClientNoHeader::getConfig);
 
     }
 

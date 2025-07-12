@@ -1,24 +1,35 @@
 @echo off
-for /f "delims=" %%x in ('dir /od /b burp-rest-api-*.jar') do set latestjar=%%x
-
-REM https://stackoverflow.com/questions/6359820/how-to-set-commands-output-as-a-variable-in-a-batch-file/6362922#6362922
 SETLOCAL ENABLEDELAYEDEXPANSION
-SET count=1
-REM --version with double dashes print to stdout, in a different format than the single dash version
-REM This is important, because escaping in findstr is non-trivial (to say the least...)
+
+REM Find the plain JAR
+for %%x in (build\libs\burp-rest-api-*-plain.jar) do (
+    set PLAINJAR=%%x
+    goto :foundplain
+)
+:foundplain
+if not defined PLAINJAR (
+    echo Could not find the plain JAR. Please run 'gradlew jar' first.
+    exit /b 1
+)
+
+REM Check for Burp Suite JAR
+if not exist lib\burpsuite_pro.jar (
+    echo Could not find lib\burpsuite_pro.jar. Please add the Burp Suite JAR to the lib directory.
+    exit /b 1
+)
+
+REM Build the classpath: burpsuite_pro.jar;plainjar;all dep-jars
+set CLASSPATH=lib\burpsuite_pro.jar;%PLAINJAR%
+for %%j in (build\libs\dep-jars\BOOT-INF\lib\*.jar) do (
+    set CLASSPATH=!CLASSPATH!;%%j
+)
+
+REM Java version check for Java 17/21 options
+set JAVAARGS=
 for /F "tokens=* USEBACKQ" %%F IN (`java --version`) DO (
-    SET javaver!count!=%%F
-    SET /a count=!count!+1
+    echo %%F | findstr /C:"17" >nul && set JAVAARGS=--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
+    echo %%F | findstr /C:"21" >nul && set JAVAARGS=--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
 )
 
-SET javaargs=
-
-REM https://stackoverflow.com/questions/7005951/batch-file-find-if-substring-is-in-string-not-in-a-file
-ECHO "%javaver1%" | findstr /C:"java 17" 1>nul
-
-if %errorlevel%==0 (
-    set javaargs=--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
-)
-
-java %javaargs% -cp %latestjar%;burpsuite_pro.jar org.springframework.boot.loader.JarLauncher %*
+java %JAVAARGS% -cp "%CLASSPATH%" com.vmware.burp.extension.BurpApplication %*
 ENDLOCAL

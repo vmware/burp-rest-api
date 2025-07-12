@@ -8,17 +8,19 @@ Since the first commit back in 2016, **burp-rest-api** has been the default tool
 
 ## Getting Started
 
-1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.2.0.jar`) and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases)
-2) Place them within a directory having the **original** Burp Suite Professional JAR (e.g. *burpsuite_pro_v2020.9.6.jar*). Please note that the actual JAR filename doesn't matter since the launcher will include all JARs in the classpath 
+1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.3.0.jar`) and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases)
+2) Place them within a directory having the **original** Burp Suite Professional JAR (e.g. *burpsuite_pro_v2025.6.3.jar*). Please note that the actual JAR filename doesn't matter since the launcher will include all JARs in the classpath 
 
 **Important!!!** This is supposed to be the JAR downloaded from https://portswigger.net/burp/releases. You should NOT use the `burpsuite_pro.jar` from a local Burp Suite installation
  
 3) On Linux and Mac, mark the launcher as executable using `chmod +x burp-rest-api.sh`
 4) Bootstrap the system using either `./burp-rest-api.sh` or `./burp-rest-api.bat`, depending on the operating system
 
+**Important!!!** The standalone JAR for ARM64 doesn't seem to contain the Burp Browser, hence spidering and scanning won't work. We would highly recommend to run this software on x86.
+
 ### Burp Suite Support and Limitations
 
-**burp-rest-api** supports both the legacy Burp Suite Professional v1.7 and the newer Burp Suite Professional v2022.x. Since this project relies on [Burp Extender API](https://portswigger.net/burp/extender), the behaviour of certain functionalities might be slighlty different depending on the version of Burp. For example, the [Burp Suite Scanner configuration in v2022.x is no longer customizable](https://forum.portswigger.net/thread/scan-configuration-80c07e6d3e1080058). 
+**burp-rest-api** supports both the legacy Burp Suite Professional v1.7 and the newer Burp Suite Professional v2025.x. Since this project relies on [Burp Extender API](https://portswigger.net/burp/extender), the behaviour of certain functionalities might be slighlty different depending on the version of Burp. For example, the [Burp Suite Scanner configuration in v2025.x is no longer customizable](https://forum.portswigger.net/thread/scan-configuration-80c07e6d3e1080058). 
 
 ### Configuration
 
@@ -60,7 +62,7 @@ or
 
 The following command line arguments are used only by the extension to configure the run mode and port number.
 
-`--burp.jar=<filaname.jar>` : Loads the Burp jar dynamically, and expose it through REST APIs. This flag works on Java <= 1.8 only! Use the `burp-rest-api.{sh,bat}` script for newer java versions.
+`--burp.jar=<filename.jar>` : Loads the Burp jar dynamically, and expose it through REST APIs. This flag works on Java <= 1.8 only! Use the `burp-rest-api.{sh,bat}` script for newer java versions.
 
 `--burp.ext=<filename.{jar,rb,py}` : Loads the given Burp extensions during application startup. This flag can be repeated.
 
@@ -103,9 +105,9 @@ _burp-default-user-options.json_ inside the JAR under the _static_ folder.
 [Swagger](http://swagger.io/) is used to define API documentation. Once the JAR is launched, access the following
  resources for API docs and Swagger UI. Port 8090 is the default server port.
 
-API Docs: http://localhost:8090/v2/api-docs
+API Docs: http://localhost:8090/v3/api-docs
 
-Swagger UI: http://localhost:8090/swagger-ui.html#/
+Swagger UI: http://localhost:8090/swagger-ui/index.html#
 
 ### Client
 
@@ -115,7 +117,7 @@ This project also comes with a client (_BurpClient.java_) written in Java for us
 ## Credits
 
 This project is originally inspired from [Resty-Burp](https://github.com/continuumsecurity/resty-burp
- "continuumsecurity/resty-burp: REST/JSON interface to Burp Suite"), and is developed in partnership with [Doyensec LLC](https://doyensec.com/). <img src="https://www.doyensec.com/images/logo.png" width="300">
+ "continuumsecurity/resty-burp: REST/JSON interface to Burp Suite"), and is developed in partnership with [Doyensec LLC](https://doyensec.com/). <img src="https://doyensec.com/img/doyensec-logo.svg" width="300">
 
 ## Contributing
 
@@ -130,9 +132,9 @@ The following section contains useful information to get started with the develo
 
 #### Prerequisites
 
-* Java 8-14 x64
+* Java 21 x64
 * Gradle
-* Licensed Burp Suite Professional version 1.7.x or later from: <http://portswigger.net/burp/>. Considering that Burp Suite Professional 2022.x is out of beta, we would recommend to use the latest Burp Suite JAR.
+* Licensed Burp Suite Professional from: <http://portswigger.net/burp/>. Standalone JAR.
 
 #### Build & Run
 
@@ -161,7 +163,7 @@ If you want to run the extension on recent (JRE > 9) versions of the JVM, use th
 ## License
 
 Copyright (c) 2016 VMware, Inc. All Rights Reserved.
-Copyright (c) 2022 Doyensec LLC. All Rights Reserved.
+Copyright (c) 2025 Doyensec LLC. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  following conditions are met: Redistributions of source code must retain the above copyright notice, this list of
