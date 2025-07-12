@@ -2,14 +2,14 @@ package com.vmware.burp.extension.filter;
 
 import com.vmware.burp.extension.config.SwaggerConfig;
 import com.vmware.burp.extension.service.BurpService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class ApiKeyFilterTest {

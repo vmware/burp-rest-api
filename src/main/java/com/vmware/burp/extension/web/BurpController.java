@@ -11,11 +11,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.burp.extension.domain.ScanStatusList;
 import com.vmware.burp.extension.domain.*;
 import com.vmware.burp.extension.service.BurpService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -53,10 +57,10 @@ public class BurpController {
    public BurpController() {
    }
 
-   @ApiOperation(value = "Get the version of Burp and the version of the burp-rest-api Extension", notes = "Returns a JSON containing the Burp version and the extension version.")
+   @Operation(summary = "Get the version of Burp and the version of the burp-rest-api Extension", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-           @ApiResponse(code = 200, message = "Success", response = Versions.class),
-           @ApiResponse(code = 500, message = "Failure")
+           @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = Versions.class))),
+           @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/versions")
    public Versions getVersions() {
@@ -66,10 +70,10 @@ public class BurpController {
       return runningVersions;
    }
 
-   @ApiOperation(value = "Get Burp suite project-level configuration", notes = "Burp suite project-level configuration is returned as JSON.")
+   @Operation(summary = "Get Burp suite project-level configuration", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-           @ApiResponse(code = 200, message = "Success", response = JsonNode.class),
-           @ApiResponse(code = 500, message = "Failure")
+           @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = JsonNode.class))),
+           @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/configuration")
    public JsonNode getConfiguration() throws IOException {
@@ -77,10 +81,10 @@ public class BurpController {
       return new ObjectMapper().readTree(configuration);
    }
 
-   @ApiOperation(value = "Get Burp suite project-level configuration with provided configuration path", notes = "Burp suite project-level configuration returned as JSON, from the given configuration path (e.g. 'proxy.request_listeners')")
+   @Operation(summary = "Get Burp suite project-level configuration with provided configuration path", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-           @ApiResponse(code = 200, message = "Success", response = JsonNode.class),
-           @ApiResponse(code = 500, message = "Failure")
+           @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = JsonNode.class))),
+           @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = POST, value = "/configuration")
    public JsonNode getConfiguration(@RequestBody String configAsJson) throws IOException {
@@ -88,14 +92,14 @@ public class BurpController {
       return new ObjectMapper().readTree(configuration);
    }
 
-   @ApiOperation(value = "Update Burp suite project-level configuration", notes = "Burp suite project-level configuration is loaded from the given JSON string.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "configAsJson", value = "Configuration as Json String", required = true, dataType = "string", paramType = "body")
+   @Operation(summary = "Update Burp suite project-level configuration", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "configAsJson", description = "Configuration as Json String", required = true, schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = JsonNode.class),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = JsonNode.class))),
+         @ApiResponse(responseCode = "400", description = "Bad Request"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = PUT, value = "/configuration")
    public void updateConfiguration(@RequestBody String configAsJson) {
@@ -105,10 +109,10 @@ public class BurpController {
       burp.updateConfigFromJson(configAsJson);
    }
 
-   @ApiOperation(value = "Get Burp suite Proxy History", notes = "Returns details of items in Burp Suite Proxy history.")
+   @Operation(summary = "Get Burp suite Proxy History", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = HttpMessageList.class),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = HttpMessageList.class))),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/proxy/history")
    public HttpMessageList getProxyHistory() throws UnsupportedEncodingException {
@@ -118,14 +122,14 @@ public class BurpController {
    }
 
 
-   @ApiOperation(value = "Get Burp suite Proxy Partial History", notes = "Returns details of the subset of items in Burp Suite Proxy history.")
-   @ApiImplicitParams({
-      @ApiImplicitParam(name = "from", value = "Position of the starting request - starting from 1", required = true, dataType = "String", paramType = "query"),
-      @ApiImplicitParam(name = "to", value = "Position of the last desired request. If not set, return history to the last request", required = false, dataType = "String", paramType = "query")
+   @Operation(summary = "Get Burp suite Proxy Partial History", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+      @Parameter(name = "from", description = "Position of the starting request - starting from 1", required = true, schema = @Schema(type = "string")),
+      @Parameter(name = "to", description = "Position of the last desired request. If not set, return history to the last request", required = false, schema = @Schema(type = "string"))
 })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = HttpMessageList.class),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = HttpMessageList.class))),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/proxy/history/partial")
    public HttpMessageList getProxyPartialHistory(@RequestParam String from, @RequestParam(required = false) String to) throws UnsupportedEncodingException {
@@ -159,13 +163,13 @@ public class BurpController {
       return httpMessageList;
    }
 
-   @ApiOperation(value = "Get Burp suite Site Map", notes = "Returns details of items in the Burp suite Site map. urlPrefix parameter can be used to specify a URL prefix, in order to extract a specific subset of the site map.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "urlPrefix", value = "URL prefix in order to extract a specific subset of the site map. Performs a simple case-sensitive text match, returning all site map items whose URL begins with the specified prefix. Returns entire site map if this parameter is null.", dataType = "string", paramType = "query")
+   @Operation(summary = "Get Burp suite Site Map", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "urlPrefix", description = "URL prefix in order to extract a specific subset of the site map. Performs a simple case-sensitive text match, returning all site map items whose URL begins with the specified prefix. Returns entire site map if this parameter is null.", schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = HttpMessageList.class),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = HttpMessageList.class))),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/target/sitemap")
    public HttpMessageList getSiteMap(@RequestParam(required = false) String urlPrefix) throws UnsupportedEncodingException, MalformedURLException {
@@ -174,14 +178,14 @@ public class BurpController {
       return httpMessageList;
    }
 
-   @ApiOperation(value = "Query if an url is in scope", notes = "Query whether a specific URL is within the current Suite-wide scope. Returns true if an url is in scope.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "url", value = "Url string to check for scope.", required = true, dataType = "string", paramType = "query")
+   @Operation(summary = "Query if an url is in scope", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "url", description = "Url string to check for scope.", required = true, schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = ScopeItem.class),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = ScopeItem.class))),
+         @ApiResponse(responseCode = "400", description = "Bad Request"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/target/scope")
    public ScopeItem isInScope(@RequestParam String url) throws MalformedURLException {
@@ -193,14 +197,14 @@ public class BurpController {
       return scopeItem;
    }
 
-   @ApiOperation(value = "Include an Url in scope", notes = "Includes the specified URL in the Suite-wide scope.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "url", value = "Url string to include in the Suite-wide scope.", required = true, dataType = "string", paramType = "query")
+   @Operation(summary = "Include an Url in scope", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "url", description = "Url string to include in the Suite-wide scope.", required = true, schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success"),
+         @ApiResponse(responseCode = "400", description = "Bad Request"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = PUT, value = "/target/scope")
    public void includeInScope(@RequestParam String url)
@@ -211,14 +215,14 @@ public class BurpController {
       burp.includeInScope(url);
    }
 
-   @ApiOperation(value = "Exclude an Url from scope", notes = "Excludes the specified Url from the Suite-wide scope.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "url", value = "Url string to exclude from the Suite-wide scope.", required = true, dataType = "string", paramType = "query")
+   @Operation(summary = "Exclude an Url from scope", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "url", description = "Url string to exclude from the Suite-wide scope.", required = true, schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success"),
+         @ApiResponse(responseCode = "400", description = "Bad Request"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = DELETE, value = "/target/scope")
    public void updateScope(@RequestParam String url)
@@ -229,15 +233,15 @@ public class BurpController {
       burp.excludeFromScope(url);
    }
 
-   @ApiOperation(value = "Send a base url to Burp Scanner to perform a passive scan", notes = "Scans through Burp Sitemap and sends all HTTP requests/responses with url starting with baseUrl to Burp Scanner for passive scan.")
-   @ApiImplicitParams({
-           @ApiImplicitParam(name = "baseUrl", value = "Base Url to submit for Passive scan.", required = true, dataType = "string", paramType = "query")
+   @Operation(summary = "Send a base url to Burp Scanner to perform a passive scan", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+           @Parameter(name = "baseUrl", description = "Base Url to submit for Passive scan.", required = true, schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-           @ApiResponse(code = 200, message = "Success"),
-           @ApiResponse(code = 400, message = "Bad Request"),
-           @ApiResponse(code = 409, message = "Conflict"),
-           @ApiResponse(code = 500, message = "Failure")
+           @ApiResponse(responseCode = "200", description = "Success"),
+           @ApiResponse(responseCode = "400", description = "Bad Request"),
+           @ApiResponse(responseCode = "409", description = "Conflict"),
+           @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = POST, value = "/scanner/scans/passive")
    public void scanPassive(@RequestParam(value = "baseUrl") String baseUrl)
@@ -256,15 +260,16 @@ public class BurpController {
       burp.scan(baseUrl,false);
    }
 
-   @ApiOperation(value = "Send a base url to Burp Scanner to perform active scan", notes = "Scans through Burp Sitemap and sends all HTTP requests with url starting with baseUrl to Burp Scanner for active scan.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "baseUrl", value = "Base Url to submit for Active scan.", required = true, dataType = "string", paramType = "query")
+   @Operation(summary = "Send a base url to Burp Scanner to perform active scan", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "baseUrl", description = "Base Url to submit for Active scan.", required = true, schema = @Schema(type = "string")),
+         @Parameter(name = "insertionPoint", description = "List of insertion points for active scan.", required = false, array = @ArraySchema(schema = @Schema(type = "string")))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 409, message = "Conflict"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success"),
+         @ApiResponse(responseCode = "400", description = "Bad Request"),
+         @ApiResponse(responseCode = "409", description = "Conflict"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = POST, value = "/scanner/scans/active")
    public void scanActive(
@@ -292,23 +297,23 @@ public class BurpController {
       burp.scan(baseUrl, true, convertedInsertionPoint);
    }
 
-   @ApiOperation(value = "Deletes the active scan queue map from memory", notes = "Deletes the scan queue map from memory, not from Burp suite UI.")
+   @Operation(summary = "Deletes the active scan queue map from memory", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = DELETE, value = "/scanner/scans/active")
    public void clearScans() {
       burp.clearScans();
    }
 
-   @ApiOperation(value = "Get the current scan issues", notes = "Returns all of the current scan issues for URLs matching the specified urlPrefix. Performs a simple case-sensitive text match, returning all scan issues whose URL begins with the given urlPrefix. Returns all issues if urlPrefix is null.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "urlPrefix", value = "URL prefix in order to extract a specific subset of scan issues.", dataType = "string", paramType = "query")
+   @Operation(summary = "Get the current scan issues", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "urlPrefix", description = "URL prefix in order to extract a specific subset of scan issues.", schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = ScanIssueList.class),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = ScanIssueList.class))),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/scanner/issues")
    public ScanIssueList getScanIssues(@RequestParam(required = false) String urlPrefix) throws UnsupportedEncodingException {
@@ -317,17 +322,17 @@ public class BurpController {
       return scanIssueList;
    }
 
-   @ApiOperation(value = "Get the scan report with Scanner issues", notes = "Returns the scan report with current Scanner issues for URLs matching the specified urlPrefix in the form of a byte array. Report format can be specified as HTML or XML. Report with scan issues of all URLs are returned in HTML format if no urlPrefix and format are specified.")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "urlPrefix", value = "URL prefix in order to extract and include a specific subset of scan issues in the report. Multiple values are also accepted if they are comma-separated.", dataType = "string", paramType = "query"),
-         @ApiImplicitParam(name = "reportType", value = "Format to be used to generate report. Acceptable values are HTML and XML.", defaultValue = "HTML", dataType = "string", paramType = "query"),
-         @ApiImplicitParam(name = "issueSeverity", value = "Severity of the scan issues to be included in the report. Acceptable values are All, High, Medium, Low and Information. Multiple values are also accepted if they are comma-separated.", defaultValue = "All", dataType = "string", paramType = "query"),
-         @ApiImplicitParam(name = "issueConfidence", value = "Confidence of the scan issues to be included in the report. Acceptable values are All, Certain, Firm and Tentative. Multiple values are also accepted if they are comma-separated.", defaultValue = "All", dataType = "string", paramType = "query")
+   @Operation(summary = "Get the scan report with Scanner issues", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "urlPrefix", description = "URL prefix in order to extract and include a specific subset of scan issues in the report. Multiple values are also accepted if they are comma-separated.", schema = @Schema(type = "string")),
+         @Parameter(name = "reportType", description = "Format to be used to generate report. Acceptable values are HTML and XML.", schema = @Schema(type = "string")),
+         @Parameter(name = "issueSeverity", description = "Severity of the scan issues to be included in the report. Acceptable values are All, High, Medium, Low and Information. Multiple values are also accepted if they are comma-separated.", schema = @Schema(type = "string")),
+         @Parameter(name = "issueConfidence", description = "Confidence of the scan issues to be included in the report. Acceptable values are All, Certain, Firm and Tentative. Multiple values are also accepted if they are comma-separated.", schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = Byte[].class),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = Byte[].class))),
+         @ApiResponse(responseCode = "400", description = "Bad Request"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/report")
    public byte[] generateReport(@RequestParam String urlPrefix,
@@ -377,10 +382,10 @@ public class BurpController {
               issueSeverities.toArray(new IssueSeverity[0]), issueConfidences.toArray(new IssueConfidence[0]));
    }
 
-   @ApiOperation(value = "Get the status of each scan", notes = "Returns status details of items in the scan queue. For percentage, use /scanner/status instead.")
+   @Operation(summary = "Get the status of each scan", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = ScanStatusList.class),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = ScanStatusList.class))),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/scanner/status/details")
    public ScanStatusList scanPercentComplete() {
@@ -389,10 +394,10 @@ public class BurpController {
       return scanStatusList;
    }
 
-   @ApiOperation(value = "Get the percentage of the scan completion", notes = "Please note that the scanner status percentages returned by Burp v1.7 and v2.x don't have the same granularity.")
+   @Operation(summary = "Get the percentage of the scan completion", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success", response = ScanProgress.class),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = ScanProgress.class))),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/scanner/status")
    public ScanProgress scanPercentCompletePercentage() {
@@ -403,10 +408,10 @@ public class BurpController {
       
    }
 
-    @ApiOperation(value = "Get the status of the spider", notes = "Returns an estimate of the current status of the spider. Due to the current limitations in Burp's Extender API, this endpoint will return 100% whenever the spider is no longer discovering new resources. On newer Burp APIs, we expect to be able to provide discrete values.")
+    @Operation(summary = "Get the status of the spider", security = @SecurityRequirement(name = "APIKEY"))
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = SpiderProgress.class),
-            @ApiResponse(code = 500, message = "Failure")
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = SpiderProgress.class))),
+            @ApiResponse(responseCode = "500", description = "Failure")
     })
     @RequestMapping(method = GET, value = "/spider/status")
     public SpiderProgress spiderPercentComplete() throws MalformedURLException {
@@ -415,10 +420,10 @@ public class BurpController {
         return spiderProgress;
     }
 
-   @ApiOperation(value = "Get the cookies in the CookieJar")
+   @Operation(summary = "Get the cookies in the CookieJar", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-           @ApiResponse(code = 200, message = "Success"),
-           @ApiResponse(code = 500, message = "Failure")
+           @ApiResponse(responseCode = "200", description = "Success"),
+           @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/cookiejar")
    public List<ICookie> getCookiesFromCookieJar() {
@@ -426,10 +431,10 @@ public class BurpController {
       return cookieFromCookieJar;
    }
 
-   @ApiOperation(value = "Update the cookies in the CookieJar")
+   @Operation(summary = "Update the cookies in the CookieJar", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-           @ApiResponse(code = 200, message = "Success"),
-           @ApiResponse(code = 500, message = "Failure")
+           @ApiResponse(responseCode = "200", description = "Success"),
+           @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = PUT, value = "/cookiejar")
    public void updateCookiesInCookieJar(@RequestBody List<CookieInCookieJar> cookieJarList) {
@@ -440,15 +445,15 @@ public class BurpController {
 
    }
 
-   @ApiOperation(value = "Send a seed url to Burp Spider", notes = "Sends a seed URL to the Burp Spider tool. The baseUrl should be in Suite-wide scope for the Spider to run..")
-   @ApiImplicitParams({
-         @ApiImplicitParam(name = "baseUrl", value = "Base Url to send to Spider tool.", required = true, dataType = "string", paramType = "query")
+   @Operation(summary = "Send a seed url to Burp Spider", security = @SecurityRequirement(name = "APIKEY"))
+   @Parameters({
+         @Parameter(name = "baseUrl", description = "Base Url to send to Spider tool.", required = true, schema = @Schema(type = "string"))
    })
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
-         @ApiResponse(code = 400, message = "Bad Request"),
-         @ApiResponse(code = 409, message = "Conflict"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success"),
+         @ApiResponse(responseCode = "400", description = "Bad Request"),
+         @ApiResponse(responseCode = "409", description = "Conflict"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = POST, value = "/spider")
    public void sendToSpider(@RequestParam String baseUrl)
@@ -467,10 +472,10 @@ public class BurpController {
       burp.sendToSpider(baseUrl);
    }
 
-   @ApiOperation(value = "Stop Burp Suite", notes = "This will exit Burp Suite. Use with caution: the API will not work after this endpoint has been called. You have to restart Burp from command-line to re-enable te API.")
+   @Operation(summary = "Stop Burp Suite", security = @SecurityRequirement(name = "APIKEY"))
    @ApiResponses(value = {
-         @ApiResponse(code = 200, message = "Success"),
-         @ApiResponse(code = 500, message = "Failure")
+         @ApiResponse(responseCode = "200", description = "Success"),
+         @ApiResponse(responseCode = "500", description = "Failure")
    })
    @RequestMapping(method = GET, value = "/stop")
    public void exitBurp(){
