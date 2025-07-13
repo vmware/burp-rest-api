@@ -94,9 +94,16 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test:3.2.5')
     testImplementation('org.apache.httpcomponents:httpclient:4.5.2')
     testImplementation('net.portswigger.burp.extender:burp-extender-api:2.+')
+    testImplementation('org.junit.jupiter:junit-jupiter:5.13.2')
+    testImplementation('org.mockito:mockito-core:5.2.0')
 
     jaxb 'org.glassfish.jaxb:jaxb-jxc:3.0.1'
 	jaxb 'org.glassfish.jaxb:jaxb-xjc:3.0.1'
+}
+
+test {
+    //Excluding JUnit 5 for now. License issue in Burp Suite Pro when using JUnit 5.
+    //useJUnitPlatform()
 }
 
 task createschemaTargetDir () {
