@@ -1,7 +1,220 @@
 {
+    "bambda":{
+        "http_history_display_filter":{
+            "bambda":"return true;",
+            "bambda_id":"",
+            "bambda_name":""
+        },
+        "logger_capture_filter":{
+            "bambda":"return true;",
+            "bambda_id":"",
+            "bambda_name":""
+        },
+        "logger_display_filter":{
+            "bambda":"return true;",
+            "bambda_id":"",
+            "bambda_name":""
+        },
+        "sitemap_display_filter":{
+            "bambda":"return true;",
+            "bambda_id":"",
+            "bambda_name":""
+        },
+        "web_sockets_history_display_filter":{
+            "bambda":"return true;",
+            "bambda_id":"",
+            "bambda_name":""
+        }
+    },
+    "logger":{
+        "capture_filter":{
+            "by_mime_type":{
+                "capture_css":true,
+                "capture_flash":true,
+                "capture_html":true,
+                "capture_images":true,
+                "capture_other_binary":true,
+                "capture_other_text":true,
+                "capture_script":true,
+                "capture_xml":true
+            },
+            "by_request_type":{
+                "capture_only_in_scope_items":false,
+                "capture_only_parameterized_requests":false,
+                "discard_items_without_responses":false
+            },
+            "by_search":{
+                "case_sensitive":false,
+                "negative_search":false,
+                "regex":false,
+                "term":""
+            },
+            "by_status_code":{
+                "capture_2xx":true,
+                "capture_3xx":true,
+                "capture_4xx":true,
+                "capture_5xx":true
+            },
+            "by_tool":{
+                "capture_burp_ai":true,
+                "capture_extender":true,
+                "capture_intruder":true,
+                "capture_proxy":true,
+                "capture_repeater":true,
+                "capture_scanner":true,
+                "capture_sequencer":true,
+                "capture_target":true
+            },
+            "capture_enabled":true,
+            "capture_memory_limit_mb":100,
+            "filter_mode":"SETTINGS",
+            "limit_request_response_size":{
+                "capture_requests_up_to":"1MB",
+                "capture_responses_up_to":"1MB"
+            },
+            "session_handling":{
+                "ignore_session_handling_requests":false
+            },
+            "task_capture_memory_limit_mb":20
+        },
+        "display_filter":{
+            "by_annotation":{
+                "show_only_commented_items":false,
+                "show_only_highlighted_items":false
+            },
+            "by_file_extension":{
+                "hide_items":[
+                    "js",
+                    "gif",
+                    "jpg",
+                    "png",
+                    "css"
+                ],
+                "hide_specific":false,
+                "show_items":[
+                    "asp",
+                    "aspx",
+                    "jsp",
+                    "php"
+                ],
+                "show_only_specific":false
+            },
+            "by_mime_type":{
+                "show_css":true,
+                "show_flash":true,
+                "show_html":true,
+                "show_images":true,
+                "show_other_binary":true,
+                "show_other_text":true,
+                "show_script":true,
+                "show_xml":true
+            },
+            "by_request_type":{
+                "hide_items_without_responses":false,
+                "show_only_in_scope_items":false,
+                "show_only_parameterized_requests":false
+            },
+            "by_search":{
+                "case_sensitive":false,
+                "negative_search":false,
+                "regex":false,
+                "term":""
+            },
+            "by_status_code":{
+                "show_2xx":true,
+                "show_3xx":true,
+                "show_4xx":true,
+                "show_5xx":true
+            },
+            "by_tool":{
+                "show_burp_ai":true,
+                "show_extender":true,
+                "show_intruder":true,
+                "show_proxy":true,
+                "show_repeater":true,
+                "show_scanner":true,
+                "show_sequencer":true,
+                "show_target":true
+            },
+            "filter_mode":"SETTINGS"
+        }
+    },
+    "organiser":{
+        "display_filter":{
+            "by_annotation":{
+                "show_only_highlighted_items":false,
+                "show_only_notes_items":false
+            },
+            "by_file_extension":{
+                "hide_items":[
+                    "js",
+                    "gif",
+                    "jpg",
+                    "png",
+                    "css"
+                ],
+                "hide_specific":false,
+                "show_items":[
+                    "asp",
+                    "aspx",
+                    "jsp",
+                    "php"
+                ],
+                "show_only_specific":false
+            },
+            "by_mime_type":{
+                "show_css":true,
+                "show_flash":true,
+                "show_html":true,
+                "show_images":true,
+                "show_other_binary":true,
+                "show_other_text":true,
+                "show_script":true,
+                "show_xml":true
+            },
+            "by_request_type":{
+                "hide_items_without_responses":false,
+                "show_only_in_scope_items":false,
+                "show_only_parameterized_requests":false
+            },
+            "by_search":{
+                "case_sensitive":false,
+                "negative_search":false,
+                "regex":false,
+                "term":""
+            },
+            "by_status_code":{
+                "show_2xx":true,
+                "show_3xx":true,
+                "show_4xx":true,
+                "show_5xx":true
+            },
+            "by_tool":{
+                "burp_ai":true,
+                "extensions":true,
+                "intruder":true,
+                "logger":true,
+                "proxy":true,
+                "repeater":true,
+                "scanner":true,
+                "sequencer":true,
+                "target":true
+            },
+            "status":{
+                "done":true,
+                "ignored":true,
+                "in_progress":true,
+                "new":true,
+                "postponed":true
+            }
+        }
+    },
     "project_options":{
+        "ai":{
+            "enabled":true,
+            "use_user_options":true
+        },
         "connections":{
-            "hostname_resolution":[],
             "out_of_scope_requests":{
                 "advanced_mode":false,
                 "drop_all_out_of_scope":false,
@@ -25,6 +238,7 @@
                 "username":""
             },
             "timeouts":{
+                "connect_timeout":120000,
                 "domain_name_resolution_timeout":300000,
                 "failed_domain_name_resolution_timeout":60000,
                 "normal_timeout":120000,
@@ -35,7 +249,17 @@
                 "use_user_options":true
             }
         },
+        "dns":{
+            "hostname_resolution":[],
+            "lookup_policy":"use_system_default"
+        },
         "http":{
+            "http1":{
+                "enable_keep_alive":false
+            },
+            "http2":{
+                "enable_http2":true
+            },
             "redirections":{
                 "understand_3xx_status_code":true,
                 "understand_any_status_code_with_location_header":false,
@@ -59,7 +283,12 @@
                 "location":"",
                 "poll_over_unencrypted_http":false,
                 "polling_location":"",
-                "type":"default"
+                "type":"default",
+                "use_user_config":true
+            },
+            "embedded_browser":{
+                "allow_running_without_sandbox":false,
+                "disable_gpu":false
             },
             "logging":{
                 "requests":{
@@ -69,8 +298,7 @@
                     "proxy":"",
                     "repeater":"",
                     "scanner":"",
-                    "sequencer":"",
-                    "spider":""
+                    "sequencer":""
                 },
                 "responses":{
                     "all_tools":"",
@@ -79,8 +307,7 @@
                     "proxy":"",
                     "repeater":"",
                     "scanner":"",
-                    "sequencer":"",
-                    "spider":""
+                    "sequencer":""
                 }
             },
             "scheduled_tasks":{
@@ -89,13 +316,13 @@
         },
         "sessions":{
             "cookie_jar":{
+                "monitor_burp_ai":false,
                 "monitor_extender":false,
                 "monitor_intruder":false,
                 "monitor_proxy":true,
                 "monitor_repeater":false,
                 "monitor_scanner":false,
-                "monitor_sequencer":false,
-                "monitor_spider":true
+                "monitor_sequencer":false
             },
             "macros":{
                 "macros":[]
@@ -117,7 +344,6 @@
                         "named_params":[],
                         "restrict_scope_to_named_params":false,
                         "tools_scope":[
-                            "Spider",
                             "Scanner"
                         ],
                         "url_scope":"all",
@@ -133,11 +359,11 @@
             },
             "negotiation":{
                 "allow_unsafe_renegotiation":false,
-                "automatically_select_compatible_ssl_parameters_on_failure":true,
                 "disable_ssl_session_resume":false,
                 "enabled_ciphers":[],
                 "enabled_protocols":[],
-                "use_platform_default_protocols_and_ciphers":true
+                "enforce_upstream_trust":false,
+                "tls_negotiation_behavior":"use_all_supported"
             }
         }
     },
@@ -193,17 +419,18 @@
                 "show_3xx":true,
                 "show_4xx":true,
                 "show_5xx":true
-            }
+            },
+            "filter_mode":"SETTINGS"
         },
         "intercept_client_requests":{
             "automatically_fix_missing_or_superfluous_new_lines_at_end_of_request":false,
             "automatically_update_content_length_header_when_the_request_is_edited":true,
-            "do_intercept":false,
+            "do_intercept":true,
             "rules":[
                 {
                     "boolean_operator":"and",
                     "enabled":true,
-                    "match_condition":"(^gif$|^jpg$|^png$|^css$|^js$|^ico$)",
+                    "match_condition":"(^gif$|^jpg$|^png$|^css$|^js$|^ico$|^svg$|^eot$|^woff$|^woff2$|^ttf$)",
                     "match_relationship":"does_not_match",
                     "match_type":"file_extension"
                 },
@@ -268,94 +495,96 @@
         },
         "intercept_web_sockets_messages":{
             "client_to_server_messages":true,
+            "intercept_in_scope_only":false,
             "server_to_client_messages":true
         },
+        "match_replace_disable_out_of_scope":false,
         "match_replace_rules":[
             {
+                "category":"regex",
                 "comment":"Emulate IE",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"request_header",
                 "string_match":"^User-Agent.*$",
                 "string_replace":"User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)"
             },
             {
+                "category":"regex",
                 "comment":"Emulate iOS",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"request_header",
                 "string_match":"^User-Agent.*$",
                 "string_replace":"User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B176 Safari/7534.48.3"
             },
             {
+                "category":"regex",
                 "comment":"Emulate Android",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"request_header",
                 "string_match":"^User-Agent.*$",
                 "string_replace":"User-Agent: Mozilla/5.0 (Linux; U; Android 2.2; en-us; Droid Build/FRG22D) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
             },
             {
+                "category":"regex",
                 "comment":"Require non-cached response",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"request_header",
                 "string_match":"^If-Modified-Since.*$"
             },
             {
+                "category":"regex",
                 "comment":"Require non-cached response",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"request_header",
                 "string_match":"^If-None-Match.*$"
             },
             {
+                "category":"regex",
                 "comment":"Hide Referer header",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"request_header",
                 "string_match":"^Referer.*$"
             },
             {
+                "category":"regex",
                 "comment":"Require non-compressed responses",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"request_header",
                 "string_match":"^Accept-Encoding.*$"
             },
             {
+                "category":"regex",
                 "comment":"Ignore cookies",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"response_header",
                 "string_match":"^Set-Cookie.*$"
             },
             {
+                "category":"regex",
                 "comment":"Rewrite Host header",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"request_header",
                 "string_match":"^Host: foo.example.org$",
                 "string_replace":"Host: bar.example.org"
             },
             {
+                "category":"literal",
                 "comment":"Add spoofed CORS origin",
                 "enabled":false,
-                "is_simple_match":true,
                 "rule_type":"request_header",
                 "string_replace":"Origin: foo.example.org"
             },
             {
+                "category":"regex",
                 "comment":"Remove HSTS headers",
                 "enabled":false,
-                "is_simple_match":false,
                 "rule_type":"response_header",
                 "string_match":"^Strict\\-Transport\\-Security.*$"
             },
             {
+                "category":"literal",
                 "comment":"Disable browser XSS protection",
                 "enabled":false,
-                "is_simple_match":true,
                 "rule_type":"response_header",
                 "string_replace":"X-XSS-Protection: 0"
             }
@@ -365,22 +594,26 @@
             "disable_out_of_scope_logging_to_history_and_site_map":false,
             "disable_web_interface":false,
             "remove_unsupported_encodings_from_accept_encoding_headers_in_incoming_requests":true,
-            "set_connection_close_header_on_requests":true,
             "set_connection_close_header_on_responses":false,
+            "set_connection_header_on_requests":true,
             "strip_proxy_headers_in_incoming_requests":true,
             "strip_sec_websocket_extensions_headers_in_incoming_requests":true,
             "suppress_burp_error_messages_in_browser":false,
             "unpack_gzip_deflate_in_requests":false,
             "unpack_gzip_deflate_in_responses":true,
+            "use_http1_keep_alive":true,
             "use_http_10_in_requests_to_server":false,
             "use_http_10_in_responses_to_client":false
         },
         "request_listeners":[
             {
                 "certificate_mode":"per_host",
+                "custom_tls_protocols":[],
+                "enable_http2":true,
                 "listen_mode":"loopback_only",
                 "listener_port":8080,
-                "running":true
+                "running":false,
+                "use_custom_tls_protocols":false
             }
         ],
         "response_modification":{
@@ -395,6 +628,7 @@
             "unhide_hidden_form_fields":false
         },
         "ssl_pass_through":{
+            "apply_to_out_of_scope_items":true,
             "automatically_add_entries_on_client_ssl_negotiation_failure":false,
             "rules":[]
         },
@@ -416,157 +650,23 @@
                 "negative_search":false,
                 "regex":false,
                 "term":""
-            }
-        }
+            },
+            "filter_mode":"SETTINGS"
+        },
+        "ws_match_replace_disable_out_of_scope":false,
+        "ws_match_replace_rules":[]
     },
     "repeater":{
+        "allow_http2_alpn_override":false,
+        "enable_http1_keep_alive":false,
+        "enable_http2_connection_reuse":true,
+        "enforce_protocol_in_redirections":false,
         "follow_redirections":"never",
+        "normalize_line_endings":true,
         "process_cookies_in_redirections":false,
+        "strip_connection_header_over_http2":true,
         "unpack_gzip_deflate":true,
         "update_content_length":true
-    },
-    "scanner":{
-        "active_scanning_engine":{
-            "concurrent_request_limit":10,
-            "do_throttle":false,
-            "follow_redirects":true,
-            "number_of_retries_on_failure":3,
-            "pause_before_retry_on_failure":2000,
-            "throttle_interval":500,
-            "throttle_random":false
-        },
-        "active_scanning_optimization":{
-            "intelligent_attack_selection":true,
-            "scan_accuracy":"normal",
-            "scan_speed":"normal"
-        },
-        "attack_insertion_points":{
-            "change_body_to_cookie":false,
-            "change_body_to_url":false,
-            "change_cookie_to_body":false,
-            "change_cookie_to_url":false,
-            "change_url_to_body":false,
-            "change_url_to_cookie":false,
-            "insert_amf_params":false,
-            "insert_body_params":true,
-            "insert_cookies":true,
-            "insert_entire_body":true,
-            "insert_http_headers":true,
-            "insert_param_names":true,
-            "insert_url_params":true,
-            "insert_url_path_filename":true,
-            "insert_url_path_folders":false,
-            "max_insertion_points":30,
-            "skip_all_tests_for_parameters":[],
-            "skip_server_side_injection_for_parameters":[
-                {
-                    "enabled":true,
-                    "expression":"aspsessionid.*",
-                    "item":"name",
-                    "match_type":"matches_regex",
-                    "parameter":"cookie"
-                },
-                {
-                    "enabled":true,
-                    "expression":"asp.net_sessionid",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"cookie"
-                },
-                {
-                    "enabled":true,
-                    "expression":"__eventtarget",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"body_parameter"
-                },
-                {
-                    "enabled":true,
-                    "expression":"__eventargument",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"body_parameter"
-                },
-                {
-                    "enabled":true,
-                    "expression":"__viewstate",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"body_parameter"
-                },
-                {
-                    "enabled":true,
-                    "expression":"__eventvalidation",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"body_parameter"
-                },
-                {
-                    "enabled":true,
-                    "expression":"jsessionid",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"any_parameter"
-                },
-                {
-                    "enabled":true,
-                    "expression":"cfid",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"cookie"
-                },
-                {
-                    "enabled":true,
-                    "expression":"cftoken",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"cookie"
-                },
-                {
-                    "enabled":true,
-                    "expression":"PHPSESSID",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"cookie"
-                },
-                {
-                    "enabled":true,
-                    "expression":"session_id",
-                    "item":"name",
-                    "match_type":"is",
-                    "parameter":"cookie"
-                }
-            ],
-            "use_nested_insertion_points":true
-        },
-        "live_active_scanning":{
-            "advanced_mode":false,
-            "exclude":[],
-            "include":[],
-            "scope_option":"nothing"
-        },
-        "live_passive_scanning":{
-            "advanced_mode":false,
-            "exclude":[],
-            "include":[],
-            "scope_option":"everything"
-        },
-        "scan_issues":{
-            "scan_type_intrusive_active":true,
-            "scan_type_light_active":true,
-            "scan_type_medium_active":true,
-            "scan_type_passive":true,
-            "scan_type_static_code_analysis":true,
-            "select_individual_issues":false,
-            "selected_issues":[]
-        },
-        "scan_queue":{
-            "hide_finished_items":false
-        },
-        "static_code_analysis":{
-            "max_time_per_item":120,
-            "mode":"active_only"
-        }
     },
     "sequencer":{
         "live_capture":{
@@ -590,186 +690,6 @@
             "base_64_decode_before_analyzing":false,
             "pad_short_tokens_at":"start",
             "pad_with":"0"
-        }
-    },
-    "spider":{
-        "application_login":{
-            "mode":"prompt",
-            "password":"",
-            "username":""
-        },
-        "crawler":{
-            "check_robots_text":true,
-            "detect_custom_not_found_responses":true,
-            "ignore_links_to_non_text_content":true,
-            "make_non_parameterized_request_to_dynamic_pages":true,
-            "max_link_depth":5,
-            "max_parameterized_requests_per_url":50,
-            "request_root_of_all_directories":true
-        },
-        "engine":{
-            "add_random_variation_to_throttle":false,
-            "number_of_retries_on_failure":3,
-            "number_of_threads":10,
-            "pause_before_retry_on_failure":2000,
-            "throttle_between_requests":false,
-            "throttle_interval":0
-        },
-        "form_submission":{
-            "default_auto_fill_value":"555-555-0199@example.com",
-            "individuate_forms_by":"action_url_method_and_fields",
-            "iterate_all_values_of_submit_fields":true,
-            "max_submissions_per_form":10,
-            "mode":"automatic",
-            "param_auto_fill_rules":[
-                {
-                    "enabled":true,
-                    "field_name":"mail",
-                    "field_value":"winter@example.com",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"first",
-                    "field_value":"Peter",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"last",
-                    "field_value":"Winter",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"surname",
-                    "field_value":"Winter",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"name",
-                    "field_value":"Peter Winter",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"comp",
-                    "field_value":"Winter Consulting",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"addr",
-                    "field_value":"1 Main Street",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"city",
-                    "field_value":"Winterville",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"state",
-                    "field_value":"WI",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"zip",
-                    "field_value":"36310",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"post",
-                    "field_value":"SW1A 1AA",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"area",
-                    "field_value":"555",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"phone",
-                    "field_value":"555-555-0199",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"tel",
-                    "field_value":"555-555-0199",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"ssn",
-                    "field_value":"123 45 6789",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"social",
-                    "field_value":"123 45 6789",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"age",
-                    "field_value":"30",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"day",
-                    "field_value":"01",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"month",
-                    "field_value":"01",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"year",
-                    "field_value":"1980",
-                    "match_type":"regex"
-                },
-                {
-                    "enabled":true,
-                    "field_name":"passport",
-                    "field_value":"0123456789",
-                    "match_type":"regex"
-                }
-            ],
-            "set_unmatched_fields":true
-        },
-        "passive_spidering":{
-            "link_depth_to_associate_with_proxy_requests":0,
-            "passively_spider_as_you_browse":true
-        },
-        "request_headers":{
-            "custom_headers":[
-                "Accept: */*",
-                "Accept-Language: en",
-                "User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)",
-                "Connection: close"
-            ],
-            "use_http_11":true,
-            "use_referer":true
-        },
-        "scope":{
-            "advanced_mode":false,
-            "exclude":[],
-            "include":[],
-            "scope_option":"suite"
         }
     },
     "target":{
@@ -825,7 +745,8 @@
                 "show_3xx":true,
                 "show_4xx":false,
                 "show_5xx":true
-            }
+            },
+            "filter_mode":"SETTINGS"
         },
         "scope":{
             "advanced_mode":false,

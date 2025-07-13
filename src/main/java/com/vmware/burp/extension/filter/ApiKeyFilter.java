@@ -3,9 +3,9 @@ package com.vmware.burp.extension.filter;
 import com.vmware.burp.extension.config.SwaggerConfig;
 import com.vmware.burp.extension.service.BurpService;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

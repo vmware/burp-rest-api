@@ -20,10 +20,10 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,9 +39,8 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, args = {"--apikey=test-api-key"})
 // @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ApiKeyBurpClientIT {
@@ -57,7 +56,7 @@ public class ApiKeyBurpClientIT {
     @Value("${local.server.port}")
     private int port;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         RestTemplate restTemplate;
 
@@ -99,7 +98,7 @@ public class ApiKeyBurpClientIT {
 
 
     // line @Ignore can be commented if this class is run individually
-    @Ignore("This test works correctly but if it runs before other integration tests, it fills Burp history and may make other tests fails.")
+    @Disabled("This test works correctly but if it runs before other integration tests, it fills Burp history and may make other tests fails.")
     @Test
     public void testGetProxyHistoryAndSiteMapSendingApiKeyHeader() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         HttpMessageList proxyHistory = burpClient.getProxyHistory();
@@ -142,7 +141,7 @@ public class ApiKeyBurpClientIT {
     }
 
     // line @Ignore can be commented if this class is run individually
-    @Ignore("This test works correctly but if it runs before other integration tests, it fills Burp history and may make other tests fails.")
+    @Disabled("This test works correctly but if it runs before other integration tests, it fills Burp history and may make other tests fails.")
     @Test
     public void testScannerSpiderAndReportMethodsSendingApiKeyHeader() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         assertEquals(0, burpClient.getScanStatuses().getScanStatuses().size());
