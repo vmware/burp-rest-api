@@ -18,14 +18,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -218,5 +215,13 @@ public class BurpClientIT {
             httpClient.execute(target, request);
 
         }
+    }
+
+    @Test
+    void printJvmInfo() {
+        System.out.println("Java version: " + System.getProperty("java.version"));
+        System.out.println("Java home: " + System.getProperty("java.home"));
+        System.out.println("User: " + System.getProperty("user.name"));
+        System.out.println("User home: " + System.getProperty("user.home"));
     }
 }

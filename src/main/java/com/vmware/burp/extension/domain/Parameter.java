@@ -7,13 +7,12 @@
 package com.vmware.burp.extension.domain;
 
 import burp.IParameter;
-
+import com.vmware.burp.extension.utils.URLDecoderUtil;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -33,8 +32,8 @@ public class Parameter {
    }
 
    public Parameter(IParameter iParameter) throws UnsupportedEncodingException {
-      this.name = URLDecoder.decode(iParameter.getName(), "UTF-8");
-      this.value = URLDecoder.decode(iParameter.getValue(), "UTF-8");
+      this.name = URLDecoderUtil.safeDecode(iParameter.getName()); 
+      this.value = URLDecoderUtil.safeDecode(iParameter.getValue()); 
       this.type = ParameterType.getEnum(iParameter.getType());
    }
 

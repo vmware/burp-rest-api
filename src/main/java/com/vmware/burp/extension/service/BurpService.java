@@ -9,7 +9,6 @@ package com.vmware.burp.extension.service;
 import burp.*;
 import burp.ICookie;
 
-import com.vmware.burp.extension.domain.Cookie;
 import com.vmware.burp.extension.domain.CookieInCookieJar;
 import com.vmware.burp.extension.domain.HttpMessage;
 import com.vmware.burp.extension.domain.IssueConfidence;
@@ -34,7 +33,6 @@ import org.springframework.util.FileCopyUtils;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.CookieStore;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
