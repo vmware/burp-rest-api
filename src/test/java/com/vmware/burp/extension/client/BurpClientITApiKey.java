@@ -21,7 +21,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,15 +37,13 @@ import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, args = {"--apikey=test-api-key"})
-// @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class ApiKeyBurpClientIT {
-    private static final Logger log = LoggerFactory.getLogger(ApiKeyBurpClientIT.class);
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, args = {"--apikey=test-api-key"})
+public class BurpClientITApiKey {
+    private static final Logger log = LoggerFactory.getLogger(BurpClientITApiKey.class);
     private static final String PROXY_HOST = "localhost";
     private static final int PROXY_PORT = 8080;
     private static final String PROXY_SCHEME = "http";
     private static final String TARGET_HOST = "www.vmware.com";
-
 
     private BurpClient burpClient;
 
@@ -65,6 +62,11 @@ public class ApiKeyBurpClientIT {
 
         burpClient = new BurpClient("http://localhost:" + port, restTemplate);
         log.info("!! Make sure that there are no applications configured to use the proxy !!");
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
 
@@ -92,10 +94,6 @@ public class ApiKeyBurpClientIT {
         assertFalse(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
     }
 
-
-
-    // line @Ignore can be commented if this class is run individually
-    @Disabled("This test works correctly but if it runs before other integration tests, it fills Burp history and may make other tests fails.")
     @Test
     public void testGetProxyHistoryAndSiteMapSendingApiKeyHeader() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         HttpMessageList proxyHistory = burpClient.getProxyHistory();
@@ -114,7 +112,6 @@ public class ApiKeyBurpClientIT {
         siteMap = burpClient.getSiteMap(urlString);
         assertNotEquals(0, siteMap.getHttpMessages().size());
     }
-
 
     @Test
     public void testScopeMethodsSendingApiKeyHeader() {
@@ -137,8 +134,6 @@ public class ApiKeyBurpClientIT {
         assertFalse(burpClient.isInScope(httpsBaseUrl));
     }
 
-    // line @Ignore can be commented if this class is run individually
-    @Disabled("This test works correctly but if it runs before other integration tests, it fills Burp history and may make other tests fails.")
     @Test
     public void testScannerSpiderAndReportMethodsSendingApiKeyHeader() throws IOException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         assertEquals(0, burpClient.getScanStatuses().getScanStatuses().size());
@@ -174,14 +169,12 @@ public class ApiKeyBurpClientIT {
         sslContext = SSLContexts.custom().loadTrustMaterial((chain, authType) -> true).build();
 
         SSLConnectionSocketFactory sslConnectionSocketFactory =
-                new SSLConnectionSocketFactory(sslContext, new String[]
-                        {"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"}, null,
-                        NoopHostnameVerifier.INSTANCE);
+                new SSLConnectionSocketFactory(sslContext, null, null, NoopHostnameVerifier.INSTANCE);
 
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLSocketFactory(sslConnectionSocketFactory)
                 .build()) {
-            HttpHost target = new HttpHost(ApiKeyBurpClientIT.TARGET_HOST);
+            HttpHost target = new HttpHost(BurpClientITApiKey.TARGET_HOST);
             HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT, PROXY_SCHEME);
 
             RequestConfig config = RequestConfig.custom().setProxy(proxy).build();

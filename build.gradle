@@ -102,8 +102,15 @@ dependencies {
 }
 
 test {
-    //Excluding JUnit 5 for now. License issue in Burp Suite Pro when using JUnit 5.
-    //useJUnitPlatform()
+    forkEvery = 1 // Forks a new JVM for each test class
+    useJUnitPlatform()  // Needed for JUnit 5
+    testLogging {
+        showStandardStreams = true
+    }
+    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_21)) {
+        jvmArgs '--add-opens=java.desktop/javax.swing=ALL-UNNAMED',
+                '--add-opens=java.base/java.lang=ALL-UNNAMED'
+    }
 }
 
 task createschemaTargetDir () {

@@ -358,7 +358,7 @@
                 "use_user_options":true
             },
             "negotiation":{
-                "allow_unsafe_renegotiation":false,
+                "allow_unsafe_renegotiation":true,
                 "disable_ssl_session_resume":false,
                 "enabled_ciphers":[],
                 "enabled_protocols":[],
@@ -425,7 +425,7 @@
         "intercept_client_requests":{
             "automatically_fix_missing_or_superfluous_new_lines_at_end_of_request":false,
             "automatically_update_content_length_header_when_the_request_is_edited":true,
-            "do_intercept":true,
+            "do_intercept":false,
             "rules":[
                 {
                     "boolean_operator":"and",
@@ -609,10 +609,10 @@
             {
                 "certificate_mode":"per_host",
                 "custom_tls_protocols":[],
-                "enable_http2":true,
+                "enable_http2":false,
                 "listen_mode":"loopback_only",
                 "listener_port":8080,
-                "running":false,
+                "running":true,
                 "use_custom_tls_protocols":false
             }
         ],

@@ -33,7 +33,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BurpClientIT {
     private static final Logger log = LoggerFactory.getLogger(BurpClientIT.class);
     private static final String PROXY_HOST = "localhost";
@@ -50,6 +50,45 @@ public class BurpClientIT {
     public void setUp() {
         burpClient = new BurpClient("http://localhost:" + port);
         log.info("!! Make sure that there are no applications configured to use the proxy !!");
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    
+    }
+
+    @Test
+    public void testGetProxyHistoryAndSiteMap() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        
+        String urlString = "https://www.vmware.com";
+
+        sendRequestThruProxy();
+        sendRequestThruProxy();
+        sendRequestThruProxy();
+
+        HttpMessageList siteMap = burpClient.getSiteMap(urlString);
+        assertNotEquals(0, siteMap.getHttpMessages().size());
+
+        HttpMessageList proxyHistory = burpClient.getProxyHistory();
+        assertNotEquals(0, proxyHistory.getHttpMessages().size());
+
+        // partial History
+        // Get only the first request
+        HttpMessageList partialHistory = burpClient.getPartialProxyHistory("1", "1");
+        assertEquals(1, partialHistory.getHttpMessages().size());
+
+        // issue some request to fill the history proxy
+        sendRequestThruProxy();
+        sendRequestThruProxy();
+        sendRequestThruProxy();
+
+        HttpMessageList proxyHistory2 = burpClient.getProxyHistory();
+
+        assertTrue(proxyHistory2.getHttpMessages().size() > proxyHistory.getHttpMessages().size(), "Expected proxyHistory size now > proxyHistory size before, but now=" + proxyHistory2.getHttpMessages().size() + ", before=" + proxyHistory.getHttpMessages().size());
+
+        // If only "from" param, it returns proxy history to the end
+        assertEquals(proxyHistory2.getHttpMessages().size(), burpClient.getPartialProxyHistory("1", null).getHttpMessages().size());
     }
 
     @Test
@@ -74,40 +113,6 @@ public class BurpClientIT {
         assertNotNull(configJson);
         assertTrue(configJson.path("proxy").path("intercept_client_requests").has("do_intercept"));
         assertFalse(configJson.get("proxy").get("intercept_client_requests").get("do_intercept").asBoolean());
-    }
-
-    @Test
-    public void testGetProxyHistoryAndSiteMap() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        HttpMessageList proxyHistory = burpClient.getProxyHistory();
-        assertEquals(0, proxyHistory.getHttpMessages().size());
-
-        String urlString = "http://www.vmware.com";
-
-        HttpMessageList siteMap = burpClient.getSiteMap(urlString);
-        assertEquals(0, siteMap.getHttpMessages().size());
-
-        sendRequestThruProxy();
-
-        proxyHistory = burpClient.getProxyHistory();
-        assertNotEquals(0, proxyHistory.getHttpMessages().size());
-
-        siteMap = burpClient.getSiteMap(urlString);
-        assertNotEquals(0, siteMap.getHttpMessages().size());
-
-        // partial History
-        // Get only the first request
-        HttpMessageList partialHistory = burpClient.getPartialProxyHistory("1", "1");
-        assertEquals(1, partialHistory.getHttpMessages().size());
-
-        // issue some request to fill the history proxy
-        sendRequestThruProxy();
-        sendRequestThruProxy();
-        sendRequestThruProxy();
-
-        proxyHistory = burpClient.getProxyHistory();
-
-        // If only "from" param, it returns proxy history to the end
-        assertEquals(proxyHistory.getHttpMessages().size(), burpClient.getPartialProxyHistory("1", null).getHttpMessages().size());
     }
 
     @Test
@@ -159,16 +164,13 @@ public class BurpClientIT {
 
         burpClient.excludeFromScope(urlPrefix);
     }
-
-
-     
+    
     @Test
     public void testCookieJarGetAndUpdate() throws IOException,NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         assertNotNull(Integer.valueOf(burpClient.getCookieFromCookieJar().size()));
-        /* Adding more traffic through the browser breaks the history integration test. 
+
         sendRequestThruProxy();
         assertNotEquals(0, burpClient.getCookieFromCookieJar().size());
-        */
 
         List<CookieInCookieJar> initialCookieList = burpClient.getCookieFromCookieJar();
         String testCookieName="testKey";
@@ -184,10 +186,6 @@ public class BurpClientIT {
         // check that the update works correctly
         assertNotEquals(initialCookieList.size(), burpClient.getCookieFromCookieJar().size());
     }
-    
-
-
-
 
     private void sendRequestThruProxy() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
@@ -195,9 +193,7 @@ public class BurpClientIT {
         sslContext = SSLContexts.custom().loadTrustMaterial((chain, authType) -> true).build();
 
         SSLConnectionSocketFactory sslConnectionSocketFactory =
-                new SSLConnectionSocketFactory(sslContext, new String[]
-                        {"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"}, null,
-                        NoopHostnameVerifier.INSTANCE);
+                new SSLConnectionSocketFactory(sslContext, null, null, NoopHostnameVerifier.INSTANCE);
 
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLSocketFactory(sslConnectionSocketFactory)
@@ -215,13 +211,5 @@ public class BurpClientIT {
             httpClient.execute(target, request);
 
         }
-    }
-
-    @Test
-    void printJvmInfo() {
-        System.out.println("Java version: " + System.getProperty("java.version"));
-        System.out.println("Java home: " + System.getProperty("java.home"));
-        System.out.println("User: " + System.getProperty("user.name"));
-        System.out.println("User home: " + System.getProperty("user.home"));
     }
 }
