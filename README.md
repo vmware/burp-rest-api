@@ -13,11 +13,17 @@ Since the first commit back in 2016, **burp-rest-api** has been the default tool
 
 1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.3.2.jar`) from the [release page](https://github.com/vmware/burp-rest-api/releases)
 2) Place them within a directory having the **original** Burp Suite Professional JAR (e.g. *burpsuite_pro_v2025.6.3.jar*). **Important:** This is supposed to be the standalone JAR downloaded from https://portswigger.net/burp/releases. You should NOT use the `burpsuite_pro.jar` from a local Burp Suite installation
-3) On Java 21, run *burp-rest-api* using:
+3) Using **Java 21**, run *burp-rest-api*
 
-On Linux, Mac `java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -cp "burpsuite_pro.jar:burp-rest-api-2.3.2.jar" org.springframework.boot.loader.launch.JarLauncher`
+On Linux, Mac:
+```
+java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -cp "burpsuite_pro.jar:burp-rest-api-2.3.2.jar" org.springframework.boot.loader.launch.JarLauncher
+```
 
-On Windows `java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -cp "burpsuite_pro.jar;burp-rest-api-2.3.2.jar" org.springframework.boot.loader.launch.JarLauncher`
+On Windows: 
+```
+java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -cp "burpsuite_pro.jar;burp-rest-api-2.3.2.jar" org.springframework.boot.loader.launch.JarLauncher
+```
 
 **Important!!!** 
 * Make sure to adjust the Burp Suite PRO and Burp Rest API JAR filenames
@@ -31,36 +37,29 @@ On Windows `java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=ja
 
 By default, Burp is launched in headless mode with the Proxy running on port 8080/tcp (**localhost only**) and the REST endpoint running on 8090/tcp (**localhost only**).
 
-To __run Burp in UI mode__ from the command line, use one of the following commands:
+To __run Burp in UI mode__ from the command line, append the following argument:
 
 ```
-    ./burp-rest-api.sh --headless.mode=false
+    --headless.mode=false
 ```
-
-On Java <= 1.8, it is also possible to execute burp-rest-api in the following way:
-
-```
-    java -jar burp-rest-api-2.3.2.jar --headless.mode=false --burp.jar=./lib/burpsuite_pro.jar
-```
-
-To __modify the server port__ on which the API is accessible, use one of the following commands:
+To __modify the server port__ on which the API is accessible, append the following argument:
 
 ```
-    ./burp-rest-api.sh --server.port=8081
+    --server.port=8081
 ```
 or
 ```
-    ./burp-rest-api.sh --port=8081
+    --port=8081
 ```
 
 You can also __modify the server address__, used for network address binding:
 
 ```
-    ./burp-rest-api.sh --server.address=192.168.1.2
+    --server.address=192.168.1.2
 ```
 or
 ```
-    ./burp-rest-api.sh --address=192.168.1.2
+    --address=192.168.1.2
 ```
 
 ### Command Line Arguments
