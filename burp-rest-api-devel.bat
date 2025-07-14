@@ -24,12 +24,12 @@ for %%j in (build\libs\dep-jars\BOOT-INF\lib\*.jar) do (
     set CLASSPATH=!CLASSPATH!;%%j
 )
 
-REM Java version check for Java 17/21 options
+REM Java version check for Java > 17 options
 set JAVAARGS=
-for /F "tokens=* USEBACKQ" %%F IN (`java --version`) DO (
-    echo %%F | findstr /C:"17" >nul && set JAVAARGS=--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
-    echo %%F | findstr /C:"21" >nul && set JAVAARGS=--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
+for /F "tokens=2 delims=. " %%F IN ('java -version 2^>^&1 ^| findstr /C:"version"') DO (
+    set JAVAMAJOR=%%F
 )
+if defined JAVAMAJOR if %JAVAMAJOR% GTR 17 set JAVAARGS=--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
 
 java %JAVAARGS% -cp "%CLASSPATH%" com.vmware.burp.extension.BurpApplication %*
 ENDLOCAL

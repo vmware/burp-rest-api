@@ -11,15 +11,17 @@ Since the first commit back in 2016, **burp-rest-api** has been the default tool
 
 ## Getting Started
 
-1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.3.2.jar`) and the launcher `burp-rest-api.{sh,bat}` script from the [release page](https://github.com/vmware/burp-rest-api/releases)
-2) Place them within a directory having the **original** Burp Suite Professional JAR (e.g. *burpsuite_pro_v2025.6.3.jar*). Please note that the actual JAR filename doesn't matter since the launcher will include all JARs in the classpath 
+1) Download the latest *burp-rest-api* JAR (e.g. `burp-rest-api-2.3.2.jar`) from the [release page](https://github.com/vmware/burp-rest-api/releases)
+2) Place them within a directory having the **original** Burp Suite Professional JAR (e.g. *burpsuite_pro_v2025.6.3.jar*). **Important:** This is supposed to be the standalone JAR downloaded from https://portswigger.net/burp/releases. You should NOT use the `burpsuite_pro.jar` from a local Burp Suite installation
+3) On Java 21, run *burp-rest-api* using:
 
-**Important!!!** This is supposed to be the JAR downloaded from https://portswigger.net/burp/releases. You should NOT use the `burpsuite_pro.jar` from a local Burp Suite installation
- 
-3) On Linux and Mac, mark the launcher as executable using `chmod +x burp-rest-api.sh`
-4) Bootstrap the system using either `./burp-rest-api.sh` or `./burp-rest-api.bat`, depending on the operating system
+On Linux, Mac `java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -cp "burpsuite_pro.jar:burp-rest-api-2.3.2.jar" org.springframework.boot.loader.launch.JarLauncher`
 
-**Important!!!** The standalone JAR for ARM64 doesn't seem to contain the Burp Browser, hence spidering and scanning won't work. We would highly recommend to run this software on x86.
+On Windows `java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -cp "burpsuite_pro.jar;burp-rest-api-2.3.2.jar" org.springframework.boot.loader.launch.JarLauncher`
+
+**Important!!!** 
+* Make sure to adjust the Burp Suite PRO and Burp Rest API JAR filenames
+* The standalone Burp Suite PRO JAR for ARM64 doesn't seem to contain the Burp Browser, hence spidering and scanning won't work. We would highly recommend to run this software on x86
 
 ### Burp Suite Support and Limitations
 
@@ -150,19 +152,13 @@ The following section contains useful information to get started with the develo
     ./gradlew clean build
 ```
 
-If you want to run the extension on recent (JRE > 9) versions of the JVM, use the `burp-rest-api.{sh,bat}` launcher script after copying *burpsuite_pro.jar* and the *burp-rest-api.jar* in the same directory of the script.
+If you want to run the extension on recent (JRE > 9) versions of the JVM, use the `burp-rest-api-devel.{sh,bat}` launcher script after copying *burpsuite_pro.jar* and the *burp-rest-api.jar* in the same directory of the script.
 
 ```
 # On Unix (Linux, macOS)
-./burp-rest-api.sh
+./burp-rest-api-devel.sh
 # On Windows
-./burp-rest-api.bat
-```
-
-To run it without using the provided scripts, please make sure to include the following Java arguments
-
-```
---add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
+./burp-rest-api-devel.bat
 ```
 
 ## License

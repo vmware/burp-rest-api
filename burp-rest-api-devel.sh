@@ -2,10 +2,11 @@
 SCRIPTPATH="$(cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P)"
 
 JAVAVER="$(java -version 2>&1 | fgrep version)"
-JAVA21ARGS=""
+JAVAARGS=""
 
-if [[ $JAVAVER == *'version "21'* ]]; then
-    JAVA21ARGS="--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED"
+JAVA_MAJOR_VERSION=$(java -version 2>&1 | awk -F[\".] '/version/ {print $2}')
+if [[ $JAVA_MAJOR_VERSION -gt 17 ]]; then
+    JAVAARGS="--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED"
 fi
 
 # Find the plain JAR
@@ -29,4 +30,4 @@ for jar in "$DEPDIR"/*.jar; do
   CLASSPATH="$CLASSPATH:$jar"
 done
 
-java $JAVA21ARGS -cp "$CLASSPATH" com.vmware.burp.extension.BurpApplication "$@"
+java $JAVAARGS -cp "$CLASSPATH" com.vmware.burp.extension.BurpApplication "$@"
