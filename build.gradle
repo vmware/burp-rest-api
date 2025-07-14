@@ -12,7 +12,7 @@ apply plugin: 'io.spring.dependency-management'
 
 final def extensionName = 'burp-rest-api'
 
-version = '2.3.1'
+version = '2.3.2'
 
 def updateVersion() {
     def configFile = new File('src/main/resources/application.yml')
